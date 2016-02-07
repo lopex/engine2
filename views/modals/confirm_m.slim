@@ -1,0 +1,19 @@
+.modal ng-class="action.meta.panel.class"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close type="button" ng-click="$hide()" &times;
+        h4.modal-title ng-bind-html="action.meta.panel.title"
+
+      .modal-body
+        | modal-content-to-replace
+
+      .modal-footer
+        .loader.pull-left: img src="img/ajax-loader.gif"
+        .btn-group
+          .btn.btn-default ng-click="action.confirm()"
+            span.glyphicon.glyphicon-ok>
+            | Ok
+          .btn.btn-default ng-click="$hide()"
+            span.glyphicon.glyphicon-remove>
+            | Anuluj

@@ -1,0 +1,42 @@
+div
+  e2-include template="action.meta.panel.search_template" ng-if="action.ui_state.search_active"
+  /.well.well-sm
+  .panel.panel-default
+    .panel-body
+      table.table.table-striped.table-condensed.table-hover
+        thead
+          tr
+            th
+              div e2-button-set="action.meta.menus.menu"
+            th ng-repeat="f in action.meta.fields"
+              a> ng-if="action.meta.info[f].sort" ng-click="action.order(f)": strong ng-bind="::action.meta.info[f].loc"
+              span ng-show="action.ui.order == f"
+                span.glyphicon.glyphicon-chevron-up ng-show="action.ui.asc"
+                span.glyphicon.glyphicon-chevron-down ng-show="!action.ui.asc"
+              span ng-if="!action.meta.info[f].sort" ng-bind="::action.meta.info[f].loc"
+        tbody e2-table-body=""
+          / tr ng-repeat="e in action.entries track by action.id_for(e)" ng-class="action.selected_class($index)" ng-click="action.select($index, $event)"
+          /   td
+          /     div e2-button-set="item_menu" ng-if="action.meta.config.show_item_menu"
+          /   td ng-repeat="f in action.meta.fields track by ::f" ng-bind-html="action.list_cell(e, f)"
+
+      span
+        .pull-right
+          .badge
+            | Strona: 
+            span ng-bind="action.page_info()"
+            |&nbsp;
+          .badge ng-if="action.selection"
+            | Zaznaczonych 
+            span ng-bind="action.selected_size()"
+        ul.pagination
+          li ng-if="action.prev_active()"
+            a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
+          li.disabled ng-if="!action.prev_active()"
+            a href="": span.glyphicon.glyphicon-backward
+          li ng-if="action.next_active()"
+            a href="" ng-click="action.next()": span.glyphicon.glyphicon-forward
+          li.disabled ng-if="!action.next_active()"
+            a href="": span.glyphicon.glyphicon-forward
+
+      span ng-if="action.alert": .alert.alert-danger ng-bind="action.alert"

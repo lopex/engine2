@@ -1,0 +1,25 @@
+e2-action action="[action.meta.info[f].assoc, 'typeahead']"
+  .col-lg-7.col-md-8.col-sm-12
+    .input-group.input-group-sm
+      input.btn.btn-default [
+        type="text"
+        ng-init="info = action.meta.info[f]"
+        ng-model="action.decode"
+        bs-options="v.value for v in action.load($viewValue)"
+        ng-keypress="action.key_pressed = true"
+
+        ng-disabled="info.disabled"
+        ng-class="info.render.class"
+        class="form-control"
+
+        data-animation="{{::info.render.animation}}"
+        placeholder="..."
+        data-html="true"
+        data-limit="10"
+        bs-typeahead=""
+        e2-field=""
+      ]
+      span.input-group-addon: span.glyphicon.glyphicon-font
+      .input-group-btn
+        a.btn.btn-default ng-disabled="info.disabled || action.decode == null" ng-click="!info.disabled && action.reset()"
+          span.glyphicon.glyphicon-off

@@ -1,0 +1,44 @@
+.span ng-init="value = value || {}"
+  .col-lg-3.col-md-3.col-sm-5
+    .input-group.input-group-sm
+      input.btn.btn-default [
+        ng-init="info = action.meta.info[f]"
+        type="text"
+        class="form-control"
+        ng-model="value.from"
+        ng-disabled="info.disabled"
+        
+        data-date-format="{{::info.render.format}}"
+        data-max-date="{{value.to}}"
+        data-animation="{{::info.render.animation}}"
+        bs-datepicker=""
+        e2-datepicker="from"
+        e2-model-format="{{::info.render.model_format}}"
+        data-autoclose="1"
+
+        e2-field=""
+      ]
+      .input-group-btn data-toggle="datepicker"
+        a.btn.btn-default: span.glyphicon.glyphicon-calendar
+
+  .col-lg-3.col-md-3.col-sm-5
+    .input-group.input-group-sm
+      input.btn.btn-default [
+        ng-init="other_date = action.meta.info[f].render.other_date; info = action.meta.info[other_date]"
+        type="text"
+        class="form-control"
+        ng-model="value.to"
+        ng-disabled="info.disabled"
+
+        data-date-format="{{::info.render.format}}"
+        data-min-date="{{value.from}}"
+        data-animation="{{::info.render.animation}}"
+        bs-datepicker=""
+        e2-datepicker="to"
+        e2-model-format="{{::info.render.model_format}}"
+        data-autoclose="1"
+
+        e2-field="{{other_date}}"
+      ]
+      .input-group-btn data-toggle="datepicker"
+        a.btn.btn-default: span.glyphicon.glyphicon-calendar

@@ -1,0 +1,14 @@
+.form-group
+  .btn-group.btn-group-sm [
+    ng-model="action.query.search[f]"
+    bs-buttons-radio=""
+    ng-change="action.search_live(f)"
+  ]
+    button.btn.btn-default type="button" value="{{action.meta.info[f].render.true_value}}": span.glyphicon.glyphicon-ok
+    button.btn.btn-default type="button" value="{{action.meta.info[f].render.false_value}}": span.glyphicon.glyphicon-remove
+    button.btn.btn-default type="button" ng-disabled="!action.query.search[f]": span.glyphicon.glyphicon-off
+  span ng-bind="::action.meta.info[f].loc"
+
+/input type="checkbox" id="{{f}}" ng-model="action.query.search[f]" ng-true-value="{{action.meta.info[f].render.true_value}}" ng-false-value="{{action.meta.info[f].render.false_value}}"
+/ ng-false-value="{{action.meta.info[f].render.false_value}}"
+/ ng-init="action.record[f] = '0'"

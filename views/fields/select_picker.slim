@@ -1,0 +1,12 @@
+e2-action action="[action.meta.info[f].assoc, 'list']"
+  .col-lg-7.col-md-8.col-sm-12
+    select.btn.btn-default.btn-sm [
+      ng-init="info = action.meta.info[f]"
+      ng-model="action.selected"
+      ng-options="v.id as v.value for v in action.values"
+      ng-change="action.change()"
+      ng-disabled="info.disabled"
+      ng-class="info.render.class"
+      class="form-control input-sm"
+      e2-field=""
+    ]

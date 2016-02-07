@@ -1,0 +1,9 @@
+.panel.panel-default
+  .panel-heading
+    h4.modal-title ng-bind-html="action.meta.panel.title"
+  .panel-body
+    | modal-content-to-replace
+  .panel-footer
+    // .loader.pull-left: img src="img/ajax-loader.gif"
+    div e2-button-set="action.meta.menus.panel_menu"
+

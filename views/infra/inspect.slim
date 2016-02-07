@@ -1,0 +1,81 @@
+e2-action action="'inspect'"
+  div bs-tabs=""
+    br
+    div title="API" bs-pane=""
+      .row
+        .col-lg-4
+          .panel.panel-default
+            .panel-body
+              script type="text/ng-template" id="nodes_renderer.html"
+                div data-nodrag="" ng-init="stack = stack.concat([$index])"
+                  span.glyphicon.glyphicon-cog ng-if="node.terminal"
+                  a ng-click="action.open(stack, node, collapsed, true); toggle(this)" ng-if="!node.terminal"
+                    span.glyphicon ng-class="{'glyphicon-play-circle': collapsed && node.access, 'glyphicon-download': !collapsed, 'glyphicon-exclamation-sign': collapsed && !node.access}"
+                  span< ng-bind="node.name + ' ' + node.number" ng-click="action.open(stack, node, collapsed, false)" style="cursor: pointer; {{action.number == node.number && 'font-weight: bold;'}}"
+                ol ui-tree-nodes="" ng-model="node.actions" ng-class="{hidden: collapsed}"
+                  li ng-repeat="node in node.actions" ui-tree-node="" data-collapsed="true" ng-include="'nodes_renderer.html'"
+              div ui-tree="" id="tree-root"
+                ol ui-tree-nodes="" ng-model="action.tree.actions"
+                  li ng-repeat="node in action.tree.actions" ui-tree-node="" data-collapsed="true" ng-include="'nodes_renderer.html'" ng-init="stack = []"
+
+        .col-lg-8
+          .panel.panel-default
+            .panel-body
+              div bs-tabs="" bs-active-pane="actionTab" ng-init="actionTab = 0"
+                div title="Action" bs-pane=""
+                  br
+                  pre ng-bind="action.action_json | json"
+                div title="Meta" bs-pane=""
+                  br
+                  pre ng-bind="action.meta_json | json"
+                div title="State" bs-pane=""
+                  br
+                  pre ng-bind="action.action_state | json"
+
+    div title="Model" bs-pane=""
+      .row
+        .col-lg-4
+          .panel.panel-default
+            .panel-body
+              select.btn.btn-default [
+                ng-model="action.activeDB"
+                ng-options="db.name || 'dummy' for db in action.models"
+                class="form-control"
+                ng-change="action.model = (action.activeModel = (action.activeAssoc = undefined))"
+              ]
+                option value="" Database
+              hr
+              select.btn.btn-default [
+                ng-model="action.activeModel"
+                ng-options="m for m in action.activeDB.models"
+                class="form-control"
+                ng-change="action.activeModel ? action.invoke_action('model_info', {db: action.activeDB.name, model: action.activeModel}) : (action.model = (action.activeAssoc = undefined))"
+              ]
+                option value="" Model
+        .col-lg-8
+          .panel.panel-default
+            .panel-body
+              div bs-tabs="" bs-active-pane="modelTab" ng-init="modelTab = 0"
+                div title="Model" bs-pane=""
+                  br
+                  pre ng-bind="action.model.info | json"
+                div title="Schema" bs-pane=""
+                  br
+                  pre ng-bind="action.model.schema | json"
+                div title="Type info" bs-pane=""
+                  br
+                  pre ng-bind="action.model.type_info | json"      }
+                div title="Associations" bs-pane=""
+                  br
+                  .row
+                    .col-lg-6
+                      select.btn.btn-default [
+                        ng-model="action.activeAssoc"
+                        ng-options="key for (key, value) in action.model.assoc"
+                        class="form-control"
+                      ]
+                        option value="" Association              
+                  br
+                  .row
+                    .col-lg-12
+                      pre ng-bind="action.activeAssoc | json"

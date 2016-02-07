@@ -1,0 +1,60 @@
+e2-action action="[f + '_file_store!']"
+  .col-lg-11
+    table.table.table-striped.table-condensed.table-hover
+      thead
+        tr
+          th>
+          th Nazwa
+          th Data
+      tbody
+        tr ng-repeat="f in action.files" ng-hide="f.deleted"
+          td
+            .btn-group.btn-group-xs
+              a.btn.btn-default ng-click="action.show_file(f)": span.glyphicon.glyphicon-file
+              a.btn.btn-default ng-click="action.delete_file(f)": span.glyphicon.glyphicon-trash
+          td
+            div ng-if="f.id": a ng-href="{{action.action_info().action_resource}}/download?id={{f.id}}" ng-bind="f.name"
+            div ng-if="!f.id" ng-bind="f.name"
+
+          td ng-bind="f.uploaded"
+
+    div ng-init="info = action.meta.info[f]"
+      input [
+        type="hidden"
+        ng-model="action.record[f]"
+      ]
+
+      .progress.progress-striped
+        .progress-bar.progress-bar-success ng-style="{'width': action.progress + '%'}"
+
+      div ng-if="info.render.multiple"
+        input [
+          type="file"
+          ng-disabled="info.disabled"
+          ng-file-select="action.select($files)"
+          multiple=""
+        ]
+
+      div ng-if="!info.render.multiple"
+        input [
+          type="file"
+          ng-disabled="info.disabled"
+          ng-file-select="action.select($files)"
+        ]
+
+
+    e2-modal name="confirm_delete" panel-template="confirm_m" title="Usuń"
+      .alert.alert-warning[] Usunąć plik ?
+
+    e2-modal name="show_file" panel-template="close_m" title="Szczegóły"        
+      table.table.table-striped.table-condensed.table-hover
+        tbody
+          tr
+            td Nazwa
+            td ng-bind="action.file.name"
+          tr
+            td Mime
+            td ng-bind="action.file.mime"
+          tr
+            td Data
+            td ng-bind="action.file.uploaded"

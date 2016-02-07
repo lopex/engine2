@@ -1,0 +1,42 @@
+.span ng-init="value = value || {}"
+  .col-lg-3.col-md-3.col-sm-5
+    .input-group.input-group-sm
+      input.btn.btn-default [
+        ng-init="info = action.meta.info[f]"
+        type="text"
+        class="form-control"
+        ng-model="value.value"
+        ng-disabled="info.disabled"
+
+        data-date-format="{{::info.render.date_format}}"
+        data-animation="{{::info.render.animation}}"
+        bs-datepicker=""
+        e2-datepicker="value"
+        e2-model-format="{{:: (info.render.date_model_format + ' ' + info.render.time_model_format)}}"
+        data-autoclose="1"
+        
+        e2-force-view-value=""
+        e2-field=""
+      ]
+      .input-group-btn
+        a.btn.btn-default: span.glyphicon.glyphicon-calendar data-toggle="datepicker"
+  .col-lg-3.col-md-3.col-sm-5
+    .input-group.input-group-sm
+      input.btn.btn-default [
+        ng-init="info = action.meta.info[f]"
+        type="text"
+        class="form-control"
+        ng-model="value.value"
+        ng-disabled="info.disabled"
+
+        data-time-format="{{::info.render.time_format}}"
+        data-animation="{{::info.render.animation}}"
+        bs-timepicker=""
+        e2-datepicker="value"
+        e2-model-format="{{:: (info.render.date_model_format + ' ' + info.render.time_model_format)}}"
+        data-autoclose="1"
+
+        e2-force-view-value=""
+      ]
+      .input-group-btn
+        a.btn.btn-default: span.glyphicon.glyphicon-time data-toggle="datepicker"

@@ -1,0 +1,22 @@
+.col-lg-3.col-md-3.col-sm-5
+  .input-group.input-group-sm
+    input.btn.btn-default [
+      ng-init="info = action.meta.info[f]"
+      type="text"
+      class="form-control"
+      ng-model="value"
+      ng-disabled="info.disabled"
+
+      data-time-format="{{::info.render.format}}"
+      data-animation="{{::info.render.animation}}"
+      bs-timepicker=""
+      e2-datepicker=""
+      e2-model-format="{{::info.render.model_format}}"
+      data-autoclose="1"
+      data-arrow-behavior="picker"
+
+      e2-force-view-value=""
+      e2-field=""
+    ]
+    .input-group-btn data-toggle="datepicker"
+    	a.btn.btn-default: span.glyphicon.glyphicon-time

@@ -1,0 +1,22 @@
+e2-action action="[f + '_blob_store!']"
+  .col-lg-11
+    div ng-init="info = action.meta.info[f]"
+      input [
+        type="hidden"
+        ng-model="action.record[f]"
+      ]
+
+    div
+      .progress.progress-striped
+        .progress-bar.progress-bar-success ng-style="{'width': action.progress + '%'}"
+
+      div
+        input [
+          type="file"
+          ng-disabled="info.disabled"
+          ng-file-select="action.select($files)"
+        ]
+
+    div ng-if="action.blob_length"
+      a ng-href="{{action.action_info().action_resource}}/download?id={{action.record_id}}"
+          | {{action.file_name}}

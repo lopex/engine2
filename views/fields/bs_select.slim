@@ -1,0 +1,10 @@
+.col-lg-7.col-md-12.col-sm-12
+  select [
+    ng-model="action.record[f]"
+    bs-options="v.id as v.value for v in values"
+    select-resource="action.meta.info[f].render.resource"
+    bs-select=""
+    ng-disabled="action.meta.info[f].disabled"
+    class="form-control input-sm"
+    e2-field=""
+  ]

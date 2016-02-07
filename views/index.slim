@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    title App
+    meta http-equiv="x-ua-compatible" content="IE=edge"
+    link rel="stylesheet" href="css/bootstrap.min.css"
+    link rel="stylesheet" href="assets/styles.css"
+    link rel="stylesheet" href="css/app.css"
+
+    script type="text/javascript" src="assets/javascripts.js"
+    script type="text/javascript" src="js/engine2.js"
+    script type="text/javascript" src="js/engine2actions.js"
+    script type="text/javascript" src="js/engine2templates.js"
+    script type="text/javascript" src="js/app.js"
+
+  body ng-app="app"
+    e2-action ng-controller="AppController"
+      .nav.navbar.navbar-default
+        .container
+          .navbar-header
+            a.navbar-brand
+              | App
+              span.glyphicon.glyphicon-home<
+            button.navbar-toggle type="button" data-toggle="collapse" data-target="#collapse1"
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+
+          .navbar-collapse.collapse id="collapse1"
+            ul.nav.navbar-nav.navbar-left
+              / li: a href="#": span.glyphicon.glyphicon-home
+              li: .loader: img src="img/ajax-loader.gif"
+              div e2-action='' action="'menu!'"
+
+            ul.nav.navbar-nav.navbar-right
+              li
+                .navbar-form
+                  div e2-action='' action="'infra!'" invoke="true"
+              li
+                .navbar-text
+
+      .container
+        ng-view
+

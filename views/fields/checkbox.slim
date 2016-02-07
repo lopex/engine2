@@ -1,0 +1,11 @@
+.col-lg-1
+  .checkbox
+    input [
+      ng-init="info = action.meta.info[f]; action.record[f] = action.record[f] || info.render.false_value"
+      type="checkbox"
+      ng-model="action.record[f]"
+      ng-true-value="{{::info.render.true_value}}"
+      ng-false-value="{{::info.render.false_value}}"
+      ng-disabled="info.disabled"
+      e2-field=""
+    ]

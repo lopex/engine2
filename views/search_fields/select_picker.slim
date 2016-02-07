@@ -1,0 +1,17 @@
+e2-action action="[action.meta.info[f].assoc, 'list']"
+  .col-lg-3.col-md-4.col-sm-5
+    .form-group
+      .input-group.input-group-sm
+        select.btn.btn-default [
+          ng-init="info = action.meta.info[f]"
+          ng-model="action.selected"
+          ng-options="v.id as v.value for v in action.values"
+          ng-change="action.change()"
+          ng-class="::info.render.class"
+          class="form-control"
+        ]
+
+          option value="" ng-bind="::info.loc"
+        .input-group-btn
+          a.btn.btn-default ng-disabled="!action.selected" ng-click="action.reset()"
+            span.glyphicon.glyphicon-off

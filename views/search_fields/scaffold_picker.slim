@@ -1,0 +1,19 @@
+e2-action action="[action.meta.info[f].assoc, 'decode']"
+  .col-lg-3.col-md-4.col-sm-5
+    .form-group
+      .input-group.input-group-sm
+        a.btn.btn-default [
+          ng-init="info = action.meta.info[f]"
+          class="form-control"
+          ng-click="action.open()"
+          xe2-search-field=""
+        ]
+          span ng-bind-html="action.decode || info.loc"
+        .input-group-btn
+          a.btn.btn-default ng-click="action.open()": span.glyphicon.glyphicon-list
+          a.btn.btn-default ng-disabled="!action.decode" ng-click="action.reset()": span.glyphicon.glyphicon-off
+    
+    input [
+      type="hidden"
+      ng-model="action.query.search[f]"
+    ]

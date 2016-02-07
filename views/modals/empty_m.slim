@@ -1,0 +1,12 @@
+.modal ng-class="action.meta.panel.class"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close type="button" ng-click="$hide()" &times;
+        h4 ng-bind-html="action.meta.panel.title"
+
+      .modal-body
+        | modal-content-to-replace
+
+      .modal-footer
+        .loader.pull-left: img src="img/ajax-loader.gif"

@@ -1,0 +1,13 @@
+/.col-lg-8.col-md-10.col-sm-12
+div e2-input-cols="{{action.meta.info[f].render.length}}"
+  .input-group.input-group-sm
+    input [
+      ng-init="info = action.meta.info[f]"
+      type="text"
+      ng-model="action.record[f]"
+      maxlength="{{info.render.length}}"
+      class="form-control"
+      ng-disabled="info.disabled"
+      e2-field=""
+    ]
+    span.input-group-addon @

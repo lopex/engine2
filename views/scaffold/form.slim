@@ -1,0 +1,11 @@
+form.form-horizontal role="form"
+  span ng-if="::!action.meta.tabs" ng-init="form_field_list = action.meta.fields"
+    e2-include template="action.meta.panel.field_template"
+  span ng-if="::action.meta.tabs"
+    div bs-tabs="" bs-active-pane="action.activeTab" ng-init="action.activeTab = 0"
+      div ng-repeat="t in ::action.meta.tabs track by $index" title="{{::t.loc}}" bs-pane=""
+        div ng-if="!t.lazy || $index == action.activeTab" ng-init="form_field_list = t.fields"
+          br
+          e2-include template="action.meta.panel.field_template"
+
+  span ng-if="action.alert": .alert.alert-danger[] {{action.alert}}
