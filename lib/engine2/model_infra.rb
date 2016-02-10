@@ -4,6 +4,7 @@ module Engine2
     E2DB ||= connect (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/e2.db" : "sqlite://#{APP_LOCATION}/e2.db",
         loggers: [Logger.new($stdout)], convert_types: false, name: :e2
     DUMMYDB ||= Sequel::Database.new
+    DUMMYDB.opts[:uri] = 'dummy'
 
     BUILTIN_DBS ||= Sequel::DATABASES.dup
     BUILTIN_DBS.each &:load_schema_cache_from_file
