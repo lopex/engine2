@@ -169,7 +169,7 @@ module Engine2
             hash.each_pair do |name, value|
                 handler.permit sfields.include?(name)
 
-                type_info = get_type_info(name)                
+                type_info = get_type_info(name)
                 filter = type_info[:filter] || DefaultFilters[type_info[:otype]]
                 # handler.permit filter
                 raise E2Error.new("Filter not found for field #{name} in model #{model}") unless filter
@@ -283,7 +283,7 @@ module Engine2
             query = super(query, handler)
             model = assets[:model]
             pks = model.primary_keys_qualified
-            
+
             if handler.params[:negate]
                 query = unlinked.map{|ln| pks.zip(split_keys(ln))}.inject(query){|q, c| q.or c}
                 # query = query.or *unlinked.map{|unl| Hash[model.primary_keys.zip(split_keys(unl))]}.inject{|q, c| q | c}
@@ -324,7 +324,7 @@ module Engine2
             panel_title LOCS[:link_title]
             menu(:panel_menu).option_at 0, :link, icon: "ok", enabled: "action.selected_size() > 0"
             action.parent.*.menu(:menu).option_at 0, :link_list, icon: "paperclip", button_loc: false
-        end        
+        end
     end
 end
 

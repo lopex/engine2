@@ -82,13 +82,12 @@ module Engine2
             tl = Time.now
             Dir["#{app}/models/*"].each{|m| load m}
             puts "MODELS #{Time.now - t}"
-            # load "#{app}/models/Szkszkol.rb"
             (Sequel::DATABASES - BUILTIN_DBS).each &:dump_schema_cache_to_file
 
             SCHEMES.merge!
             Engine2.send(:remove_const, :ROOT) if defined? ROOT
             Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
-            
+
             @boot_blk.(ROOT)
             ROOT.setup_action_tree
             puts "BOOTSTRAP #{app}: #{Time.new - t}"
@@ -261,14 +260,14 @@ module Engine2
         star_to_many: lambda{|meta, info| Templates.scaffold},
         many_to_one: lambda{|meta, info| # Templates.scaffold_picker
             tmpl_type = info[:decode][:form]
-            case 
+            case
             when tmpl_type[:scaffold]; Templates.scaffold_picker
             when tmpl_type[:list];     Templates.bsselect_picker
             when tmpl_type[:typeahead];Templates.typeahead_picker
             else
                 raise E2Error.new("Unknown decode type #{tmpl_type}")
             end
-        }, # required/opt 
+        }, # required/opt
     )
 
     (DefaultSearchRenderers ||= {}).merge!(
@@ -277,7 +276,7 @@ module Engine2
         integer: lambda{|meta, info| SearchTemplates.integer_range},
         string: lambda{|meta, info| SearchTemplates.input_text},
         boolean: lambda{|meta, info| SearchTemplates.checkbox_buttons},
-        list_select: lambda{|meta, info| 
+        list_select: lambda{|meta, info|
             length = info[:list].length
             if length <= 3
                 SearchTemplates.list_buttons

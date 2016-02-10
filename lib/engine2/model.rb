@@ -28,7 +28,7 @@ module Engine2
                     @type_info_synchronized = nil
                 end
                 cls.setup_schema
-            end            
+            end
         end
 
         def install_processors processors
@@ -63,7 +63,7 @@ module Engine2
                 schema = @model.db_schema
                 schema.each_pair do |name, db_info|
                     @info[name] = {otype: db_info[:type]}
-                    
+
                     case db_info[:type]
                     when :integer
                         integer_field name
@@ -317,7 +317,7 @@ module Engine2
                 blob_model = Object.const_get(assoc[:class_name])
                 file_fields = {info[:bytes_field] => :$data, info[:name_field] => :$name_field, info[:mime_field] => :$mime_field}
                 file_data = {data: Sequel.blob(open("#{UPLOAD_DIR}/#{value[:rackname]}", "rb"){|f|f.read}), name_field: value[:name], mime_field: value[:mime]}
-               
+
                 if record.new?
                     statement = blob_model.dataset.prepare(:insert, :insert_blob, file_fields)
                     id = statement.call(file_data)

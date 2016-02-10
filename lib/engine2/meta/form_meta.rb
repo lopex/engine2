@@ -27,7 +27,7 @@ module Engine2
         def post_process
             if fields = @meta[:fields]
                 fields = fields - static.get[:fields] if dynamic?
-                
+
                 decorate(fields)
 
                 fields.each do |name|
@@ -35,7 +35,7 @@ module Engine2
                     type_info = get_type_info(name)
 
                     info[name][:render] ||= begin
-                        renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)    
+                        renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)
                         raise E2Error.new("No form renderer found for field '#{type_info[:name]}' of type '#{type_info[:type]}'") unless renderer
                         renderer.(self, type_info)
                     end

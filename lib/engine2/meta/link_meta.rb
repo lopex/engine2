@@ -28,7 +28,7 @@ module Engine2
                 self.class.many_to_many_link_db model, assoc, split_keys(parent), ids
                 {}
             else unsupported_association
-            end 
+            end
         end
 
         def self.one_to_many_link_db model, assoc, parent, ids
@@ -36,7 +36,7 @@ module Engine2
             ids.each do |id|
                 model.where(model.primary_keys_hash(Sequel::split_keys(id))).update(pk)
             end
-        end        
+        end
 
         def self.many_to_many_link_db model, assoc, parent, ids
             p_pk = Hash[assoc[:left_keys].zip(parent)]

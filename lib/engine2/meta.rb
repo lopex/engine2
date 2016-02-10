@@ -335,7 +335,7 @@ module Engine2
         end
 
         def get_type_info name
-            model = assets[:model] 
+            model = assets[:model]
             info = model.type_info[name]
             unless info
                 if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
@@ -370,7 +370,7 @@ module Engine2
         end
 
         def lazy_tab tab_name
-           tabs = @meta[:tabs] 
+           tabs = @meta[:tabs]
            raise E2Error.new("No tabs defined") unless tabs
            tab = tabs.find{|t| t[:name] == tab_name}
            raise E2Error.new("No tab #{tab_name} defined") unless tab
@@ -483,7 +483,6 @@ module Engine2
             params = handler.request.params
             # params.merge({arguments: params.keys})
         end
-        
     end
 
     module MetaOnChangeSupport

@@ -18,7 +18,7 @@ module Engine2
         end
 
         def invoke handler
-        	handler.permit id = handler.params[:id]
+            handler.permit id = handler.params[:id]
             record = get_query[assets[:model].primary_keys_hash_qualified(split_keys(id))]
             if record
                 static.record(handler, record)

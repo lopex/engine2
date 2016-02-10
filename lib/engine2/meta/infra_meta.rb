@@ -99,7 +99,6 @@ module Engine2
         def invoke handler
             handler.permit id = handler.params[:owner]
 
-            
             inf = model.type_info[field]
             assoc = model.association_reflections[inf[:assoc_name]]
             blob_model = Object.const_get(assoc[:class_name])
@@ -107,7 +106,7 @@ module Engine2
             rec = model.naked.select(assoc[:key]).where(model.primary_keys_hash(split_keys(id))).first
             handler.permit rec
             result = blob_model.naked.select(inf[:name_field], Sequel.char_length(inf[:bytes_field]).as(:length)).where(blob_model.primary_key => rec[assoc[:key]]).first
-            
+
             # handler.permit result
             {file_name: result ? result[inf[:name_field]] : :empty, blob_length: result ? result[:length] : 0}
         end
@@ -212,7 +211,7 @@ module Engine2
                 menu :menu do
                     properties group_class: "btn-group-sm"
                     option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
-                    
+
                     option :logout_form, icon: :"log-out" # , show: "action.logged_on"
                     option :login_form, icon: :"log-in" # , show: "!action.logged_on"
                 end

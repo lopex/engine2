@@ -41,9 +41,8 @@ module Engine2
             json_rec = json[:record]
             handler.permit json_rec.is_a?(Hash)
             val_fields = (dynamic? ? static.validate_fields : @validate_fields) || model.type_info.keys
-            p json_rec.keys - val_fields
             handler.permit (json_rec.keys - val_fields).empty?
-            
+
             record = model.call(json_rec)
             record.validate_fields = val_fields
             record
@@ -131,6 +130,6 @@ module Engine2
         def after_approve handler, record
             super
             puts "after approve"
-        end        
+        end
     end
 end

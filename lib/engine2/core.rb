@@ -66,7 +66,7 @@ class Hash
             duplicate[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.rdup : v
         end
         duplicate
-    end    
+    end
 
     def path *a
         h = self
@@ -134,7 +134,7 @@ end
 
 Sequel.quote_identifiers = false
 Sequel.extension :core_extensions
-Sequel::Inflections.clear 
+Sequel::Inflections.clear
 Sequel.alias_tables_in_joins = true
 # Sequel::Model.plugin :json_serializer, :naked => true
 # Sequel::Model.plugin :timestamps
@@ -243,7 +243,7 @@ module E2Model
             #         model.primary_keys.each{|pk| errors.add(pk, "must be unique")}
             #     end
             # end
-        end        
+        end
     end
 
     module ClassMethods
@@ -285,7 +285,7 @@ module E2Model
 
         def ensure_primary_key
             pk = @model.primary_keys
-            
+
             if opts_select = @opts[:select]
                 sel_pk = []
                 opts_select.each do |sel|
@@ -467,7 +467,7 @@ module Engine2
         def option name, properties = {}, index = @entries.size, &blk
             if blk
                 entries = MenuBuilder.new(name, properties)
-                entries.instance_eval(&blk)  
+                entries.instance_eval(&blk)
                 @entries.insert index, entries
             else
                 @entries.insert index, {name: name}.merge(properties) # loc: LOCS[name.to_sym]

@@ -13,7 +13,7 @@ module Engine2
             raise E2Error.new("Field '#{field}' already defined in model '#{@model}'") if info && info[:type]
 
             unless info
-                @info[field] = info = {dummy: true} 
+                @info[field] = info = {dummy: true}
                 @model.dummies << field
             end
 
@@ -275,7 +275,7 @@ module Engine2
             end
         end
 
-        def many_to_one_field assoc_name  # field, keys, 
+        def many_to_one_field assoc_name  # field, keys,
             assoc = @model.association_reflections[assoc_name]
             raise E2Error.new("Associaction '#{assoc_name}' not found for model '#{@model}'") unless assoc
             raise E2Error.new("Association '#{assoc_name}' in model '#{@mode}' is not of type many_to_one") unless assoc[:type] == :many_to_one

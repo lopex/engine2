@@ -28,8 +28,8 @@ module Engine2
         end
 
         def access! &blk
-        	::Kernel.raise E2Error.new("Access for action #{name} already defined") if @access_block
-        	@access_block = blk
+            ::Kernel.raise E2Error.new("Access for action #{name} already defined") if @access_block
+            @access_block = blk
         end
 
         def access_forbidden!
@@ -139,7 +139,7 @@ module Engine2
 
         def setup_action_tree
             time = ::Time.now
-            
+
             model_actions = {}
             each_action do |action|
                 if model = action.*.assets[:model]
@@ -172,7 +172,7 @@ module Engine2
                 meta.instance_eval(&action.meta_proc) if action.meta_proc
                 true
             end
-            
+
             each_action do |action|
                 action.*.post_run
                 action.*.freeze_meta

@@ -45,7 +45,7 @@ task :compile_js do
                 $e2Scaffold
                 $e2Modal
                 localStorageServiceProvider
-                localStorageService             
+                localStorageService
                 $dateParser
                 $dateFormatter
                 $filter
