@@ -1,0 +1,88 @@
+:default_date_format:           yyyy-MM-dd
+:default_date_short_format:     yy-MM-dd
+:default_date_model_format:     yyyy-MM-dd
+:default_date_model_short_format: yy-MM-dd
+:default_time_format:           HH:mm:ss
+:default_time_model_format:     HH:mm:ss
+
+:no_entry:                      Wpis nie istnieje
+
+:name:                          Nazwa
+:mime:                          Mime
+:owner:                         Właściciel
+:model:                         Model
+:field:                         Pole
+:updated:                       Aktualizowany
+
+:ok:                            Ok
+:link:                          Dołącz
+:choose:                        Wybierz
+:view:                          Szczegóły
+:search_toggle:                 Szukaj
+:link_list:                     Dołącz
+:create:                        Utwórz
+:modify:                        Modyfikuj
+:search:                        Szukaj
+:refresh:                       Odśwież
+:default_order:                 Sortowanie domyślne
+:select_toggle:                 Zaznacz
+:confirm_delete:                Usuń
+:confirm_delete_title:          <span class='glyphicon glyphicon-trash'></span> Potwierdzenie
+:confirm_bulk_delete:           Usuń zaznacznone
+:confirm_bulk_delete_title:     <span class='glyphicon glyphicon-trash'></span> Potwierdzenie
+:confirm_unlink:                Odłącz
+:confirm_unlink_title:          <span class='glyphicon glyphicon-minus'></span> Potwierdzenie
+:confirm_bulk_unlink:           Odłącz zaznacznone
+:confirm_bulk_unlink_title:     <span class='glyphicon glyphicon-minus'></span> Potwierdzenie
+:debug_info:                    Debug info
+:show_meta:                     Pokaż metainformacje
+# :meta:                          Meta
+:view_title:                    <span class='glyphicon glyphicon-book'></span> Szczegóły
+:create_title:                  <span class='glyphicon glyphicon-pencil'></span> Utwórz
+:modify_title:                  <span class='glyphicon glyphicon-pencil'></span> Modyfikuj
+:delete_title:                  <span class='glyphicon glyphicon-trash'></span> Usuń
+:link_title:                    <span class='glyphicon glyphicon-paperclip'></span> Dołącz
+:delete_question:               Usunąć wpis ?
+:unlink_question:               Odłączyć wpis ?
+:confirmation:                  Potwierdzenie
+:save:                          Zapisz
+:approve:                       Zatwierdź
+:cancel:                        Anuluj
+
+:login_form:                    Zaloguj
+:user_name:                     Użytkownik
+:password:                      Hasło
+:login:                         Zaloguj
+:login_title:                   <span class='glyphicon glyphicon-log-in'></span> Logowanie
+
+:logout_form:                   Wyloguj
+:logout_title:                  <span class='glyphicon glyphicon-log-out'></span> Wyloguj
+:logout_message:                Wylogować ?
+
+:user_required:                 Podaj nazwę użytkownika
+:password_required:             Podaj hasło
+:password_invalid:              Błędne hasło
+
+:welcome:                       Witaj
+
+:non_nullable:                  Niemożliwe ustawienie wartości pustej
+:field_required:                Pole wymagane
+:wrong_boolean_value:           Zła wartość dla boolean
+:value_exceeds_maximum_length:  Wartość przekracza dopuszczalną długość
+:invalid_date_format:           Niepoprawny format daty
+:invalid_time_format:           Niepoprawny format czasu
+:invalid_datetime_format:       Niepoprawny format daty/czasu
+:value_from_gt_to:              Wartość od > do
+:invalid_number_value:          Niepoprawna wartość liczbowa
+:number_negative:               Wartość ujemna
+:invalid_list_value:            Niepoprawna wartość dla listy
+:invalid_decimal_value:         Niepoprawna wartość decymalna
+:invalid_currency_value:        Niepoprawna wartość kwoty
+:required_unique_value:         Wymagana unikatowa wartość
+:invalid_email_format:          Niepoprawny format email
+:invalid_format:                Niepoprawny format
+
+:access_forbidden:              Dostęp zabroniony
+:access_unauthorized:           Dostęp nieautoryzowany
+:access_not_found:              Nie znaleziono
+:access_method_not_allowed:     Metoda niedozwolona
