@@ -67,7 +67,7 @@ task :compile_slim do
         end
     end
 
-    open("#{PUBLIC}/js/engine2templates.js", "w") << <<-EOF
+    open("#{PUBLIC}/js/engine2templates.js", "wb") << <<-EOF
 angular.module('Engine2').run(['$templateCache', function($templateCache) {
 #{slims.join("\n")}
 }]);
@@ -111,7 +111,7 @@ task :assets_js do
     out = Uglifier.new(output: {comments: :none}, mangle: true).compile(out)
     out = YUI::JavaScriptCompressor.new(java: "#{ENV['JAVA_HOME']}/bin/java", munge: false).compress(out)
 
-    open("#{PUBLIC}/assets/javascripts.js", "w") << out
+    open("#{PUBLIC}/assets/javascripts.js", "wb") << out
 end
 
 desc "Assets Css"
@@ -127,7 +127,7 @@ task :assets_css do
     out = css_files.map{|css|open("#{PUBLIC}/css/#{css}", "r:UTF-8").read}.join("")
 
     out = YUI::CssCompressor.new(java: "#{ENV['JAVA_HOME']}/bin/java").compress(out)
-    open("#{PUBLIC}/assets/styles.css", "w") << out
+    open("#{PUBLIC}/assets/styles.css", "wb") << out
 
 end
 

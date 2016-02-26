@@ -16,6 +16,8 @@ gem 'slim'
 gem 'coffee-script'
 
 group :assets do
+	gem 'slim'
+	gem 'coffee-script'
     gem 'uglifier'
     gem "yui-compressor"
 end
