@@ -276,7 +276,7 @@ angular.module('Engine2')
                         originalPath: name + '/'
                         regexp: new RegExp("^#{name}/$")
                         keys: []
-            
+
         traverse: (routes) ->
             menu_tmpl = _.template("<li><a href='{{href}}'>{{icon}}{{aicon}}{{loc}}</a></li>")
             menu_sub_tmpl = _.template("<li e2-drop-down='{{dropdown}}'><a href='javascript://'>{{icon}}{{aicon}}{{loc}}<span class='caret'></span></a></li>")
@@ -333,7 +333,7 @@ angular.module('Engine2')
 
         menu_search_toggle: ->
             @ui_state.search_active = !@ui_state.search_active
-            @save_state() unless @ui_state.search_active            
+            @save_state() unless @ui_state.search_active
 
         menu_refresh: ->
             @invoke()
@@ -347,7 +347,7 @@ angular.module('Engine2')
             @scope().$broadcast 'render_table'
 
         menu_show_meta: ->
-            $e2Modal.show 
+            $e2Modal.show
                 the_meta: @meta
                 meta: panel: (panel_template: "close_m", template_string: "<pre>{{action.the_meta | json}}</pre>", title: "Meta", class: "modal-large")
 
@@ -380,7 +380,7 @@ angular.module('Engine2')
             @load_new()
 
         prev_active: -> @query.page > 0
-        prev: -> 
+        prev: ->
             @query.page = Math.max(0, @query.page - @meta.config.per_page)
             @invoke()
 
@@ -666,7 +666,7 @@ angular.module('Engine2')
                 @invoke(id: E2.join_keys(fk_values)).then =>
                     if @entry
                         @decode = id: E2.id_for(@entry, @meta), value: @decode_description(@entry)
-                    
+
             @scope().$on "$typeahead.select", (e, v, index) =>
                 e.stopPropagation()
                 _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value()
@@ -766,12 +766,13 @@ angular.module('Engine2')
             super()
 
         panel_menu_link: ->
-            _.each @selection, (v, k) =>
-                id = k
-                if _.contains(@parent().links.unlinked, id) then _.pull(@parent().links.unlinked, id) else @parent().links.linked.push id
-            @parent().invoke()
-            @parent().sync_record()
-            @panel_close()
+            if @selected_size() > 0
+                _.each @selection, (v, k) =>
+                    id = k
+                    if _.contains(@parent().links.unlinked, id) then _.pull(@parent().links.unlinked, id) else @parent().links.linked.push id
+                @parent().invoke()
+                @parent().sync_record()
+                @panel_close()
 
     star_to_many_field_unlink: class StarToManyFieldUnlink extends Action
         invoke: (arg) ->
@@ -807,7 +808,7 @@ angular.module('Engine2')
             @sync_record()
 
         delete_file: (file) ->
-            @scope().$broadcast 'confirm_delete', 
+            @scope().$broadcast 'confirm_delete',
                 confirm: =>
                     @sync_record()
                     file.deleted = true
