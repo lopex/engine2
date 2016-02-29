@@ -95,6 +95,7 @@ module Engine2
 
         define_scheme :decode do |model, assoc_name, options = {scaffold: true}|
             assoc = model.association_reflections[assoc_name]
+            ::Kernel::raise E2Error.new("Associaction '#{assoc_name}' not found for model '#{model}'") unless assoc
             define_action :"#{assoc_name}!" do
                 # iterate over options like in :default ?
                 define_action :list, DecodeListMeta, assoc: assoc if options[:list]
