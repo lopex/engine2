@@ -321,6 +321,8 @@ module Engine2
         def pre_run
             super
             config.merge!(selectable: false)
+            modal_action true
+            panel_panel_template 'scaffold/list'
             panel_title LOCS[:link_title]
             menu(:panel_menu).option_at 0, :link, icon: "ok", enabled: "action.selected_size() > 0"
             action.parent.*.menu(:menu).option_at 0, :link_list, icon: "paperclip", button_loc: false
