@@ -82,16 +82,11 @@ module Engine2
 
         def post_run
             super
-            if assets[:assoc]
-                keys = assets[:assoc][:keys]
-                parent_meta = action.parent.parent.*
-                key = parent_meta.get[:info][keys.first]
-                # render = key[:render]
-                if key
-                    render = key[:render]
-                    if render && render[:multiple]
-                        action.list.*.menu(:panel_menu).option_at 0, :choose, icon: :ok # , disabled: "action.selected_size() == 0"
-                    end
+            if assoc = assets[:assoc]
+                decode = assoc[:model].type_info[assoc[:keys].first][:decode]
+
+                if decode[:search][:multiple] && action.parent.parent.*.is_a?(ListMeta)
+                    action.list.*.menu(:panel_menu).option_at 0, :choose, icon: :ok # , disabled: "action.selected_size() == 0"
                 end
             end
         end
