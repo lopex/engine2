@@ -2,7 +2,7 @@
 
 module Engine2
     class FormMeta < Meta
-        include MetaAPISupport, MetaQuerySupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaAngularSupport, MetaOnChangeSupport
+        include MetaAPISupport, MetaModelSupport, MetaQuerySupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaAngularSupport, MetaOnChangeSupport
 
         def field_template template
             panel[:field_template] = template

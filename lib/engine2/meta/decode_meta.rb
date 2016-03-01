@@ -2,7 +2,7 @@
 
 module Engine2
     class DecodeMeta < Meta
-        include MetaAPISupport, MetaQuerySupport
+        include MetaAPISupport, MetaModelSupport, MetaQuerySupport
 
         def decode *fields, &blk
             query select(*fields), &blk

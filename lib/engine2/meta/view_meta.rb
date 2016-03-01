@@ -2,7 +2,7 @@
 
 module Engine2
     class ViewMeta < Meta
-        include MetaAPISupport, MetaQuerySupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport
+        include MetaAPISupport, MetaModelSupport, MetaQuerySupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport
         meta_type :view
 
         def record handler, record

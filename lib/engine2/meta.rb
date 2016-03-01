@@ -235,6 +235,22 @@ module Engine2
             super
         end
 
+        def get_type_info name
+            model = assets[:model]
+            info = model.type_info[name]
+            unless info
+                if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
+                    assoc = model.many_to_one_associations[$1.to_sym] || model.one_to_one_associations[$1.to_sym]
+                    raise Engine2::E2Error.new("Association #{$1} not found for model #{model}") unless assoc
+                    m = Object.const_get(assoc[:class_name])
+                    info = m.type_info.fetch($2.to_sym)
+                else
+                    raise E2Error.new("Type info not found for '#{name}' in model '#{model}'")
+                end
+            end
+            info
+        end
+
         # def parent_model_name
         #     model = @assets[:model]
         #     prnt = action.parent
@@ -310,8 +326,6 @@ module Engine2
     end
 
     module MetaQuerySupport
-        include MetaModelSupport
-
         def query q, &blk
             @query = q.naked
             @query.row_proc = blk if blk
@@ -332,22 +346,6 @@ module Engine2
 
         def select *args, &blk
             assets[:model].select(*args, &blk).ensure_primary_key.setup! (@meta[:fields] = [])
-        end
-
-        def get_type_info name
-            model = assets[:model]
-            info = model.type_info[name]
-            unless info
-                if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
-                    assoc = model.many_to_one_associations[$1.to_sym] || model.one_to_one_associations[$1.to_sym]
-                    raise Engine2::E2Error.new("Association #{$1} not found for model #{model}") unless assoc
-                    m = Object.const_get(assoc[:class_name])
-                    info = m.type_info.fetch($2.to_sym)
-                else
-                    raise E2Error.new("Type info not found for '#{name}' in model '#{model}'")
-                end
-            end
-            info
         end
 
         def hide_pk
@@ -534,7 +532,7 @@ module Engine2
     end
 
     module MetaListSupport
-        include MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaOnChangeSupport
+        include MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaOnChangeSupport
 
         def pre_run
             super
