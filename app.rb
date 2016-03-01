@@ -48,4 +48,4 @@ class App < Sinatra::Base
         end
         slim name.to_sym
     end
-end 
+end
