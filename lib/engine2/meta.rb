@@ -531,8 +531,128 @@ module Engine2
                 [json[:value], json[:record]]
             end
         end
+    end
 
+    module MetaListSupport
+        include MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaOnChangeSupport
 
+        def pre_run
+            super
+            config.merge!(per_page: 10, use_count: false, show_item_menu: true, selectable: true) # search_active: false,
+
+            # modal_action self.class != ListMeta
+            panel_template 'scaffold/list'
+            panel_panel_template 'panels/menu_m' unless action.parent.*.assets[:model]
+            search_template 'scaffold/search'
+            panel_title "#{glyphicon('list')} #{LOCS[assets[:model].name.to_sym]}"
+            menu(:panel_menu).option :cancel, icon: "remove"
+            menu :menu do
+                properties break: 2, group_class: "btn-group-xs"
+                option :search_toggle, icon: "search", show: "action.meta.search_fields", class: 'action.ui_state.search_active && "active"', button_loc: false
+
+                # divider
+                option :refresh, icon: "refresh", button_loc: false
+                option :default_order, icon: "signal", button_loc: false
+                divider
+                option :select_toggle, icon: "check", enabled: "action.meta.config.selectable", button_loc: false
+                divider
+                option :debug_info, icon: "list-alt" do
+                    option :show_meta, icon: "eye-open"
+                end
+            end
+
+            menu :item_menu do
+                properties break: 1, group_class: "btn-group-xs"
+            end
+
+            @meta[:state] = [:query, :ui_state]
+        end
+
+        def post_run
+            unless panel[:class]
+                panel_class case @meta[:fields].size
+                when 1..3; ''
+                when 4..6; 'modal-large'
+                else; 'modal-huge'
+                end
+            end
+
+            super
+        end
+
+        # def find_renderer type_info
+        #     renderer = DefaultSearchRenderers[type_info[:type]] || DefaultSearchRenderers[type_info[:otype]]
+        #     raise E2Error.new("No search renderer found for field '#{type_info[:name]}'") unless renderer
+        #     renderer.(self, type_info)
+        # end
+
+        def post_process
+            if fields = @meta[:search_fields]
+                fields = fields - static.get[:search_fields] if dynamic?
+
+                decorate(fields)
+                fields.each do |name|
+                    type_info = get_type_info(name)
+
+                    # render = info[name][:render]
+                    # if not render
+                    #     info[name][:render] = find_renderer(type_info)
+                    # else
+                    #     info[name][:render].merge!(find_renderer(type_info)){|key, v1, v2|v1}
+                    # end
+
+                    info[name][:render] ||= begin # set before :fields
+                        renderer = DefaultSearchRenderers[type_info[:type]] || DefaultSearchRenderers[type_info[:otype]]
+                        raise E2Error.new("No search renderer found for field '#{type_info[:name]}'") unless renderer
+                        renderer.(self, type_info)
+                    end
+
+                    proc = SearchRendererPostProcessors[type_info[:type]] || ListRendererPostProcessors[type_info[:type]] # ?
+                    proc.(self, name, type_info) if proc
+                end
+            end
+
+            if fields = @meta[:fields]
+                fields = fields - static.get[:fields] if dynamic?
+
+                decorate(fields)
+                fields.each do |name|
+                    type_info = get_type_info(name)
+                    proc = ListRendererPostProcessors[type_info[:type]]
+                    proc.(self, name, type_info) if proc
+                end
+            end
+
+            super
+        end
+
+        def search_template template
+            panel[:search_template] = template
+        end
+
+        def sortable *flds
+            flds = @meta[:fields] if flds.empty?
+            info! *flds, sort: true
+        end
+
+        def search_live *flds
+            flds = @meta[:search_fields] if flds.empty?
+            info! *flds, search_live: true
+        end
+
+        def searchable *flds
+            @meta.delete(:tabs)
+            @meta[:search_fields] = *flds
+        end
+
+        def searchable_tabs tabs
+            searchable *tabs.map{|name, fields|fields}.flatten
+            field_tabs tabs
+        end
+
+        def template
+            SearchTemplates
+        end
     end
 
 end
