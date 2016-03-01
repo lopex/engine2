@@ -58,7 +58,7 @@ module Engine2
         end
 
         def undefine_action name
-            ::Kernel.raise E2Error.new("No action #{name} defined") unless @actions[name] 
+            ::Kernel.raise E2Error.new("No action #{name} defined") unless @actions[name]
             @actions.delete(name)
         end
 
@@ -179,7 +179,7 @@ module Engine2
                 true
             end
 
-            ::Kernel::puts "ACTIONS : #{Action.count}, Time: #{::Time.now - time}"
+            ::Kernel::puts "ACTIONS: #{Action.count}, Time: #{::Time.now - time}"
             # verify_action_usage
         end
 
@@ -195,7 +195,7 @@ module Engine2
                 else
                     true
                 end
-                
+
             end
             ::Kernel::puts "VERIFY #{::Time.now - t}"
         end

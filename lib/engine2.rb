@@ -72,16 +72,13 @@ module Engine2
     def self.bootstrap app = APP_LOCATION
         # SYNC.synchronize do
             t = Time.now
-            LOCS.merge! YAML.load_file("#{app}/conf/loc.yaml")
-
             Action.count = 0
             SCHEMES.clear
 
             load "#{app}/boot.rb"
             (Sequel::DATABASES - BUILTIN_DBS).each &:load_schema_cache_from_file
-            tl = Time.now
             Dir["#{app}/models/*"].each{|m| load m}
-            puts "MODELS #{Time.now - t}"
+            puts "MODELS, Time: #{Time.now - t}"
             (Sequel::DATABASES - BUILTIN_DBS).each &:dump_schema_cache_to_file
 
             SCHEMES.merge!
@@ -90,7 +87,7 @@ module Engine2
 
             @boot_blk.(ROOT)
             ROOT.setup_action_tree
-            puts "BOOTSTRAP #{app}: #{Time.new - t}"
+            puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
         # end
     end
 
