@@ -37,18 +37,18 @@ module Engine2
     SCHEMES.builtin.clear
     SCHEMES.instance_eval do
 
-        define_scheme :view do
-            define_action :view, ViewMeta
+        define_scheme :view do |name = :view|
+            define_action name, ViewMeta
         end
 
-        define_scheme :create do
-            define_action :create, CreateMeta do
+        define_scheme :create do |name = :create|
+            define_action name, CreateMeta do
                 define_action :approve, InsertMeta
             end
         end
 
-        define_scheme :modify do
-            define_action :modify, ModifyMeta do
+        define_scheme :modify do |name = :modify|
+            define_action name, ModifyMeta do
                 define_action :approve, UpdateMeta
             end
         end
