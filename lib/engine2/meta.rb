@@ -235,6 +235,14 @@ module Engine2
             super
         end
 
+        def hide_pk
+            hide_fields *assets[:model].primary_keys
+        end
+
+        def show_pk
+            show_fields *assets[:model].primary_keys
+        end
+
         def get_type_info name
             model = assets[:model]
             info = model.type_info[name]
@@ -346,14 +354,6 @@ module Engine2
 
         def select *args, &blk
             assets[:model].select(*args, &blk).ensure_primary_key.setup! (@meta[:fields] = [])
-        end
-
-        def hide_pk
-            hide_fields *assets[:model].primary_keys
-        end
-
-        def show_pk
-            show_fields *assets[:model].primary_keys
         end
     end
 
@@ -576,6 +576,7 @@ module Engine2
             end
 
             super
+            @meta[:primary_fields] = assets[:model].primary_keys
         end
 
         # def find_renderer type_info

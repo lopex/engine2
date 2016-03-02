@@ -8,7 +8,6 @@ module Engine2
         def post_run
             query select(*assets[:model].columns.reject{|col| assets[:model].type_info[col][:length].to_i > 20}.take(10)) unless @query
             super
-            @meta[:primary_fields] = assets[:model].primary_keys
         end
 
         def invoke handler
