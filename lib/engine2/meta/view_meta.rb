@@ -2,19 +2,10 @@
 
 module Engine2
     class ViewMeta < Meta
-        include MetaAPISupport, MetaModelSupport, MetaQuerySupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport
         meta_type :view
+        include MetaViewSupport, MetaQuerySupport
 
         def record handler, record
-        end
-
-        def pre_run
-            super
-            panel_template 'scaffold/view'
-            panel_title LOCS[:view_title]
-
-            menu(:panel_menu).option :cancel, icon: "remove"
-            action.parent.*.menu(:item_menu).option action.name, icon: "file", button_loc: false
         end
 
         def invoke handler
@@ -26,21 +17,6 @@ module Engine2
             else
                 handler.halt_not_found LOCS[:no_entry]
             end
-        end
-
-        def post_process
-            if fields = @meta[:fields]
-                fields = fields - static.get[:fields] if dynamic?
-
-                decorate(fields)
-                fields.each do |name|
-                    type_info = get_type_info(name)
-                    proc = ListRendererPostProcessors[type_info[:type]]
-                    proc.(self, name, type_info) if proc
-                end
-            end
-
-            super
         end
     end
 end
