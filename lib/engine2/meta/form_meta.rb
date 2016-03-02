@@ -79,7 +79,7 @@ module Engine2
         def pre_run
             super
             panel_title LOCS[:create_title]
-            action.parent.*.menu(:menu).option_at 0, :create, icon: "plus-sign", button_loc: false
+            action.parent.*.menu(:menu).option_at 0, action.name, icon: "plus-sign", button_loc: false
 
             hide_pk unless assets[:model].natural_key
         end
@@ -111,7 +111,7 @@ module Engine2
         def pre_run
             super
             panel_title LOCS[:modify_title]
-            action.parent.*.menu(:item_menu).option :modify, icon: "pencil", button_loc: false
+            action.parent.*.menu(:item_menu).option action.name, icon: "pencil", button_loc: false
         end
 
         def record handler, record

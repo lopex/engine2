@@ -14,7 +14,7 @@ module Engine2
             panel_title LOCS[:view_title]
 
             menu(:panel_menu).option :cancel, icon: "remove"
-            action.parent.*.menu(:item_menu).option :view, icon: "file", button_loc: false
+            action.parent.*.menu(:item_menu).option action.name, icon: "file", button_loc: false
         end
 
         def invoke handler
