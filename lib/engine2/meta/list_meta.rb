@@ -5,11 +5,6 @@ module Engine2
         meta_type :list
         include MetaListSupport, MetaQuerySupport
 
-        def pre_run
-            super
-            panel_title "#{glyphicon('list')} #{LOCS[assets[:model].name.to_sym]}"
-        end
-
         def post_run
             query select(*assets[:model].columns.reject{|col| assets[:model].type_info[col][:length].to_i > 20}.take(10)) unless @query
             super
