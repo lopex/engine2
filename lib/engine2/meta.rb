@@ -542,6 +542,7 @@ module Engine2
             panel_template 'scaffold/list'
             panel_panel_template 'panels/menu_m' unless action.parent.*.assets[:model]
             search_template 'scaffold/search'
+            panel_title "#{glyphicon('list')} #{LOCS[assets[:model].name.to_sym]}"
             menu(:panel_menu).option :cancel, icon: "remove"
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
