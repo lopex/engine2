@@ -429,7 +429,6 @@ end
 
 module Engine2
     LOCS ||= Hash.new{|h, k| ":#{k}:"}
-    LOCS.merge! YAML.load_file('conf/message.yaml')
 
     class << self
         attr_accessor :core_loading
