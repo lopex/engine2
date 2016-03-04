@@ -34,31 +34,31 @@ module Engine2
     DUMMYDB ||= Sequel::Database.new
     DUMMYDB.opts[:uri] = 'dummy'
 
-	if defined? JRUBY_VERSION
-	    class Sequel::JDBC::Database
-	        def metadata_schema_and_table(table, opts)
-	            im = input_identifier_meth(opts[:dataset])
-	            schema, table = schema_and_table(table)
-	            schema ||= default_schema
-	            schema ||= opts[:schema]
-	            schema = im.call(schema) if schema
-	            table = im.call(table)
-	            [schema, table]
-	        end
-	    end
+    if defined? JRUBY_VERSION
+        class Sequel::JDBC::Database
+            def metadata_schema_and_table(table, opts)
+                im = input_identifier_meth(opts[:dataset])
+                schema, table = schema_and_table(table)
+                schema ||= default_schema
+                schema ||= opts[:schema]
+                schema = im.call(schema) if schema
+                table = im.call(table)
+                [schema, table]
+            end
+        end
 
-	    module Sequel::JDBC::AS400::DatabaseMethods
-	        IDENTITY_VAL_LOCAL ||= "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1".freeze
-	        def last_insert_id(conn, opts=OPTS)
-	          statement(conn) do |stmt|
-	            sql = IDENTITY_VAL_LOCAL
-	            rs = log_yield(sql){stmt.executeQuery(sql)}
-	            rs.next
-	            rs.getInt(1)
-	          end
-	        end
-	    end if defined?(Sequel::JDBC::AS400)
-	end
+        module Sequel::JDBC::AS400::DatabaseMethods
+            IDENTITY_VAL_LOCAL ||= "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1".freeze
+            def last_insert_id(conn, opts=OPTS)
+              statement(conn) do |stmt|
+                sql = IDENTITY_VAL_LOCAL
+                rs = log_yield(sql){stmt.executeQuery(sql)}
+                rs.next
+                rs.getInt(1)
+              end
+            end
+        end if defined?(Sequel::JDBC::AS400)
+    end
 
     self.core_loading = false
     # SYNC ||= Mutex.new
