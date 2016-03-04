@@ -169,6 +169,30 @@ module Engine2
 
     end
 
+    # def define_dummy_model
+    # end
+
+    module MemoryModel
+        def self.extended cls
+            cls.extend Engine2::Model
+            cls.class_eval do
+                def save
+                end
+            end
+
+            def cls.type_info &blk
+                if blk
+                    super(&blk)
+                    @columns = @type_info.keys
+                    nil
+                else
+                    @type_info
+                end
+            end
+
+        end
+    end
+
     (Validations ||= {}).merge!(
         boolean: lambda{|record, field, info|
             value = record.values[field]
