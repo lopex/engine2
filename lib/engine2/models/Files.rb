@@ -1,14 +1,6 @@
 # coding: utf-8
 
 module Engine2
-    E2DB ||= connect (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/e2.db" : "sqlite://#{APP_LOCATION}/e2.db",
-        loggers: [Logger.new($stdout)], convert_types: false, name: :e2
-    DUMMYDB ||= Sequel::Database.new
-    DUMMYDB.opts[:uri] = 'dummy'
-
-    BUILTIN_DBS ||= Sequel::DATABASES.dup
-    BUILTIN_DBS.each &:load_schema_cache_from_file
-
     E2DB.create_table :files do
         primary_key :id
         String :name, size: 100, null: false
@@ -41,31 +33,6 @@ module Engine2
                 end
 
             end
-        end
-    end
-
-    BUILTIN_DBS.each &:dump_schema_cache_to_file
-
-    class UserInfo < Sequel::Model(DUMMYDB)
-        extend MemoryModel
-        set_natural_key :name
-
-        type_info do
-            string_field :name, 10
-            required :name, LOCS[:user_required]
-            string_field :password, 20
-            required :password, LOCS[:password_required]
-            password :password
-        end
-
-        def validate
-            auto_validate
-            @values[:password] = nil
-            errors.empty?
-        end
-
-        def to_hash
-            {name: @values[:name]}
         end
     end
 end

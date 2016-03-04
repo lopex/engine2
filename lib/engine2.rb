@@ -24,40 +24,42 @@ $LOAD_PATH.unshift(E2_LIB) unless $LOAD_PATH.include?(E2_LIB)
     meta/decode_meta.rb
     meta/link_meta.rb
     meta/infra_meta.rb
-
-    model_infra.rb
 ].each do |f|
     load f
 end
 
-if defined? JRUBY_VERSION
-    class Sequel::JDBC::Database
-        def metadata_schema_and_table(table, opts)
-            im = input_identifier_meth(opts[:dataset])
-            schema, table = schema_and_table(table)
-            schema ||= default_schema
-            schema ||= opts[:schema]
-            schema = im.call(schema) if schema
-            table = im.call(table)
-            [schema, table]
-        end
-    end
-
-    module Sequel::JDBC::AS400::DatabaseMethods
-        IDENTITY_VAL_LOCAL ||= "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1".freeze
-        def last_insert_id(conn, opts=OPTS)
-          statement(conn) do |stmt|
-            sql = IDENTITY_VAL_LOCAL
-            rs = log_yield(sql){stmt.executeQuery(sql)}
-            rs.next
-            rs.getInt(1)
-          end
-        end
-    end if defined?(Sequel::JDBC::AS400)
-end
-
-
 module Engine2
+    E2DB ||= connect (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/e2.db" : "sqlite://#{APP_LOCATION}/e2.db",
+        loggers: [Logger.new($stdout)], convert_types: false, name: :e2
+    DUMMYDB ||= Sequel::Database.new
+    DUMMYDB.opts[:uri] = 'dummy'
+
+	if defined? JRUBY_VERSION
+	    class Sequel::JDBC::Database
+	        def metadata_schema_and_table(table, opts)
+	            im = input_identifier_meth(opts[:dataset])
+	            schema, table = schema_and_table(table)
+	            schema ||= default_schema
+	            schema ||= opts[:schema]
+	            schema = im.call(schema) if schema
+	            table = im.call(table)
+	            [schema, table]
+	        end
+	    end
+
+	    module Sequel::JDBC::AS400::DatabaseMethods
+	        IDENTITY_VAL_LOCAL ||= "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1".freeze
+	        def last_insert_id(conn, opts=OPTS)
+	          statement(conn) do |stmt|
+	            sql = IDENTITY_VAL_LOCAL
+	            rs = log_yield(sql){stmt.executeQuery(sql)}
+	            rs.next
+	            rs.getInt(1)
+	          end
+	        end
+	    end if defined?(Sequel::JDBC::AS400)
+	end
+
     self.core_loading = false
     # SYNC ||= Mutex.new
 
@@ -76,10 +78,13 @@ module Engine2
             SCHEMES.clear
 
             load "#{app}/boot.rb"
-            (Sequel::DATABASES - BUILTIN_DBS).each &:load_schema_cache_from_file
+
+            (Sequel::DATABASES).each &:load_schema_cache_from_file
+            load 'models/Files.rb'
+            load 'models/UserInfo.rb'
             Dir["#{app}/models/*"].each{|m| load m}
             puts "MODELS, Time: #{Time.now - t}"
-            (Sequel::DATABASES - BUILTIN_DBS).each &:dump_schema_cache_to_file
+            (Sequel::DATABASES).each &:dump_schema_cache_to_file
 
             SCHEMES.merge!
             Engine2.send(:remove_const, :ROOT) if defined? ROOT
