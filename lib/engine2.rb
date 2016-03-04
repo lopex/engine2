@@ -67,7 +67,7 @@ module Engine2
     end
 
     def self.boot &blk
-        @boot_blk = blk;
+        @boot_blk = blk
     end
 
     def self.bootstrap app = APP_LOCATION
@@ -78,12 +78,12 @@ module Engine2
 
             load "#{app}/boot.rb"
 
-            (Sequel::DATABASES).each &:load_schema_cache_from_file
+            Sequel::DATABASES.each &:load_schema_cache_from_file
             load 'models/Files.rb'
             load 'models/UserInfo.rb'
             Dir["#{app}/models/*"].each{|m| load m}
             puts "MODELS, Time: #{Time.now - t}"
-            (Sequel::DATABASES).each &:dump_schema_cache_to_file
+            Sequel::DATABASES.each &:dump_schema_cache_to_file
 
             SCHEMES.merge!
             Engine2.send(:remove_const, :ROOT) if defined? ROOT
