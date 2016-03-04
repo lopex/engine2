@@ -29,10 +29,9 @@ $LOAD_PATH.unshift(E2_LIB) unless $LOAD_PATH.include?(E2_LIB)
 end
 
 module Engine2
-    E2DB ||= connect (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/e2.db" : "sqlite://#{APP_LOCATION}/e2.db",
-        loggers: [Logger.new($stdout)], convert_types: false, name: :e2
-    DUMMYDB ||= Sequel::Database.new
-    DUMMYDB.opts[:uri] = 'dummy'
+    e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/engine2.db" : "sqlite://#{APP_LOCATION}/engine2.db"
+    E2DB ||= connect e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2
+    DUMMYDB ||= Sequel::Database.new uri: 'dummy'
 
     if defined? JRUBY_VERSION
         class Sequel::JDBC::Database
