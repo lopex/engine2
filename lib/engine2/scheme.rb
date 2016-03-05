@@ -185,7 +185,7 @@ module Engine2
             end
         end
 
-        define_scheme :start_to_many_field do |assoc, field|
+        define_scheme :star_to_many_field do |assoc, field|
             define_action :"#{field}!", StarToManyFieldMeta, assoc: assoc do
                 run_scheme :view
                 define_action :confirm_unlink, ConfirmMeta do
