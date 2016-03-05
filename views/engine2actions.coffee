@@ -349,7 +349,7 @@ angular.module('Engine2')
         menu_show_meta: ->
             $e2Modal.show
                 the_meta: @meta
-                meta: panel: (panel_template: "close_m", template_string: "<pre>{{action.the_meta | json}}</pre>", title: "Meta", class: "modal-large")
+                meta: panel: (panel_template: "close_m", template_string: "<pre>{{action.the_meta | json}}</pre>", title: "Meta", class: "modal-huge")
 
         # show_assoc: (index, assoc) ->
         #     # parent_id = E2.id_for(@entries[index], @meta)
