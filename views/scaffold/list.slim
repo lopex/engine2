@@ -23,11 +23,11 @@ div
       span
         .pull-right
           .badge
-            | Strona: 
+            | Strona:
             span ng-bind="action.page_info()"
             |&nbsp;
           .badge ng-if="action.selection"
-            | Zaznaczonych 
+            | Zaznaczonych
             span ng-bind="action.selected_size()"
         ul.pagination
           li ng-if="action.prev_active()"
