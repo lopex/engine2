@@ -4,7 +4,7 @@ Bundler.require(:assets)
 DIR = Dir.pwd
 VIEWS = DIR + "/views"
 PUBLIC = DIR + "/public"
-COFFEE_FILES = ["app", "engine2", "engine2actions"]
+COFFEE_FILES = ["app", "engine2", "engine2actions", "engine2templates"]
 
 desc "Compile JS"
 task :compile_js do
