@@ -4,7 +4,7 @@ Bundler.require(:assets)
 DIR = Dir.pwd
 VIEWS = DIR + "/views"
 PUBLIC = DIR + "/public"
-COFFEE_FILES = ["app", "engine2", "engine2actions", "engine2templates"]
+COFFEE_FILES = ["app", "engine2", "engine2actions"]
 
 desc "Compile JS"
 task :compile_js do
@@ -80,7 +80,7 @@ end
 
 desc "Clean"
 task :clean do
-    COFFEE_FILES.each do |js|
+    (COFFEE_FILES + ["engine2templates"]).each do |js|
         File.delete "#{PUBLIC}/js/#{js}.js"
     end
 end
