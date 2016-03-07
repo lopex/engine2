@@ -641,10 +641,13 @@ angular.module('Engine2')
                 @parentp().search_live?(@decode_field)
 
         invoke_decode: (recs, f) ->
-            decode_descriptions = (recs) => @decode = recs.map((fields) => @decode_description(fields)).join(' | ')
-            recs = recs.map (r) => if _.isArray(r) then E2.from_id(r, @meta) else r
-            if _(recs).all((r) => _(@meta.fields).all((f) -> r[f]?)) then decode_descriptions(recs) else
-                @invoke(ids: [recs.map((r) => @meta.primary_fields.map (k) -> r[k])]).then => decode_descriptions(@entries)
+            if @multiple && _.size(recs) > @meta.show_max_selected
+                @decode = "#{_.size(recs)} #{@meta.decode_selected}"
+            else
+                decode_descriptions = (recs) => @decode = recs.map((fields) => @decode_description(fields)).join(' | ')
+                recs = recs.map (r) => if _.isArray(r) then E2.from_id(r, @meta) else r
+                if _(recs).all((r) => _(@meta.fields).all((f) -> r[f]?)) then decode_descriptions(recs) else
+                    @invoke(ids: [recs.map((r) => @meta.primary_fields.map (k) -> r[k])]).then => decode_descriptions(@entries)
 
         open: ->
             fk_values = @dinfo.fields.map((f) => @record()[f]).filter((f) -> f?)
