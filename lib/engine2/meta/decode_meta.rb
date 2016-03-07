@@ -13,6 +13,10 @@ module Engine2
             @meta[:separator] = sep
         end
 
+        def show_max_selected max
+            @meta[:show_max_selected] = max
+        end
+
         def post_process
             if fields = @meta[:fields]
                 fields = fields - static.get[:fields] if dynamic?
@@ -26,12 +30,24 @@ module Engine2
             # no super
         end
 
+        def pre_run
+            super
+            if assoc = assets[:assoc]
+                decode = assoc[:model].type_info[assoc[:keys].first][:decode]
+                if decode[:search][:multiple]
+                    show_max_selected 3
+                    @meta[:decode_selected] = LOCS[:decode_selected]
+                end
+            end
+        end
+
         def post_run
             query select(*assets[:model].primary_keys) unless @query
             @meta[:separator] = '/' unless @meta[:separator]
             super
             @meta[:primary_fields] = assets[:model].primary_keys
         end
+
     end
 
     class DecodeListMeta < DecodeMeta
