@@ -7,6 +7,7 @@
 :default_time_model_format:     HH:mm:ss
 
 :no_entry:                      Entry doesnt exist
+:decode_selected:               selected
 
 :name:                          Name
 :mime:                          Mime
