@@ -51,6 +51,8 @@
 :approve:                       Approve
 :cancel:                        Cancel
 
+:inspect_modal:                 Inspect
+
 :login_form:                    Login
 :user_name:                     User
 :password:                      Password

@@ -51,6 +51,8 @@
 :approve:                       Zatwierdź
 :cancel:                        Anuluj
 
+:inspect_modal:                 Inspekcja
+
 :login_form:                    Zaloguj
 :user_name:                     Użytkownik
 :password:                      Hasło
