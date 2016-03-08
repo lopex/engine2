@@ -9,11 +9,9 @@ Bundler.require
 load './lib/engine2.rb'
 
 class App < Sinatra::Base
-    # use Rack::Webconsole
     set :slim, pretty: true, sort_attrs: false
     set :views, ["#{APP_LOCATION}/views", 'views']
     set :sessions, expire_after: 3600 # , :httponly => true, :secure => production?
-    # set :sessions, expire_after: 2
 
     helpers do
         def find_template(views, name, engine, &block)
