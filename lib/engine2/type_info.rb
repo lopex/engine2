@@ -323,10 +323,10 @@ module Engine2
             end
         end
 
-        def validate name, validation_name, &blk
-            raise E2Error.new("Local validation '#{validation_name}' in model '#{@model}' conflicts with builtin validation") if Validations[validation_name]
+        def validate name, validation_name = nil, &blk
+            raise E2Error.new("Local validation '#{validation_name}' in model '#{@model}' conflicts with builtin validation") if validation_name && Validations[validation_name]
             modify_field name do |info|
-                info[:validations][validation_name] = {lambda: blk}
+                info[:validations][validation_name || :"#{@model.table_name}_#{name}_#{info[:validations].size}"] = {lambda: blk}
             end
         end
 
