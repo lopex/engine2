@@ -6,6 +6,7 @@
         ng-init="info = action.meta.info[f]"
         ng-model="action.query.search[f]"
         bs-options="v[0] as v[1] for v in info.render.list"
+        data-html="true"
         ng-change="action.search_live(f)"
         ng-class="info.render.class"
         class="form-control"
