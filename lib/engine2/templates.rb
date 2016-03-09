@@ -90,7 +90,7 @@ module Engine2
 
             def bsselect_picker options = {}
                 options.merge({
-                    template: options[:optional] ? "fields/bsselect_picker_opt" : "fields/bsselect_picker", 
+                    template: options[:optional] ? "fields/bsselect_picker_opt" : "fields/bsselect_picker",
                     animation: BS_ANIMATION
                 })
             end
