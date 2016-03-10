@@ -240,6 +240,9 @@ angular.module('Engine2')
                 delete @meta_json
                 @handle_error(err, access: false)
 
+        has_assoc: (model) ->
+            _.size(model.assoc) > 0
+
     menu: class MenuAction extends Action
         process_static_meta: ->
 

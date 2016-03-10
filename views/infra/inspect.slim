@@ -64,8 +64,8 @@ e2-action action="'inspect'"
                   pre ng-bind="action.model.schema | json"
                 div title="Type info" bs-pane=""
                   br
-                  pre ng-bind="action.model.type_info | json"      }
-                div title="Associations" bs-pane=""
+                  pre ng-bind="action.model.type_info | json"
+                div title="Associations" bs-pane="" ng-if="action.model && action.has_assoc(action.model)"
                   br
                   .row
                     .col-lg-6
