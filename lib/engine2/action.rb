@@ -40,8 +40,10 @@ module Engine2
         	!@access_block || @access_block.(handler)
         end
 
-        def run_scheme name, *args
-            instance_exec(*args, &SCHEMES[name])
+        def run_scheme name, *args, &blk
+            result = instance_exec(*args, &SCHEMES[name])
+            result.instance_eval(&blk) if blk
+            result
         end
 
         def define_action name, meta_class = DummyMeta, assets = {}, &blk
