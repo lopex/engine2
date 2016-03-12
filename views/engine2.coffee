@@ -43,7 +43,6 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             else
                 message = response.data.message
                 cause = if _.isString(response.data) then response.data else response.data.cause || response.data.message
-            console.log E2Snippets.icon
             $injector.get('$e2Modal').error("#{E2Snippets.icon('bell')} #{response.status}: #{message}", cause)
         $q.reject(response)
 
