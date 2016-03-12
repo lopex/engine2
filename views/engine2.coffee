@@ -3,10 +3,10 @@ _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'angularFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
 .factory 'E2Snippets', ->
-    image = (name) -> "<span class='glyphicon glyphicon-#{name}'/>"
-    image: image
-    boolean_true_value:     image('check')
-    boolean_false_value:    image('unchecked')
+    icon = (name) -> "<span class='glyphicon glyphicon-#{name}'/>"
+    icon: icon
+    boolean_true_value:     icon('check')
+    boolean_false_value:    icon('unchecked')
 
 .config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider) ->
     loaderOn = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'visible')
@@ -17,7 +17,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     # $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
     # $httpProvider.defaults.cache = false;
     $httpProvider.defaults.headers.get ||= {} # if !$httpProvider.defaults.headers.get
-    $httpProvider.defaults.headers.get['If-Modified-Since'] = '0'        
+    $httpProvider.defaults.headers.get['If-Modified-Since'] = '0'
     # localStorageServiceProvider.setStorageType('sessionStorage')
     localStorageServiceProvider.setPrefix('E2')
     $compileProvider.debugInfoEnabled(false)
@@ -79,7 +79,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     id_for: (rec, meta) -> @join_keys(meta.primary_fields.map((e) -> rec[e]))
     from_id: (id, meta) -> _.zipObject(meta.primary_fields, id) # _.zip(meta.primary_fields, id).reduce(((rec, [k, v]) -> rec[k] = v; rec), {})
 
-    image: E2Snippets.image
+    icon: E2Snippets.icon
 
     fetch_template: (template) ->
         $q.when($templateCache.get(template) || $http.get(template)).then (res) ->
@@ -125,7 +125,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             arg_fun: (action) -> undefined
         item_menu:
             arg_name: '$index'
-            arg_fun: (action, index) => 
+            arg_fun: (action, index) =>
                 action.current_id = $injector.get('E2').id_for(action.entries[index], action.meta)
                 id: action.current_id
 
@@ -210,7 +210,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
             hide_before: ->
                 super()
-                if MManager.index > @threshold 
+                if MManager.index > @threshold
                     @backdrop_z_index(0, @z_index)
                     @modal_num((MManager.index - 1) - @threshold).css('display', 'block')
 
@@ -268,14 +268,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         error: (title, msg, html) ->
             body = if html then msg else "<div class='alert alert-danger'>#{msg}</div>"
             clazz = if html then "modal-huge" else "modal-large"
-            @show meta: panel: (panel_template: "close_m", template_string: body, title: title, class: clazz) # message: msg, 
+            @show meta: panel: (panel_template: "close_m", template_string: body, title: title, class: clazz) # message: msg,
 
         confirm: (title, msg, action) ->
             body = "<div class='alert alert-warning'>#{msg}</div>"
             clazz = "modal-large"
             @show
                 confirm: action,
-                meta: panel: (panel_template: "confirm_m", template_string: body, title: title, class: clazz) # message: msg, 
+                meta: panel: (panel_template: "confirm_m", template_string: body, title: title, class: clazz) # message: msg,
 
 .directive 'e2Modal', ($e2Modal) ->
     restrict: 'E'
@@ -296,7 +296,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 _.assign(action, args)
 
                 modal = $e2Modal.show(action)
-                hide_off = scope.$on "#{attrs.name}_close", -> 
+                hide_off = scope.$on "#{attrs.name}_close", ->
                     hide_off()
                     modal.then (m) -> m.$scope.$hide()
 
@@ -315,7 +315,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 elem[0].focus()
 
         if info.onfocus
-            elem.on 'focus', -> 
+            elem.on 'focus', ->
                 # scope.$apply(-> scope.$eval(info.onfocus))
                 $timeout -> scope.$apply(info.onfocus)
 
@@ -352,7 +352,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 filtered
             scope.action.query.search[name] = filter(scope.action.query.search[name])
 
-.directive 'e2Include', ($parse, $compile, $http, $templateCache) -> 
+.directive 'e2Include', ($parse, $compile, $http, $templateCache) ->
     restrict: 'E'
     # replace: true
     # terminal: true
@@ -401,7 +401,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         aicon: m.menu.aicon && "<i class='fa fa-#{m.menu.aicon}'></i>" || ''
                         loc: m.menu.loc
                         sub: render(m.menu.entries)
-                else 
+                else
                     dropdown_tmpl
                         show: m.show && "ng-show='#{m.show}'" || ''
                         hide: m.hide && "ng-hide='#{m.hide}'" || ''
@@ -413,7 +413,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         icon: m.icon && "<span class='glyphicon glyphicon-#{m.icon}'></span>" || ''
                         aicon: m.aicon && "<i class='fa fa-#{m.aicon}'></i>" || ''
                         loc: m.loc
-        "<ul class='dropdown-menu'>#{out.join('')}</ul>"    
+        "<ul class='dropdown-menu'>#{out.join('')}</ul>"
 
     scope: false
     link: (scope, elem, attrs) ->
