@@ -102,8 +102,12 @@ class String
 end
 
 class Symbol
-    def glyph
+    def icon
         "<span class='glyphicon glyphicon-#{self}'></span>"
+    end
+
+    def aicon
+        "<i class='fa fa-#{self}'></i>"
     end
 end
 
