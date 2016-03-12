@@ -5,6 +5,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 .factory 'E2Snippets', ->
     icon = (name) -> "<span class='glyphicon glyphicon-#{name}'/>"
     icon: icon
+    aicon = (name) -> "<i class='fa fa-#{name}'></i>"
+    aicon: aicon
+
     boolean_true_value:     icon('check')
     boolean_false_value:    icon('unchecked')
 
@@ -80,6 +83,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     from_id: (id, meta) -> _.zipObject(meta.primary_fields, id) # _.zip(meta.primary_fields, id).reduce(((rec, [k, v]) -> rec[k] = v; rec), {})
 
     icon: E2Snippets.icon
+    aicon: E2Snippets.aicon
 
     fetch_template: (template) ->
         $q.when($templateCache.get(template) || $http.get(template)).then (res) ->
