@@ -3,11 +3,10 @@ _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'angularFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
 .factory 'E2Snippets', ->
-    icon = (name) -> "<span class='glyphicon glyphicon-#{name}'/>"
-    icon: icon
+    icon = (name) -> "<span class='glyphicon glyphicon-#{name}'></span>"
     aicon = (name) -> "<i class='fa fa-#{name}'></i>"
+    icon: icon
     aicon: aicon
-
     boolean_true_value:     icon('check')
     boolean_false_value:    icon('unchecked')
 
@@ -28,7 +27,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     $httpProvider.useApplyAsync(true)
     # $locationProvider.html5Mode(true);
 
-.factory 'e2HttpInterceptor', ($q, $injector) ->
+.factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->
     loaderOff = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'hidden')
     response: (response) ->
         loaderOff()
@@ -44,8 +43,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             else
                 message = response.data.message
                 cause = if _.isString(response.data) then response.data else response.data.cause || response.data.message
-
-            $injector.get('$e2Modal').error("<span class='glyphicon glyphicon-bell'></span> #{response.status}: #{message}", cause)
+            console.log E2Snippets.icon
+            $injector.get('$e2Modal').error("#{E2Snippets.icon('bell')} #{response.status}: #{message}", cause)
         $q.reject(response)
 
 .factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, e2HttpInterceptor, $route, $dateFormatter) ->
@@ -390,7 +389,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             elem.empty()
             elem.append($compile(out)(scope)) unless out.length == 0 # leak ?
 
-.directive 'e2DropDown', ($parse, $dropdown, $timeout) ->
+.directive 'e2DropDown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
     dropdown_sub_tmpl = _.template("<li class='dropdown-submenu'><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
     dropdown_tmpl = _.template("<li {{show}} {{hide}} {{disabled}} {{enabled}}> <a href='{{href}}' {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
@@ -401,8 +400,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                     "<li class='divider'></li>"
                 when m.menu
                     dropdown_sub_tmpl
-                        icon: m.menu.icon && "<span class='glyphicon glyphicon-#{m.menu.icon}'></span>" || ''
-                        aicon: m.menu.aicon && "<i class='fa fa-#{m.menu.aicon}'></i>" || ''
+                        icon: m.menu.icon && E2Snippets.icon(m.menu.icon) || ''
+                        aicon: m.menu.aicon && E2Snippets.aicon(m.menu.aicon) || ''
                         loc: m.menu.loc
                         sub: render(m.menu.entries)
                 else
@@ -414,8 +413,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         # active: m.active && "ng-class='#{m.active}' || \"active\"'" || ''
                         href: m.href || ''
                         click: m.click && "ng-click='#{m.disabled && m.disabled + " ||" || ''} #{m.enabled && m.enabled + " &&" || ''} #{m.click}'"
-                        icon: m.icon && "<span class='glyphicon glyphicon-#{m.icon}'></span>" || ''
-                        aicon: m.aicon && "<i class='fa fa-#{m.aicon}'></i>" || ''
+                        icon: m.icon && E2Snippets.icon(m.icon) || ''
+                        aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: m.loc
         "<ul class='dropdown-menu'>#{out.join('')}</ul>"
 
@@ -443,7 +442,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
         elem.on "mousedown", hook
 
-.directive 'e2ButtonSet', ($parse, $compile) ->
+.directive 'e2ButtonSet', ($parse, $compile, E2Snippets) ->
     button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{disabled}} {{enabled}} {{title}}> {{icon}}{{aicon}} {{loc}}</div>")
     button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-drop-down='{{dropdown}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
     scope: true # because $index
@@ -459,8 +458,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 else if m.menu
                     out += button_set_arr_tmpl
                         dropdown: "#{attrs.e2ButtonSet}.entries[#{i}].menu.entries"
-                        icon: m.menu.icon && "<span class='glyphicon glyphicon-#{m.menu.icon}'></span>&nbsp;" || ''
-                        aicon: m.menu.aicon && "<i class='fa fa-#{m.menu.aicon}'></i>&nbsp;" || ''
+                        icon: m.menu.icon && "#{E2Snippets.icon(m.menu.icon)}&nbsp;" || ''
+                        aicon: m.menu.aicon && "#{E2Snippets.aicon(m.menu.aicon)}&nbsp;" || ''
                 else if m.divider
                 else
                     out += button_set_tmpl
@@ -470,8 +469,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         hide: m.hide && "ng-hide='#{m.hide}'" || ''
                         disabled: m.disabled && "ng-class='#{m.disabled} && \"disabled\"'" || ''
                         enabled: m.enabled && "ng-class='#{m.enabled} || \"disabled\"'" || ''
-                        icon: m.icon && "<span class='glyphicon glyphicon-#{m.icon}'></span>" || ''
-                        aicon: m.aicon && "<i class='fa fa-#{m.aicon}'></i>" || ''
+                        icon: m.icon && E2Snippets.icon(m.icon) || ''
+                        aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: !(m.button_loc == false) && m.loc || ''
                         title: (m.button_loc == false) && "title='#{m.loc}'" || ''
 

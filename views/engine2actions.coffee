@@ -286,16 +286,16 @@ angular.module('Engine2')
             out = routes.map (route, i) ->
                 if route.menu
                     menu_sub_tmpl
-                        icon: route.menu.icon && "<span class='glyphicon glyphicon-#{route.menu.icon}'></span> " || ''
-                        aicon: route.menu.aicon && "<i class='fa fa-#{route.menu.aicon}'></i> " || ''
+                        icon: route.menu.icon && E2.icon(route.menu.icon) || ""
+                        aicon: route.menu.aicon && E2.aicon(route.menu.aicon) || ""
                         loc: route.menu.loc
                         dropdown: "routes[#{i}].menu.entries"
                 else
                     menu_tmpl
                         href: route.href
                         loc: route.loc
-                        icon: route.icon && "<span class='glyphicon glyphicon-#{route.icon}'></span> " || ''
-                        aicon: route.aicon && "<i class='fa fa-#{route.aicon}'></i> " || ''
+                        icon: route.icon && E2.icon(route.icon) || ''
+                        aicon: route.aicon && E2.aicon(route.aicon) || ''
             out.join('')
 
     # dummy: class DummyAction extends Action
