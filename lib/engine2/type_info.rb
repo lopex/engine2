@@ -313,7 +313,7 @@ module Engine2
             end
         end
 
-        def decode name, dinfo
+        def decode name, dinfo = {form: {scaffold: true}, search: {scaffold: true}}
             modify_field name do |info|
                 raise E2Error.new("Field type of #{name} needs to be :many_to_one") unless info[:type] == :many_to_one
                 dec = info[:decode] ||= {}
