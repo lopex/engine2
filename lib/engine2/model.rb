@@ -103,12 +103,8 @@ module Engine2
                 unique *@model.primary_keys if @model.natural_key && @model.db.adapter_scheme # uri ?
 
                 @model.many_to_one_associations.each do |aname, assoc|
-                    many_to_one_field aname # keys.first, keys, aname
-                    decode assoc[:keys].first, form: {scaffold: true}, search: {scaffold: true}
-                    # info = @info[keys.first]
-                    # info[:type] = :many_to_one
-                    # info[:keys] = keys
-                    # info[:assoc_name] = aname
+                    many_to_one_field aname
+                    decode assoc[:keys].first
                 end
             end
         end

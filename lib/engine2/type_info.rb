@@ -275,7 +275,7 @@ module Engine2
             end
         end
 
-        def many_to_one_field assoc_name  # field, keys,
+        def many_to_one_field assoc_name
             assoc = @model.association_reflections[assoc_name]
             raise E2Error.new("Associaction '#{assoc_name}' not found for model '#{@model}'") unless assoc
             raise E2Error.new("Association '#{assoc_name}' in model '#{@mode}' is not of type many_to_one") unless assoc[:type] == :many_to_one
@@ -287,7 +287,7 @@ module Engine2
             end
         end
 
-        def star_to_many_field assoc_name # , keys, assoc_name
+        def star_to_many_field assoc_name
             assoc = @model.association_reflections[assoc_name]
             raise E2Error.new("Associaction '#{assoc_name}' not found for model '#{@model}'") unless assoc
             raise E2Error.new("Association '#{assoc_name}' in model '#{@model}' is not of type *_to_many") unless [:one_to_many, :many_to_many].include?(assoc[:type])
