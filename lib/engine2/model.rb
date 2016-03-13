@@ -96,7 +96,7 @@ module Engine2
                     end
 
                     required name if !db_info[:allow_null]
-                    primary name if db_info[:primary_key]
+                    primary_key name if db_info[:primary_key]
                     default name, db_info[:ruby_default] if db_info[:ruby_default]
                 end
 

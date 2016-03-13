@@ -159,7 +159,7 @@ module Engine2
             end
         end
 
-        def primary field
+        def primary_key field
             modify_field field do |info|
                 info[:primary_key] = true
             end
