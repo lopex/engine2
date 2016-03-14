@@ -27,7 +27,6 @@ class App < Sinatra::Base
     end
 
     use Engine2::Handler
-    Engine2.bootstrap # if production ?
 
     get "/js/*.js" do |c|
         coffee c.to_sym
