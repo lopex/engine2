@@ -2,8 +2,8 @@ $: << File.expand_path(File.dirname(__FILE__))
 
 APP_LOCATION = (defined?(JRUBY_VERSION) ? File.dirname(__FILE__) + '/' : '') + 'apps/test'
 require './app'
-run App
 Engine2.bootstrap
+run App
 
 module Sequel
     module SequelFixes
