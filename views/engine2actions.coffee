@@ -26,7 +26,7 @@ angular.module('Engine2')
         constructor: (response, scope, parent, element, action_info) ->
             @find_action_info = (name, raise = true) ->
                 act = response.actions[name]
-                throw "Undefined action '#{name}' for action #{@action_info().name} (under #{parent.action_info().action_resource})" if raise && !act
+                throw "Undefined action '#{name}' for action #{@action_info().name} (under #{@parent().action_info().action_resource})" if raise && !act
                 act
 
             _.each response.actions, (act, nm) -> act.name = nm
