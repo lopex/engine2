@@ -33,34 +33,7 @@ module Engine2
     E2DB ||= connect e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2
     DUMMYDB ||= Sequel::Database.new uri: 'dummy'
 
-    if defined? JRUBY_VERSION
-        class Sequel::JDBC::Database
-            def metadata_schema_and_table(table, opts)
-                im = input_identifier_meth(opts[:dataset])
-                schema, table = schema_and_table(table)
-                schema ||= default_schema
-                schema ||= opts[:schema]
-                schema = im.call(schema) if schema
-                table = im.call(table)
-                [schema, table]
-            end
-        end
-
-        module Sequel::JDBC::AS400::DatabaseMethods
-            IDENTITY_VAL_LOCAL ||= "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1".freeze
-            def last_insert_id(conn, opts=OPTS)
-              statement(conn) do |stmt|
-                sql = IDENTITY_VAL_LOCAL
-                rs = log_yield(sql){stmt.executeQuery(sql)}
-                rs.next
-                rs.getInt(1)
-              end
-            end
-        end if defined?(Sequel::JDBC::AS400)
-    end
-
     self.core_loading = false
-    # SYNC ||= Mutex.new
 
     def self.database name
         Object.const_set(name, yield) unless Object.const_defined?(name)
@@ -71,28 +44,28 @@ module Engine2
     end
 
     def self.bootstrap app = APP_LOCATION
-        # SYNC.synchronize do
-            t = Time.now
-            Action.count = 0
-            SCHEMES.clear
+        require 'pre_bootstrap'
+        t = Time.now
+        Action.count = 0
+        SCHEMES.clear
 
-            load "#{app}/boot.rb"
+        load "#{app}/boot.rb"
 
-            Sequel::DATABASES.each &:load_schema_cache_from_file
-            load 'models/Files.rb'
-            load 'models/UserInfo.rb'
-            Dir["#{app}/models/*"].each{|m| load m}
-            puts "MODELS, Time: #{Time.now - t}"
-            Sequel::DATABASES.each &:dump_schema_cache_to_file
+        Sequel::DATABASES.each &:load_schema_cache_from_file
+        load 'models/Files.rb'
+        load 'models/UserInfo.rb'
+        Dir["#{app}/models/*"].each{|m| load m}
+        puts "MODELS, Time: #{Time.now - t}"
+        Sequel::DATABASES.each &:dump_schema_cache_to_file
 
-            SCHEMES.merge!
-            Engine2.send(:remove_const, :ROOT) if defined? ROOT
-            Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
+        SCHEMES.merge!
+        Engine2.send(:remove_const, :ROOT) if defined? ROOT
+        Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
 
-            @boot_blk.(ROOT)
-            ROOT.setup_action_tree
-            puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
-        # end
+        @boot_blk.(ROOT)
+        ROOT.setup_action_tree
+        puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
+        require 'post_bootstrap'
     end
 
     (FormRendererPostProcessors ||= {}).merge!(

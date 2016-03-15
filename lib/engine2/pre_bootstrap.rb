@@ -1,0 +1,27 @@
+# coding: utf-8
+
+module Sequel
+    class JDBC::Database
+        def metadata_schema_and_table(table, opts)
+            im = input_identifier_meth(opts[:dataset])
+            schema, table = schema_and_table(table)
+            schema ||= default_schema
+            schema ||= opts[:schema]
+            schema = im.call(schema) if schema
+            table = im.call(table)
+            [schema, table]
+        end
+    end
+
+    module JDBC::AS400::DatabaseMethods
+        IDENTITY_VAL_LOCAL ||= "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1".freeze
+        def last_insert_id(conn, opts=OPTS)
+          statement(conn) do |stmt|
+            sql = IDENTITY_VAL_LOCAL
+            rs = log_yield(sql){stmt.executeQuery(sql)}
+            rs.next
+            rs.getInt(1)
+          end
+        end
+    end if defined?(JDBC::AS400)
+end if defined? JRUBY_VERSION

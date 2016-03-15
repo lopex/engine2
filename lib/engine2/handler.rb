@@ -105,5 +105,34 @@ module Engine2
         def serve_api_error error
             halt_server_error Rack::Utils.escape_html(error.inspect) + "<hr>" + error.backtrace.take(30).map{|b| Rack::Utils.escape_html(b)}.join("<br>"), LOCS[:error]
         end
+
+        get "/js/*.js" do |c|
+            coffee c.to_sym
+        end
+
+        get '/*' do |name|
+            headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
+            if name.empty?
+                if settings.environment == :development
+                    t = Time.new
+                    load './lib/engine2.rb'
+                    Engine2.bootstrap
+                    puts "STARTUP: #{Time.new - t}"
+                end
+                name = 'index'
+            end
+            slim name.to_sym
+        end
+
+        set :slim, pretty: true, sort_attrs: false
+        set :views, ["#{APP_LOCATION}/views", 'views']
+        set :sessions, expire_after: 3600 # , :httponly => true, :secure => production?
+
+        helpers do
+            def find_template(views, name, engine, &block)
+                views.each{|v| super(v, name, engine, &block)}
+            end
+        end
+
     end
 end
