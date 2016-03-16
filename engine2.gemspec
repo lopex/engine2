@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
     spec.add_dependency "sequel", '~> 4'
     if defined? JRUBY_VERSION
-        spec.add_dependency 'jdbc-sqlite3', '~> 3.8.11.2'
+        spec.add_dependency 'jdbc-sqlite3', '~> 3.8'
     else
         spec.add_dependency 'sqlite3', '~> 1.3'
     end
