@@ -115,7 +115,7 @@ module Engine2
             if name.empty?
                 if settings.environment == :development
                     t = Time.new
-                    load './lib/engine2.rb'
+                    load 'engine2.rb'
                     Engine2.bootstrap
                     puts "STARTUP: #{Time.new - t}"
                 end
@@ -125,7 +125,8 @@ module Engine2
         end
 
         set :slim, pretty: true, sort_attrs: false
-        set :views, ["#{APP_LOCATION}/views", 'views']
+        set :views, ["views", "#{PATH}/views"]
+        set :public_folder, "#{PATH}/public"
         set :sessions, expire_after: 3600 # , :httponly => true, :secure => production?
 
         helpers do

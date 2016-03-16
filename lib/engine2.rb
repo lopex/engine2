@@ -2,33 +2,37 @@
 
 require 'yaml'
 require 'logger'
-
-E2_LIB ||= File.dirname(__FILE__) + "/engine2/"
-$LOAD_PATH.unshift(E2_LIB) unless $LOAD_PATH.include?(E2_LIB)
-
-%w[
-    core.rb
-    handler.rb
-    type_info.rb
-    model.rb
-    templates.rb
-    meta.rb
-    action.rb
-    scheme.rb
-
-    meta/list_meta.rb
-    meta/view_meta.rb
-    meta/form_meta.rb
-    meta/save_meta.rb
-    meta/delete_meta.rb
-    meta/decode_meta.rb
-    meta/link_meta.rb
-    meta/infra_meta.rb
-].each do |f|
-    load f
-end
+require 'sequel'
+require 'sinatra'
+require 'json'
+require 'engine2/version'
 
 module Engine2
+    PATH ||= File.expand_path('..', File.dirname(__FILE__))
+
+    %w[
+        core.rb
+        handler.rb
+        type_info.rb
+        model.rb
+        templates.rb
+        meta.rb
+        action.rb
+        scheme.rb
+
+        meta/list_meta.rb
+        meta/view_meta.rb
+        meta/form_meta.rb
+        meta/save_meta.rb
+        meta/delete_meta.rb
+        meta/decode_meta.rb
+        meta/link_meta.rb
+        meta/infra_meta.rb
+    ].each do |f|
+        load "engine2/#{f}" rescue puts $!
+        # require "/engine2/#{f}"
+    end
+
     e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/engine2.db" : "sqlite://#{APP_LOCATION}/engine2.db"
     E2DB ||= connect e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2
     DUMMYDB ||= Sequel::Database.new uri: 'dummy'
@@ -44,7 +48,7 @@ module Engine2
     end
 
     def self.bootstrap app = APP_LOCATION
-        require 'pre_bootstrap'
+        require 'engine2/pre_bootstrap'
         t = Time.now
         Action.count = 0
         SCHEMES.clear
@@ -52,8 +56,8 @@ module Engine2
         load "#{app}/boot.rb"
 
         Sequel::DATABASES.each &:load_schema_cache_from_file
-        load 'models/Files.rb'
-        load 'models/UserInfo.rb'
+        load 'engine2/models/Files.rb'
+        load 'engine2/models/UserInfo.rb'
         Dir["#{app}/models/*"].each{|m| load m}
         puts "MODELS, Time: #{Time.now - t}"
         Sequel::DATABASES.each &:dump_schema_cache_to_file
@@ -65,7 +69,7 @@ module Engine2
         @boot_blk.(ROOT)
         ROOT.setup_action_tree
         puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
-        require 'post_bootstrap'
+        require 'engine2/post_bootstrap'
     end
 
     (FormRendererPostProcessors ||= {}).merge!(

@@ -1,6 +1,3 @@
-require 'bundler'
-Bundler.require(:assets)
-
 DIR = Dir.pwd
 VIEWS = DIR + "/views"
 PUBLIC = DIR + "/public"
@@ -8,6 +5,8 @@ COFFEE_FILES = ["app", "engine2", "engine2actions"]
 
 desc "Compile JS"
 task :compile_js do
+    require 'coffee-script'
+    require 'uglifier'
     COFFEE_FILES.each do |cf|
         out = CoffeeScript.compile(open("#{VIEWS}/#{cf}.coffee", "r:UTF-8"))
         out = Uglifier.new(
@@ -58,6 +57,7 @@ end
 
 desc "Compile SLIM"
 task :compile_slim do
+    require 'slim'
     view_dirs = ["fields", "scaffold", "search_fields", "modals"]
     slims = view_dirs.each.map do |view_dir|
         Dir["views/#{view_dir}/*.slim"].map do |slim_file|
@@ -87,6 +87,8 @@ end
 
 desc "Assets Js"
 task :assets_js do
+    require 'yui-compressor'
+    require 'uglifier'
     # jquery-builder.cmd -m -v 2.0.3 -e ajax,deprecated,effects,offset > jquery-custom.min.js
     # lodash modern category=arrays,collections,objects,chaining,lang plus=template
 
@@ -135,4 +137,3 @@ desc "Assets"
 task :assets => [:assets_js, :assets_css] do
     # File.delete *Dir["#{Dir.pwd}/public/assets/*"]
 end
-
