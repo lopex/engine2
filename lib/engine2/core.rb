@@ -149,8 +149,6 @@ Sequel.alias_tables_in_joins = true
 # Sequel::Model.plugin :validation_helpers
 Sequel::Database::extension :schema_caching
 
-
-# module Engine2
 module E2Model
     module InstanceMethods
         attr_accessor :skip_save_refresh, :validate_fields
@@ -252,13 +250,6 @@ module E2Model
 
     module ClassMethods
         attr_reader :natural_key
-
-        # def set_dataset ds, opts = Sequel::OPTS
-        #     if db.default_schema && ds.is_a?(Symbol) && !ds['__']
-        #         ds = :"#{db.default_schema}__#{ds}"
-        #     end
-        #     super(ds, opts)
-        # end
 
         def set_natural_key key
             set_primary_key key
@@ -492,13 +483,12 @@ module Engine2
     end
 
     class MenuBuilder
-        attr_accessor :name # :loc,
+        attr_accessor :name
         attr_reader :entries
 
         def initialize name, properties = {}
             @name = name
             @properties = properties
-            # @loc = LOCS[name.to_sym]
             @entries = []
         end
 
@@ -512,7 +502,7 @@ module Engine2
                 entries.instance_eval(&blk)
                 @entries.insert index, entries
             else
-                @entries.insert index, {name: name}.merge(properties) # loc: LOCS[name.to_sym]
+                @entries.insert index, {name: name}.merge(properties)
             end
         end
 
