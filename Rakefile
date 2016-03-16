@@ -87,7 +87,7 @@ end
 
 desc "Assets Js"
 task :assets_js do
-    require 'yui-compressor'
+    require 'yui/compressor'
     require 'uglifier'
     # jquery-builder.cmd -m -v 2.0.3 -e ajax,deprecated,effects,offset > jquery-custom.min.js
     # lodash modern category=arrays,collections,objects,chaining,lang plus=template
