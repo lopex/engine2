@@ -433,6 +433,7 @@ end
 
 module Engine2
     LOCS ||= Hash.new{|h, k| ":#{k}:"}
+    PATH ||= File.expand_path('../..', File.dirname(__FILE__))
 
     class << self
         attr_accessor :core_loading
@@ -440,10 +441,48 @@ module Engine2
 
     self.core_loading = true
 
+    def self.database name
+        Object.const_set(name, yield) unless Object.const_defined?(name)
+    end
+
     def self.connect *args
         db = Sequel.connect *args
         db.models = {}
         db
+    end
+
+    e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/engine2.db" : "sqlite://#{APP_LOCATION}/engine2.db"
+    E2DB ||= connect e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2
+    DUMMYDB ||= Sequel::Database.new uri: 'dummy'
+
+    def self.boot &blk
+        @boot_blk = blk
+    end
+
+    def self.bootstrap app = APP_LOCATION
+        require 'engine2/pre_bootstrap'
+        t = Time.now
+        Action.count = 0
+        SCHEMES.clear
+
+        load "#{app}/boot.rb"
+
+        Sequel::DATABASES.each &:load_schema_cache_from_file
+        load 'engine2/models/Files.rb'
+        load 'engine2/models/UserInfo.rb'
+        Dir["#{app}/models/*"].each{|m| load m}
+        puts "MODELS, Time: #{Time.now - t}"
+        Sequel::DATABASES.each &:dump_schema_cache_to_file
+
+        SCHEMES.merge!
+        Engine2.send(:remove_const, :ROOT) if defined? ROOT
+        Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
+
+        @boot_blk.(ROOT)
+        ROOT.setup_action_tree
+        puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
+        self.core_loading = false
+        require 'engine2/post_bootstrap'
     end
 
     class E2Error < RuntimeError
