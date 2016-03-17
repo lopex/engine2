@@ -342,5 +342,11 @@ module Engine2
             end
         end
 
+        def sequence name, seq_name
+            modify_field name do |info|
+                info[:sequence] = seq_name
+            end
+        end
+
     end
 end

@@ -182,6 +182,11 @@ module E2Model
                 end
                 @dummy_fields = dummies
             end
+
+            unless self.pk
+                sequence = model.type_info[primary_key][:sequence]
+                self[model.primary_key] = sequence.lit if sequence
+            end
         end
 
         def after_save

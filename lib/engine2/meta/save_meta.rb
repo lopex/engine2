@@ -13,7 +13,7 @@ module Engine2
         def validate_fields *fields
             if fields.empty?
                 @validate_fields
-            else 
+            else
                 @validate_fields = assets[:model].type_info.keys & (fields + assets[:model].primary_keys).uniq
             end
         end
