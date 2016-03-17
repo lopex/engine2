@@ -184,7 +184,7 @@ module E2Model
             end
 
             unless self.pk
-                sequence = model.type_info[primary_key][:sequence]
+                sequence = model.type_info[model.primary_key][:sequence]
                 self[model.primary_key] = sequence.lit if sequence
             end
         end
