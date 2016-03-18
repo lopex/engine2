@@ -5,6 +5,7 @@ require 'logger'
 require 'sequel'
 require 'sinatra'
 require 'json'
+require 'slim'
 require 'tilt/coffee'
 require 'engine2/version'
 
