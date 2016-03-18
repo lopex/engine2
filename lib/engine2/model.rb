@@ -85,7 +85,7 @@ module Engine2
                         unless size && scale
                             db_info[:db_type] =~ /decimal\((\d+),(\d+)\)/i
                             size, scale = $1.to_i, $2.to_i
-                            E2Error.new("Cannot parse decimal type for #{db_info}") unless size || scale
+                            raise E2Error.new("Cannot parse decimal type for #{db_info}") unless size || scale
                         end
                         decimal_field name, size, scale
                     when :blob
