@@ -1,6 +1,90 @@
 # coding: utf-8
 
 module Engine2
+    SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
+        define_action :infra! do
+            self.* do
+                extend MetaPanelSupport, MetaMenuSupport
+                panel_panel_template false
+                panel_template 'infra/index'
+                menu :menu do
+                    properties group_class: "btn-group-sm"
+                    option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
+
+                    option :logout_form, icon: :"log-out" # , show: "action.logged_on"
+                    option :login_form, icon: :"log-in" # , show: "!action.logged_on"
+                end
+
+                @meta_type = :infra
+
+                def invoke handler
+                    user = handler.user
+                    {user: user ? user.to_hash : nil}
+                end
+            end
+
+            define_action :login_form, LoginFormMeta, model: user_info_model do
+                access!{|h|!h.logged_in?}
+                define_action :login, LoginMeta
+            end
+
+            define_action :logout_form, LogoutFormMeta do
+                access! &:logged_in?
+                define_action :logout, LogoutMeta
+            end
+
+            define_action :inspect_modal do
+                access! &:logged_in?
+                # access!{|h|h.user[:name] == 'admin'}
+                self.* do
+                    extend MetaPanelSupport, MetaMenuSupport
+                    modal_action
+                    panel_template 'infra/inspect'
+                    panel_title "Inspect"
+                    panel_class "modal-huge"
+                    menu(:panel_menu).option :cancel, icon: "remove"
+
+                    # def invoke handler;{};end
+                end
+                define_action :inspect do
+                    self.* do
+                        @meta_type = :inspect
+                    end
+
+                    define_action :models do
+                        def (self.*).invoke handler
+                            {models: Sequel::DATABASES.map{|db| {name: db.uri, models: db.models.keys} }}
+                        end
+                    end
+
+                    define_action :model_info do
+                        def (self.*).invoke handler
+                            db_name = handler.params[:db]
+                            handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
+                            handler.permit model = db.models[handler.params[:model].to_sym]
+                            {
+                                model: {
+                                    info: {
+                                        name: model.to_s,
+                                        table: model.table_name
+                                    },
+                                    assoc: model.association_reflections,
+                                    schema: model.db_schema,
+                                    type_info: model.type_info
+                                }
+                            }
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    SCHEMES::define_scheme :menu! do
+        define_action :menu!, MenuMeta do
+        end
+    end
+
     class FileStoreMeta < Meta
         meta_type :file_store
 
@@ -199,90 +283,6 @@ module Engine2
             handler.session.clear
             # handler.session[:logged_in] = false
             {}
-        end
-    end
-
-    SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
-        define_action :infra! do
-            self.* do
-                extend MetaPanelSupport, MetaMenuSupport
-                panel_panel_template false
-                panel_template 'infra/index'
-                menu :menu do
-                    properties group_class: "btn-group-sm"
-                    option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
-
-                    option :logout_form, icon: :"log-out" # , show: "action.logged_on"
-                    option :login_form, icon: :"log-in" # , show: "!action.logged_on"
-                end
-
-                @meta_type = :infra
-
-                def invoke handler
-                    user = handler.user
-                    {user: user ? user.to_hash : nil}
-                end
-            end
-
-            define_action :login_form, LoginFormMeta, model: user_info_model do
-                access!{|h|!h.logged_in?}
-                define_action :login, LoginMeta
-            end
-
-            define_action :logout_form, LogoutFormMeta do
-                access! &:logged_in?
-                define_action :logout, LogoutMeta
-            end
-
-            define_action :inspect_modal do
-                access! &:logged_in?
-                # access!{|h|h.user[:name] == 'admin'}
-                self.* do
-                    extend MetaPanelSupport, MetaMenuSupport
-                    modal_action
-                    panel_template 'infra/inspect'
-                    panel_title "Inspect"
-                    panel_class "modal-huge"
-                    menu(:panel_menu).option :cancel, icon: "remove"
-
-                    # def invoke handler;{};end
-                end
-                define_action :inspect do
-                    self.* do
-                        @meta_type = :inspect
-                    end
-
-                    define_action :models do
-                        def (self.*).invoke handler
-                            {models: Sequel::DATABASES.map{|db| {name: db.uri, models: db.models.keys} }}
-                        end
-                    end
-
-                    define_action :model_info do
-                        def (self.*).invoke handler
-                            db_name = handler.params[:db]
-                            handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
-                            handler.permit model = db.models[handler.params[:model].to_sym]
-                            {
-                                model: {
-                                    info: {
-                                        name: model.to_s,
-                                        table: model.table_name
-                                    },
-                                    assoc: model.association_reflections,
-                                    schema: model.db_schema,
-                                    type_info: model.type_info
-                                }
-                            }
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    SCHEMES::define_scheme :menu! do
-        define_action :menu!, MenuMeta do
         end
     end
 end
