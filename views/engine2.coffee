@@ -545,4 +545,4 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     link: (scope, elem, attr, controller) ->
         controller.$parsers.unshift (v) ->
             vs = v.toString()
-            if vs.match(/^\-?\d+$/) then parseInt(vs) else vs
+            if vs.match(/^\-?\d+$/) then parseInt(vs) else ''
