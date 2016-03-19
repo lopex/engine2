@@ -330,18 +330,6 @@ module Engine2
             end
         end
 
-        def filter name, &blk
-            modify_field name do |info|
-                info[:filter] = blk
-            end
-        end
-
-        def order name, &blk
-            modify_field name do |info|
-                info[:order] = blk
-            end
-        end
-
         def sequence name, seq_name
             modify_field name do |info|
                 info[:sequence] = seq_name
