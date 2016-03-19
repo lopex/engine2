@@ -2,7 +2,7 @@
 
 module Engine2
     class ListMeta < Meta
-        attr_accessor :filters, :orders
+        attr_reader :filters, :orders
 
         meta_type :list
         include MetaListSupport, MetaQuerySupport
