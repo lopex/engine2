@@ -110,9 +110,6 @@ module Engine2
             end
         end
 
-        # def process_type_info name, info
-        # end
-
         def type_info &blk
             if blk
                 raise E2Error.new("type_info already called for model #{self}") if @type_info_synchronized
@@ -137,7 +134,6 @@ module Engine2
             resolved = {}
             @type_info.each_pair do |name, info|
                 @validation_in_transaction ||= info[:transaction]
-                # process_type_info(name, info)
                 resolve_dependency(name, resolved)
             end
             @type_info = resolved
@@ -160,7 +156,6 @@ module Engine2
         def scheme s_name = :default, opts = nil, &blk
             @scheme_name = s_name
             @scheme_args = [name.to_sym, self, opts]
-            # schemes = Engine2::core_loading ? Schemes::BUILTIN : Schemes::USER
             SCHEMES::define_scheme name.to_sym, &blk
         end
 
