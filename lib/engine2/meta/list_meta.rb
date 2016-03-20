@@ -89,10 +89,9 @@ module Engine2
                 order = order_str.to_sym
                 handler.permit lookup(:info, order, :sort)
 
-                if order_blk = (static.orders && static.orders[order])
+                if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
                     query = order_blk.(query)
                 else
-                    # order = order.qualify(model.table_name) unless order_str.include?('__')
                     order = order.qualify(model.table_name) if model.type_info[order]
                     query = query.order(order)
                 end
@@ -120,9 +119,9 @@ module Engine2
                 handler.permit sfields.include?(name)
 
                 type_info = get_type_info(name)
-                filter = (static.filters && static.filters[name]) || DefaultFilters[type_info[:otype]]
-                # handler.permit filter
+                filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name])) || DefaultFilters[type_info[:otype]]
                 raise E2Error.new("Filter not found for field #{name} in model #{model}") unless filter
+
                 name = model.type_info[name] ? name.qualify(model.table_name) : Sequel.expr(name)
                 query = filter.(query, name, value, type_info, hash)
                 handler.permit query
