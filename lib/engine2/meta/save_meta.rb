@@ -75,7 +75,7 @@ module Engine2
 
         def validate_record handler, record
             @validations.each do |name, val|
-                unless record.errors.include? name
+                unless record.errors[name]
                     result = val.(record, handler)
                     record.errors.add(name, result) if result
                 end
