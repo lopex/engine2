@@ -2,6 +2,8 @@
 
 module Engine2
     class ApproveMeta < Meta
+        attr_reader :validations
+
         include MetaModelSupport
         http_method :post
 
@@ -26,7 +28,9 @@ module Engine2
 
         def approve_record handler, record
             static.before_approve(handler, record)
-            if record.validate
+            record.valid?
+            validate_record(record, handler)
+            if record.errors.empty?
                 static.after_approve(handler, record)
                 true
             else
@@ -65,6 +69,19 @@ module Engine2
             end
         end
 
+        def validate name, &blk
+            (@validations ||= {})[name] = blk
+        end
+
+        def validate_record handler, record
+            @validations.each do |name, val|
+                unless record.errors.include? name
+                    result = val.()
+                    record.errors.add(name, result)
+                end
+            end if @validations
+        end
+
         def post_run
             super
             validate_fields *action.parent.*.get[:fields] unless validate_fields
@@ -75,8 +92,11 @@ module Engine2
         # meta_type :save
         def save_record handler, record
             static.before_approve(handler, record)
-            if record.valid?
+            record.valid?
+            validate_record(handler, record)
+            if record.errors.empty?
                 static.after_approve(handler, record)
+
                 if record.save(transaction: false, validate: false)
                     true
                 else
