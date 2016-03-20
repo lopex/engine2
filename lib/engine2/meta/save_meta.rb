@@ -77,7 +77,7 @@ module Engine2
             @validations.each do |name, val|
                 unless record.errors.include? name
                     result = val.(record)
-                    record.errors.add(name, result)
+                    record.errors.add(name, result) if result
                 end
             end if @validations
         end
