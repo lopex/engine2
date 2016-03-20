@@ -29,7 +29,7 @@ module Engine2
         def approve_record handler, record
             static.before_approve(handler, record)
             record.valid?
-            validate_record(record, handler)
+            validate_record(handler, record)
             if record.errors.empty?
                 static.after_approve(handler, record)
                 true
@@ -76,7 +76,7 @@ module Engine2
         def validate_record handler, record
             @validations.each do |name, val|
                 unless record.errors.include? name
-                    result = val.()
+                    result = val.(record)
                     record.errors.add(name, result)
                 end
             end if @validations
