@@ -119,11 +119,15 @@ module Engine2
                 handler.permit sfields.include?(name)
 
                 type_info = get_type_info(name)
-                filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name])) || DefaultFilters[type_info[:otype]]
-                raise E2Error.new("Filter not found for field #{name} in model #{model}") unless filter
+                query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
+                    filter.(query, hash, handler)
+                elsif filter = DefaultFilters[type_info[:otype]]
+                    name = model.type_info[name] ? name.qualify(model.table_name) : Sequel.expr(name)
+                    filter.(query, name, value, type_info, hash)
+                else
+                    raise E2Error.new("Filter not found for field #{name} in model #{model}") unless filter
+                end
 
-                name = model.type_info[name] ? name.qualify(model.table_name) : Sequel.expr(name)
-                query = filter.(query, name, value, type_info, hash)
                 handler.permit query
             end
             query
