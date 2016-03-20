@@ -90,7 +90,7 @@ module Engine2
                 handler.permit lookup(:info, order, :sort)
 
                 if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
-                    query = order_blk.(query)
+                    query = order_blk.(query, handler)
                 else
                     order = order.qualify(model.table_name) if model.type_info[order]
                     query = query.order(order)
