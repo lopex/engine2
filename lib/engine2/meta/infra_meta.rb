@@ -244,7 +244,8 @@ module Engine2
         end
     end
 
-    class LoginMeta < ApproveMeta
+    class LoginMeta < Meta
+        include MetaApproveSupport
         http_method :post
         meta_type :login
 
