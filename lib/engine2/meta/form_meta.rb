@@ -94,10 +94,10 @@ module Engine2
         def invoke handler
             record = {}
             if assoc = assets[:assoc]
-                handler.permit parent = handler.params[:parent_id]
-                assoc[:keys].zip(split_keys(parent)).each do |key, val|
-                    # record[key] ||= val # = ? edit/create
-                    record[key] = val
+                case assoc[:type]
+                when :one_to_many
+                    handler.permit parent = handler.params[:parent_id]
+                    assoc[:keys].zip(split_keys(parent)).each{|key, val| record[key] = val}
                 end
             end
             static.record(handler, record)
