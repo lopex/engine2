@@ -185,7 +185,7 @@ module Engine2
             info! *flds, hidden: false
         end
 
-        def filter *flds, filter
+        def field_filter *flds, filter
             info! *flds, filter: filter
         end
     end
