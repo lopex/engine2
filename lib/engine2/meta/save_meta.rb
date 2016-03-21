@@ -26,7 +26,7 @@ module Engine2
         def after_approve handler, record
         end
 
-        def approve_record handler, record
+        def validate_and_approve handler, record
             static.before_approve(handler, record)
             record.valid?
             validate_record(handler, record)
@@ -52,21 +52,9 @@ module Engine2
             record
         end
 
-        def record handler, record
-            {errors: nil} # nil # fields ?
-        end
-
         def invoke handler
             record = allocate_record(handler)
-            if approve_record(handler, record)
-                static.record(handler, record)
-            else
-                # errors = record.errors.inject({}) do |h, (k, v)|
-                #     k.is_a?(Array) ? k.each{|e|h[e] = v} : h[k] = v
-                #     h
-                # end
-                {record: record.to_hash, errors: record.errors}
-            end
+            validate_and_approve(handler, record) ? {errors: nil} : {record: record.to_hash, errors: record.errors}
         end
 
         def validate name, &blk
@@ -90,32 +78,13 @@ module Engine2
 
     class SaveMeta < ApproveMeta
         # meta_type :save
-        def save_record handler, record
-            static.before_approve(handler, record)
-            record.valid?
-            validate_record(handler, record)
-            if record.errors.empty?
-                static.after_approve(handler, record)
 
-                if record.save(transaction: false, validate: false)
-                    true
-                else
-                    false
-                end
-            else
-                false
-            end
-
-            rescue Sequel::NoExistingObject => error # doesnt throw anymore
-                handler.halt_not_found LOCS[:no_entry]
-        end
-
-        def approve_record handler, record
+        def validate_and_approve handler, record
             record.skip_save_refresh = true
             record.raise_on_save_failure = false
-
             model = assets[:model]
-            model.validation_in_transaction ? model.db.transaction{save_record(handler, record)} : save_record(handler, record)
+            save = lambda{|c| record.save(transaction: false, validate: false) if super(handler, record) }
+            model.validation_in_transaction ? model.db.transaction(&save) : save.()
         end
     end
 
