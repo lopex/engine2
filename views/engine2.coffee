@@ -139,7 +139,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 else "?"
         list_select: (value, render) ->
             render.list_hash ||= _.zipObject(render.list) # render.list.reduce(((h, a) -> h[a[0]] = a[1]; h), {})
-            render.list_hash[value]
+            render.list_hash[value] ? value
         datetime: (value, render) ->
             value.split('\.')[0]
             # $dateFormatter.formatDate(value, "yyyy-MM-dd", $dateFormatter.getDefaultLocale())

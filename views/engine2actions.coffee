@@ -367,6 +367,10 @@ angular.module('Engine2')
 
         invoke: ->
             @save_state()
+            # delete @query.order # unless _.contains(@meta.fields, @query.order)
+            # console.log @meta.info[@query.order]
+            # delete @query.order unless _.contains(@meta.fields, @query.order) && @meta.info[@query.order]?.sort
+
             query = _.cloneDeep(@query)
             delete query.search if _.isEmpty(E2.compact(query.search))
             super(query).then =>
