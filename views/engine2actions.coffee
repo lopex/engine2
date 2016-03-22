@@ -123,7 +123,7 @@ angular.module('Engine2')
 
         create_action_path: (action_names, sc, elem) ->
             last_name = action_names.pop()
-            _.foldl(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
+            _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
         pre_invoke: ->
@@ -307,8 +307,8 @@ angular.module('Engine2')
             @ui_state = {}
             @load_state()
 
-            delete @query.order unless _.contains(@meta.fields, @query.order)
-            _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.contains(@meta.search_fields, sn))
+            delete @query.order unless _.includes(@meta.fields, @query.order)
+            _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_fields, sn))
 
             _.each @meta.info, (info, name) =>
                 if info.remote_onchange
@@ -367,10 +367,6 @@ angular.module('Engine2')
 
         invoke: ->
             @save_state()
-            # delete @query.order # unless _.contains(@meta.fields, @query.order)
-            # console.log @meta.info[@query.order]
-            # delete @query.order unless _.contains(@meta.fields, @query.order) && @meta.info[@query.order]?.sort
-
             query = _.cloneDeep(@query)
             delete query.search if _.isEmpty(E2.compact(query.search))
             super(query).then =>
@@ -571,7 +567,7 @@ angular.module('Engine2')
 
         if_fk_values: (f) ->
             fk_values = @dinfo.fields.map((f) => @record()[f])
-            f(fk_values) if _(fk_values).all((f) -> f?) # null_value
+            f(fk_values) if _(fk_values).every((f) -> f?) # null_value
 
         record: ->
             @parentp().query?.search || @parentp().record
@@ -612,11 +608,11 @@ angular.module('Engine2')
                 if @selected.length > 0
                     _.each @dinfo.fields, (fk) -> record[fk] = []
                     _.each @selected, (sel) =>
-                        _(@dinfo.fields).zip(E2.split_keys(sel)).each(([fk, k]) => record[fk].push E2.parse_entry(k, @parentp().meta.info[fk])).value()
+                        _(@dinfo.fields).zip(E2.split_keys(sel)).each(([fk, k]) => record[fk].push E2.parse_entry(k, @parentp().meta.info[fk])).value
                 else @clear_record()
             else
                 if @selected
-                    _(@dinfo.fields).zip(E2.split_keys(@selected)).each(([fk, k]) => record[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value()
+                    _(@dinfo.fields).zip(E2.split_keys(@selected)).each(([fk, k]) => record[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value
                 else @clear_record()
 
             @parentp().search_live?(@decode_field)
@@ -638,12 +634,12 @@ angular.module('Engine2')
                 if @multiple
                     _.each @dinfo.fields, (fk) => record[fk] = []
                     _.each sel, (rec, ids) =>
-                        _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k].push E2.parse_entry(v, @parentp().meta.info[k])).value()
+                        _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k].push E2.parse_entry(v, @parentp().meta.info[k])).value
                     @invoke_decode _.values(sel)
                     delete @decode if _.isEmpty(sel)
                 else
-                    [ids, rec] = _(sel).pairs().head()
-                    _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k] = E2.parse_entry(v, @parentp().meta.info[k])).value()
+                    [ids, rec] = _(sel).toPairs().head()
+                    _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k] = E2.parse_entry(v, @parentp().meta.info[k])).value
                     @invoke_decode [rec]
                 @parentp().search_live?(@decode_field)
 
@@ -653,7 +649,7 @@ angular.module('Engine2')
             else
                 decode_descriptions = (recs) => @decode = recs.map((fields) => @decode_description(fields)).join(' | ')
                 recs = recs.map (r) => if _.isArray(r) then E2.from_id(r, @meta) else r
-                if _(recs).all((r) => _(@meta.fields).all((f) -> r[f]?)) then decode_descriptions(recs) else
+                if _(recs).every((r) => _(@meta.fields).every((f) -> r[f]?)) then decode_descriptions(recs) else
                     @invoke(ids: [recs.map((r) => @meta.primary_fields.map (k) -> r[k])]).then => decode_descriptions(@entries)
 
         open: ->
@@ -679,7 +675,7 @@ angular.module('Engine2')
 
             @scope().$on "$typeahead.select", (e, v, index) =>
                 e.stopPropagation()
-                _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value()
+                _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value
                 @parentp().search_live?(@decode_field)
 
             @scope().$watch "action.decode", (e) => if e?
@@ -752,7 +748,7 @@ angular.module('Engine2')
             links = @parent().record[@scope().$parent.f]
             @links = links ? (linked: [], unlinked: [])
             # console.log @parent().meta.primary_fields.map((f) => @parent().record[f])
-            # if E2.id_for(@parent().record, @parent().meta).all((e) -> e?)
+            # if E2.id_for(@parent().record, @parent().meta).every((e) -> e?)
             @invoke() if @query.parent_id.length > 0
 
         invoke: ->
@@ -779,7 +775,7 @@ angular.module('Engine2')
             if @selected_size() > 0
                 _.each @selection, (v, k) =>
                     id = k
-                    if _.contains(@parent().links.unlinked, id) then _.pull(@parent().links.unlinked, id) else @parent().links.linked.push id
+                    if _.includes(@parent().links.unlinked, id) then _.pull(@parent().links.unlinked, id) else @parent().links.linked.push id
                 @parent().invoke()
                 @parent().sync_record()
                 @panel_close()
@@ -788,7 +784,7 @@ angular.module('Engine2')
         invoke: (arg) ->
             id = arg.id
             pparent = @parent().parent()
-            if _.contains(pparent.links.linked, id) then _.pull(pparent.links.linked, id) else pparent.links.unlinked.push id
+            if _.includes(pparent.links.linked, id) then _.pull(pparent.links.linked, id) else pparent.links.unlinked.push id
             pparent.sync_record()
 
     file_store: class FileStoreAction extends Action

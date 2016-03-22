@@ -90,7 +90,7 @@ task :assets_js do
     require 'yui/compressor'
     require 'uglifier'
     # jquery-builder.cmd -m -v 2.0.3 -e ajax,deprecated,effects,offset > jquery-custom.min.js
-    # lodash modern category=arrays,collections,objects,chaining,lang plus=template
+    # lodash category=array,collection,object,seq,lang plus=template
 
     js_files =  %w[
             angular-file-upload-shim.min.js
