@@ -108,11 +108,16 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         processor = @menu_processors[menu_name]
         @each_menu action.meta.menus[menu_name].entries, (m) ->
             menu_fun_name = "#{menu_name}_#{m.name}"
-            unless m.click
-                m.click = "action[\"#{menu_fun_name}\"](#{processor.arg_name})"
-                if !action[menu_fun_name]?
-                    action[menu_fun_name] = (args...) ->
-                        action.invoke_action(m.name, processor.arg_fun(action, args...))
+            menu_fun_invoke = "action[\"#{menu_fun_name}\"](#{processor.arg_name})"
+
+            click = m.click
+            m.click = menu_fun_invoke
+            action[menu_fun_name] ?= (args...) ->
+                processor.arg_fun(action, args...)
+                if click
+                    action.scope().$eval(click)
+                else
+                    action.invoke_action(m.name, processor.arg_ret(action))
 
             if action.find_action_info(m.name, false)?
                 show = if m.show then " && " + m.show else ""
@@ -122,14 +127,18 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         menu:
             arg_name: ''
             arg_fun: (action) -> undefined
+            arg_ret: (action) -> undefined
         panel_menu:
             arg_name: ''
             arg_fun: (action) -> undefined
+            arg_ret: (action) -> undefined
         item_menu:
             arg_name: '$index'
-            arg_fun: (action, index) =>
+            arg_ret: (action) -> id: action.current_id
+            arg_fun: (action, index) ->
                 action.current_id = $injector.get('E2').id_for(action.entries[index], action.meta)
-                id: action.current_id
+
+
 
     renderers:
         boolean: (value, render) =>
