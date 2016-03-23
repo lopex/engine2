@@ -456,8 +456,9 @@ angular.module('Engine2')
         panel_menu_default_action: ->
             _.each @meta.info, (v, n) =>
                 @record[n] = null if @record[n] is undefined
-
-            @invoke_action(@default_action_name, record: @record).then =>
+            params = record: @record
+            params.parent_id ?= @parent().query.parent_id # and StarToManyList ?
+            @invoke_action(@default_action_name, params).then =>
                 dfd = $q.defer()
                 if @errors
                     if @meta.tabs
