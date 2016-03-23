@@ -677,7 +677,7 @@ module Engine2
         def after_approve handler, record
         end
 
-        def validate_and_approve handler, record
+        def validate_and_approve handler, record, json
             static.before_approve(handler, record)
             record.valid?
             validate_record(handler, record)
@@ -689,10 +689,8 @@ module Engine2
             end
         end
 
-        def allocate_record handler
-            json = handler.post_to_json
+        def allocate_record handler, json
             model = assets[:model]
-
             json_rec = json[:record]
             handler.permit json_rec.is_a?(Hash)
             val_fields = (dynamic? ? static.validate_fields : @validate_fields) || model.type_info.keys
@@ -704,8 +702,9 @@ module Engine2
         end
 
         def invoke handler
-            record = allocate_record(handler)
-            validate_and_approve(handler, record) ? {errors: nil} : {record: record.to_hash, errors: record.errors}
+            json = handler.post_to_json
+            record = allocate_record(handler, json)
+            validate_and_approve(handler, record, json) ? {errors: nil} : {record: record.to_hash, errors: record.errors}
         end
 
         def validate name, &blk

@@ -6,19 +6,31 @@ module Engine2
         include MetaApproveSupport
         http_method :post
 
-        def validate_and_approve handler, record
+        def validate_and_approve handler, record, json
             record.skip_save_refresh = true
             record.raise_on_save_failure = false
             model = assets[:model]
-            save = lambda{|c| record.save(transaction: false, validate: false) if super(handler, record) }
-            model.validation_in_transaction ? model.db.transaction(&save) : save.(nil)
+            assoc = assets[:assoc]
+            mtm_insert = record.new? && assoc && assoc[:type] == :many_to_many
+
+            save = lambda do|c|
+                if super(handler, record, json)
+                    record.save(transaction: false, validate: false)
+                    if is_mtm_insert
+                        handler.permit parent_id = json[:parent_id]
+                        model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
+                    end
+                    true
+                end
+            end
+            (model.validation_in_transaction || mtm_insert) ? model.db.transaction(&save) : save.(nil)
         end
     end
 
     class InsertMeta < SaveMeta
         meta_type :save
-        def allocate_record handler
-            record = super(handler)
+        def allocate_record handler, json
+            record = super(handler, json)
             record.instance_variable_set(:"@new", true)
             model = assets[:model]
             model.primary_keys.each{|k|record.values.delete k} unless model.natural_key
@@ -29,8 +41,8 @@ module Engine2
 
     class UpdateMeta < SaveMeta
         meta_type :save
-        def allocate_record handler
-            record = super(handler)
+        def allocate_record handler, json
+            record = super(handler, json)
             model = assets[:model]
             handler.permit record.has_primary_key? unless model.natural_key
             record
