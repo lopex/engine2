@@ -16,7 +16,7 @@ module Engine2
             save = lambda do|c|
                 if super(handler, record, json)
                     record.save(transaction: false, validate: false)
-                    if is_mtm_insert
+                    if mtm_insert
                         handler.permit parent_id = json[:parent_id]
                         model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
                     end
