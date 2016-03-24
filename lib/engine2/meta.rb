@@ -701,10 +701,14 @@ module Engine2
             record
         end
 
+        def record handler, record
+            {errors: nil}
+        end
+
         def invoke handler
             json = handler.post_to_json
             record = allocate_record(handler, json)
-            validate_and_approve(handler, record, json) ? {errors: nil} : {record: record.to_hash, errors: record.errors}
+            validate_and_approve(handler, record, json) ? record(handler, record) : {record: record.to_hash, errors: record.errors}
         end
 
         def validate name, &blk
