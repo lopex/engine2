@@ -658,11 +658,6 @@ module Engine2
         include MetaModelSupport
         attr_reader :validations
 
-        # def pre_run
-        #     super
-        #     @validate_fields = assets[:model].type_info.keys
-        # end
-
         def validate_fields *fields
             if fields.empty?
                 @validate_fields
