@@ -8,7 +8,7 @@ module Engine2
             @info = model.type_info
         end
 
-        def define_field field, type # , opts = {}
+        def define_field field, type
             info = @info[field]
             raise E2Error.new("Field '#{field}' already defined in model '#{@model}'") if info && info[:type]
 
@@ -105,7 +105,6 @@ module Engine2
 
         def text_field field
             define_field field, :text do |info|
-                # info[]
             end
         end
 
