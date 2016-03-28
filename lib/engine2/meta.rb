@@ -249,7 +249,7 @@ module Engine2
             unless info
                 if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
                     assoc = model.many_to_one_associations[$1.to_sym] || model.one_to_one_associations[$1.to_sym]
-                    raise Engine2::E2Error.new("Association #{$1} not found for model #{model}") unless assoc
+                    raise E2Error.new("Association #{$1} not found for model #{model}") unless assoc
                     m = Object.const_get(assoc[:class_name])
                     info = m.type_info.fetch($2.to_sym)
                 else
