@@ -302,7 +302,7 @@ module Engine2
     FILES_DIR ||= "files/ready"
 
     (BeforeSaveProcessors ||= {}).merge!(
-        star_to_many: lambda{|record, field, info|
+        star_to_many_field: lambda{|record, field, info|
             value = record.values[field]
             if value && value.is_a?(Hash)
                 assoc = record.model.association_reflections[info[:assoc_name]]

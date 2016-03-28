@@ -319,7 +319,7 @@ module Engine2
                         action.run_scheme :foreign_blob_store, model, field
                     when :file_store
                         action.run_scheme :file_store, model, field
-                    when :star_to_many
+                    when :star_to_many_field
                         assoc = model.association_reflections[info[:assoc_name]] # info[:name] ?
                         raise E2Error.new("Associaction '#{info[:assoc_name]}' not found for model '#{model}'") unless assoc
                         action.run_scheme :star_to_many_field, assoc, field
@@ -807,7 +807,7 @@ module Engine2
             meta.info[field][:render].merge! multiple: info[:multiple]
             # meta[:model] = meta.action.model.table_name
         },
-        star_to_many: lambda{|meta, field, info|
+        star_to_many_field: lambda{|meta, field, info|
             field_info = meta.info[field]
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             # meta.info[field][:render].merge! multiple: info[:multiple]
@@ -916,7 +916,7 @@ module Engine2
                 Templates.list_select(max_length, optional: !info[:required])
             end
         },
-        star_to_many: lambda{|meta, info| Templates.scaffold},
+        star_to_many_field: lambda{|meta, info| Templates.scaffold},
         many_to_one: lambda{|meta, info| # Templates.scaffold_picker
             tmpl_type = info[:decode][:form]
             case

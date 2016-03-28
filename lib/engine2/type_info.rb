@@ -291,7 +291,7 @@ module Engine2
             raise E2Error.new("Associaction '#{assoc_name}' not found for model '#{@model}'") unless assoc
             raise E2Error.new("Association '#{assoc_name}' in model '#{@model}' is not of type *_to_many") unless [:one_to_many, :many_to_many].include?(assoc[:type])
             define_field assoc_name, :string do |info|
-                info[:type] = :star_to_many
+                info[:type] = :star_to_many_field
                 info[:keys] = assoc[:keys]
                 info[:assoc_name] = assoc_name
                 info[:transaction] = true # ?
