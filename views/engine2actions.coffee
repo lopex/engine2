@@ -748,9 +748,7 @@ angular.module('Engine2')
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
             links = @parent().record[@scope().$parent.f]
             @links = links ? (linked: [], unlinked: [])
-            # console.log @parent().meta.primary_fields.map((f) => @parent().record[f])
-            # if E2.id_for(@parent().record, @parent().meta).every((e) -> e?)
-            @invoke() if @query.parent_id.length > 0
+            @invoke()
 
         invoke: ->
             @query.unlinked = [@links.unlinked]
