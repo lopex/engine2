@@ -6,11 +6,6 @@ module Engine2
         http_method :post
         meta_type :star_to_many_link
 
-        def pre_run
-            super
-            # 
-        end
-
         def invoke handler
             json = handler.post_to_json
             parent = json[:parent_id]
@@ -85,10 +80,8 @@ module Engine2
         def self.many_to_many_unlink_db model, assoc, parent, ids
             p_pk = Hash[assoc[:left_keys].zip(parent)]
             ds = model.db[assoc[:join_table]]
-            # check in transaction ?
             ids.each do |id|
-                i_pk = Hash[assoc[:right_keys].zip(Sequel::split_keys(id))]
-                ds.where(p_pk, i_pk).delete
+                ds.where(p_pk, Hash[assoc[:right_keys].zip(Sequel::split_keys(id))]).delete
             end
         end
     end
