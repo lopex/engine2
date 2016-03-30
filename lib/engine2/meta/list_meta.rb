@@ -185,13 +185,13 @@ module Engine2
             case assoc[:type]
             when :one_to_many
                 keys = assoc[:keys]
-                hash = parent.empty? ? false : Hash[keys.map{|k| k.qualify(model.table_name)}.zip(split_keys(parent))]
+                condition = parent.empty? ? false : Hash[keys.map{|k| k.qualify(model.table_name)}.zip(split_keys(parent))]
                 if handler.params[:negate]
-                    query = query.exclude(hash)
+                    query = query.exclude(condition)
                     query = query.or(Hash[keys.zip([nil])]) if keys.all?{|k|model.db_schema[k][:allow_null] == true} # type_info[:required] ?
                     query
                 else
-                    query.where(hash)
+                    query.where(condition)
                 end
             when :many_to_many
                 q_pk = model.primary_keys_qualified
