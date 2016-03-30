@@ -339,7 +339,7 @@ angular.module('Engine2')
             @save_state() unless @ui_state.search_active
 
         menu_refresh: ->
-            @invoke()
+            @invoke(refresh: true)
 
         menu_default_order: ->
             delete @query.order
@@ -365,10 +365,11 @@ angular.module('Engine2')
         list_cell: (e, f) ->
             E2.render_field(e, f, @meta)
 
-        invoke: ->
+        invoke: (arg = {}) ->
             @save_state()
             query = _.cloneDeep(@query)
             delete query.search if _.isEmpty(E2.compact(query.search))
+            _.merge(query, arg)
             super(query).then =>
                 @ui = _.pick @query, ['order', 'asc', 'page']
                 @scope().$broadcast 'render_table'
