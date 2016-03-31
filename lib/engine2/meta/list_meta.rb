@@ -2,8 +2,6 @@
 
 module Engine2
     class ListMeta < Meta
-        attr_reader :filters, :orders
-
         meta_type :list
         include MetaListSupport, MetaQuerySupport
 
@@ -131,14 +129,6 @@ module Engine2
                 handler.permit query
             end
             query
-        end
-
-        def filter name, &blk
-            (@filters ||= {})[name] = blk
-        end
-
-        def order name, &blk
-            (@orders ||= {})[name] = blk
         end
 
         def list_context query, handler

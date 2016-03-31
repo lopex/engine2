@@ -533,6 +533,7 @@ module Engine2
 
     module MetaListSupport
         include MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaOnChangeSupport
+        attr_reader :filters, :orders
 
         def pre_run
             super
@@ -651,6 +652,14 @@ module Engine2
 
         def template
             SearchTemplates
+        end
+
+        def filter name, &blk
+            (@filters ||= {})[name] = blk
+        end
+
+        def order name, &blk
+            (@orders ||= {})[name] = blk
         end
     end
 
