@@ -281,7 +281,7 @@ angular.module('Engine2')
                         keys: []
 
         traverse: (routes) ->
-            menu_tmpl = _.template("<li><a href='{{href}}'>{{icon}}{{aicon}}{{loc}}</a></li>")
+            menu_tmpl = _.template("<li><a href='{{href}}'>{{icon}}{{aicon}} {{loc}}</a></li>")
             menu_sub_tmpl = _.template("<li e2-drop-down='{{dropdown}}'><a href='javascript://'>{{icon}}{{aicon}}{{loc}}<span class='caret'></span></a></li>")
             out = routes.map (route, i) ->
                 if route.menu
