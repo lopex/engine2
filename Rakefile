@@ -111,7 +111,6 @@ task :assets_js do
     out = js_files.map{|js| open("#{PUBLIC}/js/#{js}", "r:UTF-8").read}.join("")
 
     out = Uglifier.new(output: {comments: :none}, mangle: true).compile(out)
-    out = YUI::JavaScriptCompressor.new(java: "#{ENV['JAVA_HOME']}/bin/java", munge: false).compress(out)
 
     open("#{PUBLIC}/assets/javascripts.js", "wb") << out
 end
