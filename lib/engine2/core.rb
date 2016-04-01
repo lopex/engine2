@@ -450,6 +450,7 @@ module Engine2
     e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/engine2.db" : "sqlite://#{APP_LOCATION}/engine2.db"
     E2DB ||= connect e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2
     DUMMYDB ||= Sequel::Database.new uri: 'dummy'
+    def DUMMYDB.synchronize *args;end
 
     def self.boot &blk
         @boot_blk = blk
