@@ -14,7 +14,7 @@ module Engine2
         end
 
         def validate
-            auto_validate
+            super
             @values[:password] = nil
             errors.empty?
         end
