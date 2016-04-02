@@ -321,7 +321,7 @@ module Engine2
                         action.run_scheme :file_store, model, field
                     when :star_to_many_field
                         assoc = model.association_reflections[info[:assoc_name]] # info[:name] ?
-                        raise E2Error.new("Associaction '#{info[:assoc_name]}' not found for model '#{model}'") unless assoc
+                        raise E2Error.new("Association '#{info[:assoc_name]}' not found for model '#{model}'") unless assoc
                         action.run_scheme :star_to_many_field, assoc, field
                     end
                 end

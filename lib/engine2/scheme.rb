@@ -95,7 +95,7 @@ module Engine2
 
         define_scheme :decode do |model, assoc_name, options = {scaffold: true}|
             assoc = model.association_reflections[assoc_name]
-            ::Kernel::raise E2Error.new("Associaction '#{assoc_name}' not found for model '#{model}'") unless assoc
+            ::Kernel::raise E2Error.new("Association '#{assoc_name}' not found for model '#{model}'") unless assoc
 
             if self.*.assets[:model] != model && self.*.is_a?(ListMeta)
                 # verify relations ?
