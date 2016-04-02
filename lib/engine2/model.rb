@@ -298,9 +298,6 @@ module Engine2
         }
     )
 
-    # UPLOAD_DIR ||= "#{APP_LOCATION}/files/pending"
-    # FILES_DIR ||= "#{APP_LOCATION}/files/ready"
-
     (BeforeSaveProcessors ||= {}).merge!(
         blob_store: lambda{|record, field, info|
             if value = record.values[field] # attachment info
