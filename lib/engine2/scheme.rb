@@ -154,7 +154,7 @@ module Engine2
         #
         define_scheme :file_store do |model, field|
             define_action :"#{field}_file_store!", FileStoreMeta do
-                self.*.model = model.name
+                self.*.model = model
                 self.*.field = field
                 define_action :download, DownloadFileStoreMeta
                 define_action :upload, UploadFileStoreMeta

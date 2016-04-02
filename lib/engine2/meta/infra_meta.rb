@@ -92,7 +92,7 @@ module Engine2
 
         def invoke handler
             handler.permit owner = handler.params[:owner]
-            {files: E2Files.db[:files].select(:id, :name, :mime, :uploaded).where(owner: owner, model: model.to_s, field: field.to_s).all}
+            {files: E2Files.db[:files].select(:id, :name, :mime, :uploaded).where(owner: owner, model: model.name.to_s, field: field.to_s).all}
         end
     end
 
@@ -115,7 +115,8 @@ module Engine2
             handler.permit entry
             handler.attachment entry[:name]
             handler.content_type (entry[:mime].to_s.empty? ? "application/octet-stream" : entry[:mime])
-            open("#{FILES_DIR}/#{entry[:name]}_#{id}", 'rb'){|f|f.read}
+            info = action.parent.*.model.type_info[action.parent.*.field]
+            open("#{info[:store][:files]}/#{entry[:name]}_#{id}", 'rb'){|f|f.read}
         end
     end
 
@@ -128,7 +129,8 @@ module Engine2
             temp = file[:tempfile]
             temp.close
             rackname = File.basename(temp.path)
-            File.rename(temp.path, "#{UPLOAD_DIR}/#{rackname}")
+            info = action.parent.*.model.type_info[action.parent.*.field]
+            File.rename(temp.path, "#{info[:store][:upload]}/#{rackname}")
             {rackname: rackname}
         end
     end

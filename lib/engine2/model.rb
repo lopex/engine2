@@ -298,8 +298,8 @@ module Engine2
         }
     )
 
-    UPLOAD_DIR ||= "files/pending"
-    FILES_DIR ||= "files/ready"
+    # UPLOAD_DIR ||= "#{APP_LOCATION}/files/pending"
+    # FILES_DIR ||= "#{APP_LOCATION}/files/ready"
 
     (BeforeSaveProcessors ||= {}).merge!(
         blob_store: lambda{|record, field, info|
@@ -313,7 +313,8 @@ module Engine2
                 assoc = record.model.association_reflections[info[:assoc_name]]
                 blob_model = Object.const_get(assoc[:class_name])
                 file_fields = {info[:bytes_field] => :$data, info[:name_field] => :$name_field, info[:mime_field] => :$mime_field}
-                file_data = {data: Sequel.blob(open("#{UPLOAD_DIR}/#{value[:rackname]}", "rb"){|f|f.read}), name_field: value[:name], mime_field: value[:mime]}
+                upload = info[:store][:upload]
+                file_data = {data: Sequel.blob(open("#{upload}/#{value[:rackname]}", "rb"){|f|f.read}), name_field: value[:name], mime_field: value[:mime]}
 
                 if record.new?
                     statement = blob_model.dataset.prepare(:insert, :insert_blob, file_fields)
@@ -324,7 +325,7 @@ module Engine2
                     statement = blob_model.dataset.where(blob_model.primary_key => :$id_field).prepare(:update, :update_blob, file_fields)
                     statement.call(file_data.merge(id_field: key[assoc[:key]]))
                 end
-                File.delete("#{UPLOAD_DIR}/#{value[:rackname]}")
+                File.delete("#{upload}/#{value[:rackname]}")
             end
         }
     )
@@ -353,27 +354,30 @@ module Engine2
             value = m.values[v]
             files = E2Files.db[:files]
             owner = m.primary_key_values.join('|')
+            upload = info[:store][:upload]
+            files_dir = info[:store][:files]
             value.each do |entry|
                 name = entry[:name]
                 if (rackname = entry[:rackname])
                     unless entry[:deleted]
                         file_id = files.insert(name: name, mime: entry[:mime], owner: owner, model: m.model.name, field: v.to_s, uploaded: Sequel.datetime_class.now)
-                        File.rename("#{UPLOAD_DIR}/#{rackname}", "#{FILES_DIR}/#{name}_#{file_id}")
+                        File.rename("#{upload}/#{rackname}", "#{files_dir}/#{name}_#{file_id}")
                     end
                 elsif entry[:deleted]
-                    File.delete("#{FILES_DIR}/#{name}_#{entry[:id]}")
+                    File.delete("#{files_dir}/#{name}_#{entry[:id]}")
                     files.where(id: entry[:id]).delete #, model: m.model.table_name.to_s, field: v.to_s
                 end
             end if value # .is_a?(Array)
         },
         blob_store: lambda{|record, field, info|
             if value = record.values[field] # attachment info
+                upload = info[:store][:upload]
                 id = record.model.primary_keys_hash(record.primary_key_values)
                 id_n = Hash[record.model.primary_keys.map{|k| [k, :"$#{k}"]}]
                 statement = record.model.dataset.where(id_n).prepare(:update, :update_blob, info[:bytes_field] => :$data)
-                statement.call(id.merge(data: Sequel.blob(open("#{UPLOAD_DIR}/#{value[:rackname]}", "rb"){|f|f.read})))
-                # record.model.where(id).update(info[:field] => Sequel.blob(open("#{UPLOAD_DIR}/#{value[:rackname]}", "rb"){|f|f.read}))
-                File.delete("#{UPLOAD_DIR}/#{value[:rackname]}")
+                statement.call(id.merge(data: Sequel.blob(open("#{upload}/#{value[:rackname]}", "rb"){|f|f.read})))
+                # record.model.where(id).update(info[:field] => Sequel.blob(open("#{upload}/#{value[:rackname]}", "rb"){|f|f.read}))
+                File.delete("#{upload}/#{value[:rackname]}")
             end
         }
     )
@@ -392,9 +396,10 @@ module Engine2
     (AfterDestroyProcessors ||= {}).merge!(
         file_store: lambda{|m, v, info|
             files = E2Files.db[:files]
+            files_dir = info[:store][:files]
             owner = m.primary_key_values.join('|')
             files.select(:id, :name).where(owner: owner, model: m.model.name, field: v.to_s).all.each do |entry|
-                File.delete("#{FILES_DIR}/#{entry[:name]}_#{entry[:id]}")
+                File.delete("#{files_dir}/#{entry[:name]}_#{entry[:id]}")
             end
             files.where(owner: owner, model: m.model.name, field: v.to_s).delete
         }
