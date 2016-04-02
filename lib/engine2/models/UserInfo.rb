@@ -13,10 +13,8 @@ module Engine2
             password :password
         end
 
-        def validate
-            super
+        def after_validation
             @values[:password] = nil
-            errors.empty?
         end
 
         def to_hash
