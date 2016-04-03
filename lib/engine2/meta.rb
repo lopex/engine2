@@ -552,7 +552,6 @@ module Engine2
                 # divider
                 option :refresh, icon: "refresh", button_loc: false
                 option :default_order, icon: "signal", button_loc: false
-                divider
                 option :select_toggle, icon: "check", enabled: "action.meta.config.selectable", button_loc: false
                 divider
                 option :debug_info, icon: "list-alt" do

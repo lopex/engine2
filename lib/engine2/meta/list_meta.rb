@@ -141,6 +141,11 @@ module Engine2
     #
     class ManyToOneListMeta < ListMeta
         meta_type :many_to_one_list
+
+        def pre_run
+            super
+            menu(:menu).modify_option :select_toggle, show: "'false'"
+        end
     end
 
     #
