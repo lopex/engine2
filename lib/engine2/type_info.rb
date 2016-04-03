@@ -201,7 +201,7 @@ module Engine2
             end
         end
 
-        def file_store_field field, multiple = true, table = :files, store = {upload: "#{APP_LOCATION}/store/upload", files: "#{APP_LOCATION}/store/files"}
+        def file_store_field field, multiple = true, table = :files, store = {}
             # string_field field, 1000
             any_field field
             modify_field field do |info|
@@ -209,6 +209,8 @@ module Engine2
                 info[:multiple] = multiple
                 info[:table] = table
                 info[:store] = store
+                info[:store][:upload] ||= "#{APP_LOCATION}/store/upload"
+                info[:store][:files] ||= "#{APP_LOCATION}/store/files"
                 info[:transaction] = true
             end
         end
