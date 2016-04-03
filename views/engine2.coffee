@@ -108,7 +108,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         processor = @menu_processors[menu_name]
         @each_menu action.meta.menus[menu_name].entries, (m) ->
             menu_fun_name = "#{menu_name}_#{m.name}"
-            menu_fun_invoke = "action[\"#{menu_fun_name}\"](#{processor.arg_name})"
+            menu_fun_invoke = "action['#{menu_fun_name}'](#{processor.arg_name})"
 
             click = m.click
             m.click = menu_fun_invoke
@@ -121,7 +121,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
             if action.find_action_info(m.name, false)?
                 show = if m.show then " && " + m.show else ""
-                m.show = "action.find_action_info(\"#{m.name}\").access" + show
+                m.show = "action.find_action_info('#{m.name}').access" + show
 
     menu_processors:
         menu:
@@ -414,13 +414,13 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         sub: render(m.menu.entries)
                 else
                     dropdown_tmpl
-                        show: m.show && "ng-show='#{m.show}'" || ''
-                        hide: m.hide && "ng-hide='#{m.hide}'" || ''
-                        disabled: m.disabled && "ng-class='#{m.disabled} && \"disabled\"'" || ''
-                        enabled: m.enabled && "ng-class='#{m.enabled} || \"disabled\"'" || ''
+                        show: m.show && "ng-show=\"#{m.show}\"" || ''
+                        hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
+                        disabled: m.disabled && "ng-class=\"#{m.disabled} && 'disabled'\"" || ''
+                        enabled: m.enabled && "ng-class=\"#{m.enabled} || 'disabled'\"" || ''
                         # active: m.active && "ng-class='#{m.active}' || \"active\"'" || ''
                         href: m.href || ''
-                        click: m.click && "ng-click='#{m.disabled && m.disabled + " ||" || ''} #{m.enabled && m.enabled + " &&" || ''} #{m.click}'"
+                        click: m.click && "ng-click=\"#{m.disabled && m.disabled + " ||" || ''} #{m.enabled && m.enabled + " &&" || ''} #{m.click}\""
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: m.loc
@@ -471,16 +471,16 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 else if m.divider
                 else
                     out += button_set_tmpl
-                        clazz: m.class && "ng-class='#{m.class}'" || ''
-                        click: m.click && "ng-click='#{m.click}'" || ''
-                        show: m.show && "ng-show='#{m.show}'" || ''
-                        hide: m.hide && "ng-hide='#{m.hide}'" || ''
-                        disabled: m.disabled && "ng-class='#{m.disabled} && \"disabled\"'" || ''
-                        enabled: m.enabled && "ng-class='#{m.enabled} || \"disabled\"'" || ''
+                        clazz: m.class && "ng-class=\"#{m.class}\"" || ''
+                        click: m.click && "ng-click=\"#{m.click}\"" || ''
+                        show: m.show && "ng-show=\"#{m.show}\"" || ''
+                        hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
+                        disabled: m.disabled && "ng-class=\"#{m.disabled} && 'disabled'\"" || ''
+                        enabled: m.enabled && "ng-class=\"#{m.enabled} || 'disabled'\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: !(m.button_loc == false) && m.loc || ''
-                        title: (m.button_loc == false) && "title='#{m.loc}'" || ''
+                        title: (m.button_loc == false) && "title=\"#{m.loc}\"" || ''
 
             out += button_set_arr_tmpl dropdown: "#{attrs.e2ButtonSet}.entries.slice(#{brk})", icon: '', aicon: '' if menu.entries.length > brk
             out = "<div class='btn-group #{group_class}'>#{out}</div>"

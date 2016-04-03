@@ -547,7 +547,7 @@ module Engine2
             menu(:panel_menu).option :cancel, icon: "remove"
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
-                option :search_toggle, icon: "search", show: "action.meta.search_fields", class: 'action.ui_state.search_active && "active"', button_loc: false
+                option :search_toggle, icon: "search", show: "action.meta.search_fields", class: "action.ui_state.search_active && 'active'", button_loc: false
 
                 # divider
                 option :refresh, icon: "refresh", button_loc: false
