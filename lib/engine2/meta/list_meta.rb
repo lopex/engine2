@@ -144,7 +144,7 @@ module Engine2
 
         def pre_run
             super
-            menu(:menu).modify_option :select_toggle, show: "'false'"
+            config.merge!(selectable: false)
         end
     end
 
