@@ -803,7 +803,7 @@ angular.module('Engine2')
 
         select: (files) ->
             _.each files, (file) =>
-                upload = $injector.get('$upload').upload url: "#{@action_info().action_resource}/upload", file: file
+                upload = $injector.get('Upload').upload url: "#{@action_info().action_resource}/upload", file: file
                 upload.progress (e) =>
                     @progress = parseInt(100.0 * e.loaded / e.total)
                     # @parent().action_pending = true
@@ -840,7 +840,7 @@ angular.module('Engine2')
 
         select: (files) ->
             _.each files, (file) =>
-                upload = $injector.get('$upload').upload url: "#{@action_info().action_resource}/upload", file: file
+                upload = $injector.get('Upload').upload url: "#{@action_info().action_resource}/upload", file: file
                 upload.progress (e) =>
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>

@@ -1,7 +1,7 @@
 'use strict'
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'angularFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
+angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
 .factory 'E2Snippets', ->
     icon = (name) -> "<span class='glyphicon glyphicon-#{name}'></span>"
     aicon = (name) -> "<i class='fa fa-#{name}'></i>"

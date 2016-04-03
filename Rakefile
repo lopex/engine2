@@ -93,7 +93,7 @@ task :assets_js do
     # lodash category=array,collection,object,seq,lang plus=template
 
     js_files =  %w[
-            angular-file-upload-shim.min.js
+            ng-file-upload-shim.min.js
             angular.js
             i18n/angular-locale_pl.js
             angular-route.js
@@ -102,7 +102,7 @@ task :assets_js do
             angular-cookies.js
             angular-strap.js
             angular-strap.tpl.js
-            angular-file-upload.min.js
+            ng-file-upload.min.js
             angular-ui-tree.js
             angular-local-storage.js
             lodash.custom.min.js

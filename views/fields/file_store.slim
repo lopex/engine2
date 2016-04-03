@@ -31,15 +31,16 @@ e2-action action="[f + '_file_store!']"
         input [
           type="file"
           ng-disabled="info.disabled"
-          ng-file-select="action.select($files)"
-          multiple=""
+          ngf-select="action.select($files)"
+          ngf-multiple="true"
         ]
 
       div ng-if="!info.render.multiple"
         input [
           type="file"
           ng-disabled="info.disabled"
-          ng-file-select="action.select($files)"
+          ngf-select="action.select($files)"
+          ngf-multiple="false"
         ]
 
 
