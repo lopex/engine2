@@ -87,7 +87,6 @@ end
 
 desc "Assets Js"
 task :assets_js do
-    require 'yui/compressor'
     require 'uglifier'
     # jquery-builder.cmd -m -v 2.0.3 -e ajax,deprecated,effects,offset > jquery-custom.min.js
     # lodash category=array,collection,object,seq,lang plus=template
@@ -117,7 +116,8 @@ end
 
 desc "Assets Css"
 task :assets_css do
-    # app.css
+    require 'yui/compressor'
+
     css_files =  %w[
             bootstrap-additions.css
             angular-motion.css
