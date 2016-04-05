@@ -62,7 +62,7 @@ module Engine2
 
         def self.one_to_many_unlink_db model, assoc, ids
             keys = assoc[:keys]
-            ids.each do |id| #model.destroy(id, self) # move to relation meta ?
+            ids.each do |id|
                 model.where(model.primary_keys_hash(Sequel::split_keys(id))).update(Hash[keys.zip([nil])])
             end
         end

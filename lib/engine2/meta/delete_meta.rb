@@ -26,7 +26,6 @@ module Engine2
 
                         rec = model.call(Hash[model.primary_keys.zip(keys)])
                         rec.destroy(transaction: false)
-                        # model.destroy(keys, self)
                         # model.where(model.primary_keys_hash(keys)).delete # model.dataset[model.primary_key => id].delete
                     end
                 end

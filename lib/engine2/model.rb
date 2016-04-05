@@ -40,21 +40,6 @@ module Engine2
             hash.empty? ? nil : hash
         end
 
-        def destroy id, handler
-            # restricted = association_reflections.select do |name, rel|
-            #     if rel[:type] == :one_to_many
-            #         # !db[name].where(rel[:key] => id).empty? # !db.select(1).where(db[name].where(rel[:key] => id).exists).all.empty?
-            #         !db[name].where(Hash[rel[:keys].zip(id.split('|'))]).empty?
-            #     end
-            # end
-            # # restricted = association_reflections.any?{|name, rel| rel[:type] == :one_to_many && !db.select(1).where(db[name].where(rel[:key] => id).exists).all.empty? }
-
-            # raise Sequel::DestroyFailed.new("Blokujące relacje: #{restricted.map{|name, rel| name}.join(', ')}" ) unless restricted.empty?
-        end
-
-        def unlink id, key, handler
-        end
-
         def setup_schema
             @type_info = {}
             @dummies = []
