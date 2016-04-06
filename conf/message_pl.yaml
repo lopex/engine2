@@ -31,6 +31,7 @@
 :confirm_delete:                Usuń
 :confirm_delete_title:          <span class='glyphicon glyphicon-trash'></span> Potwierdzenie
 :confirm_bulk_delete:           Usuń zaznacznone
+:delete_restricted:             Blokujące relacje
 :confirm_bulk_delete_title:     <span class='glyphicon glyphicon-trash'></span> Potwierdzenie
 :confirm_unlink:                Odłącz
 :confirm_unlink_title:          <span class='glyphicon glyphicon-minus'></span> Potwierdzenie
