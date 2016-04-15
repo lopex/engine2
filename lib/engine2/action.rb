@@ -59,6 +59,12 @@ module Engine2
             action
         end
 
+        def define_action_meta name, meta_class = DummyMeta, assets = {}, &blk
+            define_action name, meta_class, assets do
+                self.* &blk
+            end
+        end
+
         def undefine_action name
             ::Kernel.raise E2Error.new("No action #{name} defined") unless @actions[name]
             @actions.delete(name)
