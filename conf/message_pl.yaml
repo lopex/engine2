@@ -6,6 +6,7 @@
 :default_time_format:           HH:mm:ss
 :default_time_model_format:     HH:mm:ss
 
+:error:                         Błąd
 :no_entry:                      Wpis nie istnieje
 :decode_selected:               wybranych
 
