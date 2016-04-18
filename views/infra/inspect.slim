@@ -3,7 +3,7 @@ e2-action action="'inspect'"
     br
     div title="API" bs-pane=""
       .row
-        .col-lg-4
+        .col-lg-5
           .panel.panel-default
             .panel-body
               script type="text/ng-template" id="nodes_renderer.html"
@@ -18,7 +18,7 @@ e2-action action="'inspect'"
                 ol ui-tree-nodes="" ng-model="action.tree.actions"
                   li ng-repeat="node in action.tree.actions" ui-tree-node="" data-collapsed="true" ng-include="'nodes_renderer.html'" ng-init="stack = []"
 
-        .col-lg-8
+        .col-lg-7
           .panel.panel-default
             .panel-body
               div bs-tabs="" bs-active-pane="actionTab" ng-init="actionTab = 0"
