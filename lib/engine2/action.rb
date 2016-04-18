@@ -27,6 +27,8 @@ module Engine2
             @meta
         end
 
+        alias :meta :*
+
         def access! &blk
             ::Kernel.raise E2Error.new("Access for action #{name} already defined") if @access_block
             @access_block = blk
