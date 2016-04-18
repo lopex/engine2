@@ -39,7 +39,7 @@
 :confirm_bulk_unlink:           Odłącz zaznacznone
 :confirm_bulk_unlink_title:     <span class='glyphicon glyphicon-minus'></span> Potwierdzenie
 :debug_info:                    Debug info
-:show_meta:                     Pokaż metainformacje
+:show_meta:                     Metainfo
 # :meta:                          Meta
 :view_title:                    <span class='glyphicon glyphicon-book'></span> Szczegóły
 :create_title:                  <span class='glyphicon glyphicon-pencil'></span> Utwórz
