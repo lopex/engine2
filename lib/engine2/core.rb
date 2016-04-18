@@ -285,6 +285,7 @@ module E2Model
 
         def ensure_primary_key
             pk = @model.primary_keys
+            raise Engine2::E2Error.new("No primary key defined for model #{model}") unless pk && pk.all?
 
             if opts_select = @opts[:select]
                 sel_pk = []
