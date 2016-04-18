@@ -456,6 +456,10 @@ module Engine2
         @boot_blk = blk
     end
 
+    def self.model_boot &blk
+        @model_boot_blk = blk
+    end
+
     def self.bootstrap app = APP_LOCATION
         require 'engine2/pre_bootstrap'
         t = Time.now
@@ -465,6 +469,7 @@ module Engine2
         load "#{app}/boot.rb"
 
         Sequel::DATABASES.each &:load_schema_cache_from_file
+        @model_boot_blk.() if @model_boot_blk
         load 'engine2/models/Files.rb'
         load 'engine2/models/UserInfo.rb'
         Dir["#{app}/models/*"].each{|m| load m}
