@@ -66,7 +66,7 @@ module Engine2
                     when :datetime
                         datetime_field name, LOCS[:default_date_format], LOCS[:default_time_format], LOCS[:default_date_model_format], LOCS[:default_time_model_format]
                     when :decimal
-                        size, scale = db_info[:column_size], db_info[:scale]
+                        size, scale = db_info[:column_size], db_info[:scale].to_i
                         unless size && scale
                             db_info[:db_type] =~ /decimal\((\d+),(\d+)\)/i
                             size, scale = $1.to_i, $2.to_i
