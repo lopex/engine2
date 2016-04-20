@@ -468,7 +468,7 @@ module Engine2
         SCHEMES.clear
 
         Sequel::DATABASES.each do |db|
-            db.models.each{|n, m| Object.send(:remove_const, n)} unless db == E2DB || db == DUMMYDB
+            db.models.each{|n, m| Object.send(:remove_const, n) if Object.const_defined?(n)} unless db == E2DB || db == DUMMYDB
         end
 
         load "#{app}/boot.rb"
