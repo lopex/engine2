@@ -467,6 +467,10 @@ module Engine2
         Action.count = 0
         SCHEMES.clear
 
+        Sequel::DATABASES.each do |db|
+            db.models.each{|n, m| Object.send(:remove_const, n)} unless db == E2DB || db == DUMMYDB
+        end
+
         load "#{app}/boot.rb"
 
         Sequel::DATABASES.each &:load_schema_cache_from_file
