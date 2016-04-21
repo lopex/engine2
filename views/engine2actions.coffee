@@ -307,7 +307,7 @@ angular.module('Engine2')
             @ui_state = {}
             @load_state()
 
-            delete @query.order unless _.includes(@meta.fields, @query.order) && @meta.info[@query.order].sort
+            delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.fields, @query.order)
             _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_fields, sn))
 
             _.each @meta.info, (info, name) =>
