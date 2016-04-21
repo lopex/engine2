@@ -4,7 +4,7 @@ module Engine2
     class Action < BasicObject
         ACCESS_FORBIDDEN ||= ->h{false}
         attr_reader :parent, :name, :number, :actions, :recheck_access
-        attr_reader :meta_proc
+        attr_reader :meta_proc, :meta_proc_chained
 
         class << self
             attr_accessor :count
@@ -21,8 +21,15 @@ module Engine2
 
         def * &blk
             if blk
-                ::Kernel.raise E2Error.new("Meta #{name} with proc already defined for action #{self.inspect}") if @meta_proc
-                @meta_proc = blk
+                if meta_proc = @meta_proc
+                    @meta_proc = ::Kernel::lambda do |obj|
+                        obj.instance_eval(&meta_proc)
+                        obj.instance_eval(&blk)
+                    end
+                    @meta_proc_chained = true
+                else
+                    @meta_proc = blk
+                end
             end
             @meta
         end
