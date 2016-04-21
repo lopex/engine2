@@ -21,14 +21,14 @@ module Engine2
 
         def * &blk
             if blk
-                if meta_proc = @meta_proc
-                    @meta_proc = ::Kernel::lambda do |obj|
+                @meta_proc = if meta_proc = @meta_proc
+                    @meta_proc_chained = true
+                    ::Kernel::lambda do |obj|
                         obj.instance_eval(&meta_proc)
                         obj.instance_eval(&blk)
                     end
-                    @meta_proc_chained = true
                 else
-                    @meta_proc = blk
+                    blk
                 end
             end
             @meta
