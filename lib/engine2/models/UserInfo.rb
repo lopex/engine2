@@ -2,8 +2,8 @@
 
 module Engine2
     class UserInfo < Sequel::Model(DUMMYDB)
-        extend MemoryModel
         set_natural_key :name
+        extend MemoryModel
 
         type_info do
             string_field :name, 10

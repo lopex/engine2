@@ -46,6 +46,8 @@ module Engine2
 
             type_info do
                 schema = @model.db_schema
+                @model.primary_keys.each{|pk| (schema[pk]||={})[:primary_key] = true} if @model.primary_key
+
                 schema.each_pair do |name, db_info|
                     @info[name] = {otype: db_info[:type]}
 
@@ -75,6 +77,8 @@ module Engine2
                         decimal_field name, size, scale
                     when :blob
                         blob_field name, 100000
+                    when nil
+                        # ignore nil type
                     else
                         p db_info
                         raise E2Error.new("Unknown column type: #{db_info[:type].inspect} for #{name}")
