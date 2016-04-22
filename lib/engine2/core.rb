@@ -236,7 +236,7 @@ module E2Model
                 else
                     info[:validations].each_pair do |validation, args|
                         validation_proc = Engine2::Validations[validation] || args[:lambda] # swap ?
-                        raise "Validation not found for field '#{name}' of type #{validation}" unless validation_proc
+                        raise E2Error.new("Validation not found for field '#{name}' of type #{validation}") unless validation_proc
                         if result = validation_proc.(self, name, info)
                             errors.add(name, result)
                             break

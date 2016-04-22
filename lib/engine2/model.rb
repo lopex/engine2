@@ -133,7 +133,7 @@ module Engine2
             deps = @type_info[name][:depends]
             deps.each do |e|
                 if !resolved[e]
-                    raise "Circular dependency for field '#{name}' in model '#{self}'" if seen.include?(e)
+                    raise E2Error.new("Circular dependency for field '#{name}' in model '#{self}'") if seen.include?(e)
                     resolve_dependency(e, resolved, seen)
                 end
             end if deps
