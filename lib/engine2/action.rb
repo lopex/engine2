@@ -163,7 +163,7 @@ module Engine2
                     model_name = model.name.to_sym
                     model.synchronize_type_info
                     model_actions[model_name] = action.to_a_rec{|a| !a.*.assets[:assoc]}
-                    action.run_scheme(model_name) if SCHEMES.schemes[model_name]
+                    action.run_scheme(model_name) if SCHEMES[model_name, false]
                     false
                 else
                     true

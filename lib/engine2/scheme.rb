@@ -6,30 +6,22 @@ module Engine2
         VIEW ||= {view: true}.freeze
         LINK ||= {star_to_many_link: true, view: true, star_to_many_unlink: true}.freeze # star_to_many_bulk_unlink: true
 
-        attr_reader :schemes, :builtin
+        attr_reader :builtin, :user
         def initialize
             @builtin = {}
-            @schemes = {}
+            @user = {}
         end
 
         def define_scheme name, &blk
-            schemes = Engine2::core_loading ? @builtin : @schemes
+            schemes = Engine2::core_loading ? @builtin : @user
             raise E2Error.new("Scheme '#{name}' already defined") if schemes[name]
             schemes[name] = blk
         end
 
-        def clear
-            @schemes = {}
-        end
-
-        def [] name
-            scheme = @schemes[name]
-            raise E2Error.new("Scheme #{name} not found") unless scheme
+        def [] name, raise = true
+            scheme = @builtin[name] || @user[name]
+            raise E2Error.new("Scheme #{name} not found") if !scheme && raise
             scheme
-        end
-
-        def merge!
-            @schemes.merge!(@builtin){|n| raise E2Error.new("Scheme collision: #{n}")}
         end
     end
 

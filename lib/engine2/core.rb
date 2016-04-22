@@ -465,7 +465,7 @@ module Engine2
         require 'engine2/pre_bootstrap'
         t = Time.now
         Action.count = 0
-        SCHEMES.clear
+        SCHEMES.user.clear
 
         Sequel::DATABASES.each do |db|
             db.models.each{|n, m| Object.send(:remove_const, n) if Object.const_defined?(n)} unless db == E2DB || db == DUMMYDB
@@ -481,7 +481,6 @@ module Engine2
         puts "MODELS, Time: #{Time.now - t}"
         Sequel::DATABASES.each &:dump_schema_cache_to_file
 
-        SCHEMES.merge!
         Engine2.send(:remove_const, :ROOT) if defined? ROOT
         Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
 
