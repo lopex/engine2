@@ -14,7 +14,7 @@ module Engine2
 
         def define_scheme name, &blk
             schemes = Engine2::core_loading ? @builtin : @schemes
-            raise "Scheme '#{name}' already defined" if schemes[name]
+            raise E2Error.new("Scheme '#{name}' already defined") if schemes[name]
             schemes[name] = blk
         end
 
