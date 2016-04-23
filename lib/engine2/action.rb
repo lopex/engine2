@@ -74,6 +74,12 @@ module Engine2
             end
         end
 
+        def define_action_invoke name, meta_class = DummyMeta, assets = {}, &blk
+            define_action name, meta_class, assets do
+                self.*.define_singleton_method(:invoke, &blk)
+            end
+        end
+
         def undefine_action name
             ::Kernel.raise E2Error.new("No action #{name} defined") unless @actions[name]
             @actions.delete(name)
