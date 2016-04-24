@@ -128,9 +128,11 @@ angular.module('Engine2')
 
         pre_invoke: ->
             @parent().action_pending = true
+            @action_pending = true
             # @parent().parent().action_pending = true if @parent().parent()
         post_invoke: ->
             delete @parent().action_pending # = false
+            delete @action_pending
             # @parent().parent().action_pending = false if @parent().parent()
         invoke: ->
             args = arguments
