@@ -72,9 +72,10 @@ angular.module('Engine2')
 
         perform_invoke: (params) ->
             info = @action_info()
-            throw "Action '#{info.name}' is not invokable" unless info.invokable
-            params.initial = true if !@action_invoked && params && info.method == 'get'
-            get_invoke = $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
+            get_invoke = if info.invokable
+                params.initial = true if !@action_invoked && params && info.method == 'get'
+                $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
+            else $q.when(data: (response: {}))
 
             get_invoke.then (response) =>
                 E2.merge(@meta, response.data.meta)
