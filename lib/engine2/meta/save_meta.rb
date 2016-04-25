@@ -48,16 +48,4 @@ module Engine2
             record
         end
     end
-
-    module TimeStampMeta
-        def before_approve handler, record
-            super
-            puts "before approve"
-        end
-
-        def after_approve handler, record
-            super
-            puts "after approve"
-        end
-    end
 end
