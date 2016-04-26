@@ -478,7 +478,7 @@ module Engine2
         load 'engine2/models/Files.rb'
         load 'engine2/models/UserInfo.rb'
         Dir["#{app}/models/*"].each{|m| load m}
-        puts "MODELS, Time: #{Time.now - t}"
+        puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
         Sequel::DATABASES.each &:dump_schema_cache_to_file
 
         Engine2.send(:remove_const, :ROOT) if defined? ROOT
