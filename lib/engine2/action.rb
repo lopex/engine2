@@ -222,6 +222,10 @@ module Engine2
             end
             ::Kernel::puts "VERIFY #{::Time.now - t}"
         end
+
+        def p *args
+            ::Kernel::p *args
+        end
     end
 
 
