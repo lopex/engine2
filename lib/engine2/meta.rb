@@ -166,6 +166,10 @@ module Engine2
             end
         end
 
+        def loc! hash
+            hash.each{|k, v| info! k, v}
+        end
+
         def decorate list
             list.each do |f|
                 m = (info[f] ||= {})
