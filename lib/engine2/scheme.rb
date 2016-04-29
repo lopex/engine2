@@ -35,13 +35,13 @@ module Engine2
 
         define_scheme :create do |name = :create|
             define_action name, CreateMeta do
-                define_action :save, InsertMeta
+                define_action :approve, InsertMeta
             end
         end
 
         define_scheme :modify do |name = :modify|
             define_action name, ModifyMeta do
-                define_action :save, UpdateMeta
+                define_action :approve, UpdateMeta
             end
         end
 
