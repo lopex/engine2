@@ -2,7 +2,6 @@
 
 module Engine2
     class DeleteMetaBase < Meta
-        include MetaModelSupport
 
         def invoke_delete_db handler, ids
             begin
@@ -40,13 +39,10 @@ module Engine2
     end
 
     class DeleteMeta < DeleteMetaBase
+        include DeleteMetaSupport
+
         http_method :delete
         meta_type :delete
-
-        def pre_run
-            super
-            action.parent.parent.*.menu(:item_menu).option :confirm_delete, icon: "trash", show: "action.selected_size() == 0", button_loc: false
-        end
 
         def invoke handler
             handler.permit id = handler.params[:id]
@@ -55,13 +51,10 @@ module Engine2
     end
 
     class BulkDeleteMeta < DeleteMetaBase
+        include BulkDeleteMetaSupport
+
         http_method :delete
         meta_type :bulk_delete
-
-        def pre_run
-            super
-            action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_delete, icon: "trash", show: "action.selected_size() > 0"
-        end
 
         def invoke handler
             ids = handler.param_to_json(:ids)

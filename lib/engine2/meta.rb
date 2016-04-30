@@ -765,6 +765,24 @@ module Engine2
         end
     end
 
+    module DeleteMetaSupport
+        include MetaModelSupport
+
+        def pre_run
+            super
+            action.parent.parent.*.menu(:item_menu).option :confirm_delete, icon: "trash", show: "action.selected_size() == 0", button_loc: false
+        end
+    end
+
+    module BulkDeleteMetaSupport
+        include MetaModelSupport
+
+        def pre_run
+            super
+            action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_delete, icon: "trash", show: "action.selected_size() > 0"
+        end
+    end
+
     (FormRendererPostProcessors ||= {}).merge!(
         boolean: lambda{|meta, field, info|
             meta.info[field][:render].merge! true_value: info[:true_value], false_value: info[:false_value]
