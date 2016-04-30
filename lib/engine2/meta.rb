@@ -167,7 +167,7 @@ module Engine2
         end
 
         def loc! hash
-            hash.each{|k, v| info! k, v}
+            hash.each{|k, v| info! k, loc: v}
         end
 
         def decorate list
