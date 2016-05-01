@@ -567,6 +567,7 @@ angular.module('Engine2')
             super()
             @decode_field = @scope().f
             @dinfo = @parentp().meta.info[@decode_field]
+            throw "Primary and foreign key list lengths dont match: [#{@meta.primary_fields}] and [#{@dinfo.fields}]" unless @meta.primary_fields.length == @dinfo.fields.length
             @scope().$on "search_reset", => @clean()
 
         if_fk_values: (f) ->
