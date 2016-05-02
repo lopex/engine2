@@ -140,10 +140,6 @@ module Engine2
 
     class DummyMeta < Meta
         meta_type :dummy
-
-        # def invoke handler
-        #     {}
-        # end
     end
 
     module MetaAPISupport
