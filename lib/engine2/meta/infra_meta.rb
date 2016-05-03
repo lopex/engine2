@@ -12,7 +12,7 @@ module Engine2
                     option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
 
                     option :logout_form, icon: :"log-out" # , show: "action.logged_on"
-                    option :login_form, icon: :"log-in" # , show: "!action.logged_on"
+                    option :login_form, icon: :"log-in", disabled: 'action.action_pending' # , show: "!action.logged_on"
                 end
 
                 @meta_type = :infra
