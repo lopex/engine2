@@ -111,12 +111,25 @@ module Engine2
 
         def synchronize_type_info
             resolve_dependencies
+            verify_associations
             @before_save_processors = install_processors(BeforeSaveProcessors)
             @after_save_processors = install_processors(AfterSaveProcessors)
             @around_save_processors = {}
             @before_destroy_processors = install_processors(BeforeDestroyProcessors)
             @after_destroy_processors = install_processors(AfterDestroyProcessors)
             @type_info_synchronized = true
+        end
+
+        def verify_associations
+            one_to_many_associations.each do |name, assoc|
+                other = Object.const_get(assoc[:class_name])
+                other_type_info = other.type_info
+                if other_keys = assoc[:keys]
+                    other_keys.each do |key|
+                        raise E2Error.new("No key '#{key}' found in model '#{other}' being related from #{self}") unless other_type_info[key]
+                    end
+                end
+            end
         end
 
         def resolve_dependencies
