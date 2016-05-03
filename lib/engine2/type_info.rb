@@ -265,9 +265,8 @@ module Engine2
         end
 
         def foreign_blob_store_field assoc_name, name, name_field, mime_field
-            assoc = @model.association_reflections[assoc_name]
-            raise E2Error.new("Association '#{assoc_name}' not found for model '#{@model}'") unless assoc
-            raise E2Error.new("Association '#{assoc_name}' in model '#{@mode}' is not of type many_to_one") unless assoc[:type] == :many_to_one
+            assoc = @model.many_to_one_associations[assoc_name]
+            raise E2Error.new("'many_to_one' association '#{assoc_name}' not found for model '#{@model}'") unless assoc
             define_field :"#{assoc[:key]}_blob", :foreign_blob_store do |info|
                 info[:assoc_name] = assoc_name
                 info[:bytes_field] = name
@@ -278,9 +277,8 @@ module Engine2
         end
 
         def many_to_one_field assoc_name
-            assoc = @model.association_reflections[assoc_name]
-            raise E2Error.new("Association '#{assoc_name}' not found for model '#{@model}'") unless assoc
-            raise E2Error.new("Association '#{assoc_name}' in model '#{@mode}' is not of type many_to_one") unless assoc[:type] == :many_to_one
+            assoc = @model.many_to_one_associations[assoc_name]
+            raise E2Error.new("'many_to_one' association '#{assoc_name}' not found for model '#{@model}'") unless assoc
             keys = assoc[:keys]
             modify_field keys.first do |info|
                 info[:type] = :many_to_one
@@ -290,9 +288,8 @@ module Engine2
         end
 
         def star_to_many_field assoc_name
-            assoc = @model.association_reflections[assoc_name]
-            raise E2Error.new("Association '#{assoc_name}' not found for model '#{@model}'") unless assoc
-            raise E2Error.new("Association '#{assoc_name}' in model '#{@model}' is not of type *_to_many") unless [:one_to_many, :many_to_many].include?(assoc[:type])
+            assoc = @model.one_to_many_associations[assoc_name] || @model.many_to_many_associations[assoc_name]
+            raise E2Error.new("'*_to_many' association '#{assoc_name}' not found for model '#{@model}'") unless assoc
             define_field assoc_name, :string do |info|
                 info[:type] = :star_to_many_field
                 info[:keys] = assoc[:keys]
