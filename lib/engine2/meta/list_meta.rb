@@ -177,10 +177,11 @@ module Engine2
             handler.permit parent = handler.params[:parent_id]
             model = assets[:model]
             assoc = assets[:assoc]
+            parent_keys = split_keys(parent)
             case assoc[:type]
             when :one_to_many
                 keys = assoc[:keys]
-                condition = parent.empty? ? false : Hash[keys.map{|k| k.qualify(model.table_name)}.zip(split_keys(parent))]
+                condition = parent_keys.all?(&:empty?) ? false : Hash[keys.map{|k| k.qualify(model.table_name)}.zip(parent_keys)]
                 if handler.params[:negate]
                     query = query.exclude(condition)
                     query = query.or(Hash[keys.zip([nil])]) if keys.all?{|k|model.db_schema[k][:allow_null] == true} # type_info[:required] ?
@@ -194,7 +195,7 @@ module Engine2
                 l_keys = assoc[:left_keys].map{|k| k.qualify(j_table)}
                 r_keys = assoc[:right_keys].map{|k| k.qualify(j_table)}
                 r_keys_vals = Hash[r_keys.zip(q_pk)]
-                l_keys_vals = parent.empty? ? false : Hash[l_keys.zip(split_keys(parent))]
+                l_keys_vals = parent_keys.all?(&:empty?) ? false : Hash[l_keys.zip(parent_keys)]
 
                 if handler.params[:negate]
                     query.exclude(model.db[j_table].select(nil).where(r_keys_vals, l_keys_vals).exists)
