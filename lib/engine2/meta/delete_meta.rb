@@ -41,9 +41,6 @@ module Engine2
     class DeleteMeta < DeleteMetaBase
         include DeleteMetaSupport
 
-        http_method :delete
-        meta_type :delete
-
         def invoke handler
             handler.permit id = handler.params[:id]
             invoke_delete_db(handler, [id])
@@ -52,9 +49,6 @@ module Engine2
 
     class BulkDeleteMeta < DeleteMetaBase
         include BulkDeleteMetaSupport
-
-        http_method :delete
-        meta_type :bulk_delete
 
         def invoke handler
             ids = handler.param_to_json(:ids)

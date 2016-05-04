@@ -764,6 +764,11 @@ module Engine2
     module DeleteMetaSupport
         include MetaModelSupport
 
+        def self.included meta
+            meta.http_method :delete
+            meta.meta_type :delete
+        end
+
         def pre_run
             super
             action.parent.parent.*.menu(:item_menu).option :confirm_delete, icon: "trash", show: "action.selected_size() == 0", button_loc: false
@@ -772,6 +777,11 @@ module Engine2
 
     module BulkDeleteMetaSupport
         include MetaModelSupport
+
+        def self.included meta
+            meta.http_method :delete
+            meta.meta_type :bulk_delete
+        end
 
         def pre_run
             super
