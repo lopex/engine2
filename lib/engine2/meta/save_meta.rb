@@ -27,7 +27,7 @@ module Engine2
     end
 
     class InsertMeta < SaveMeta
-        meta_type :save
+        meta_type :approve
         def allocate_record handler, json
             record = super(handler, json)
             record.instance_variable_set(:"@new", true)
@@ -39,7 +39,7 @@ module Engine2
     end
 
     class UpdateMeta < SaveMeta
-        meta_type :save
+        meta_type :approve
         def allocate_record handler, json
             record = super(handler, json)
             model = assets[:model]
