@@ -666,6 +666,10 @@ module Engine2
         include MetaModelSupport
         attr_reader :validations
 
+        def self.included meta
+            meta.http_method :post
+        end
+
         def validate_fields *fields
             if fields.empty?
                 @validate_fields

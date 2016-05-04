@@ -249,7 +249,6 @@ module Engine2
 
     class LoginMeta < Meta
         include MetaApproveSupport
-        http_method :post
         meta_type :login
 
         def after_approve handler, record
