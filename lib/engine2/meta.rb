@@ -740,6 +740,10 @@ module Engine2
     module MetaViewSupport
         include MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport
 
+        def self.included meta
+            meta.meta_type :view
+        end
+
         def pre_run
             super
             panel_template 'scaffold/view'
