@@ -4,7 +4,6 @@ module Engine2
 
     class SaveMeta < Meta
         include MetaApproveSupport
-        http_method :post
 
         def validate_and_approve handler, record, json
             record.skip_save_refresh = true
