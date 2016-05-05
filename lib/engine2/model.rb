@@ -7,28 +7,26 @@ module Engine2
         attr_reader :before_save_processors, :after_save_processors, :before_destroy_processors, :after_destroy_processors
         attr_reader :validation_in_transaction
 
-        class << self
-            def extended cls
-                # cls.dataset.row_proc = nil
-                models = cls.db.models ||= {}
-                raise E2Error.new("Model '#{cls.name}' already defined") if models[cls.name.to_sym]
-                models[cls.name.to_sym] = cls
+        def self.extended cls
+            # cls.dataset.row_proc = nil
+            models = cls.db.models ||= {}
+            raise E2Error.new("Model '#{cls.name}' already defined") if models[cls.name.to_sym]
+            models[cls.name.to_sym] = cls
 
-                cls.instance_eval do
-                    @many_to_one_associations = association_reflections.select{|n, a| a[:type] == :many_to_one}
-                    @one_to_many_associations = association_reflections.select{|n, a| a[:type] == :one_to_many}
-                    @many_to_many_associations = association_reflections.select{|n, a| a[:type] == :many_to_many}
-                    # @one_to_one_associations = association_reflections.select{|n, a| a[:type] == :one_to_one}
-                    @validation_in_transaction = nil
-                    @before_save_processors = nil
-                    @after_save_processors = nil
-                    @around_save_processors = nil
-                    @before_destroy_processors = nil
-                    @after_destroy_processors = nil
-                    @type_info_synchronized = nil
-                end
-                cls.setup_schema
+            cls.instance_eval do
+                @many_to_one_associations = association_reflections.select{|n, a| a[:type] == :many_to_one}
+                @one_to_many_associations = association_reflections.select{|n, a| a[:type] == :one_to_many}
+                @many_to_many_associations = association_reflections.select{|n, a| a[:type] == :many_to_many}
+                # @one_to_one_associations = association_reflections.select{|n, a| a[:type] == :one_to_one}
+                @validation_in_transaction = nil
+                @before_save_processors = nil
+                @after_save_processors = nil
+                @around_save_processors = nil
+                @before_destroy_processors = nil
+                @after_destroy_processors = nil
+                @type_info_synchronized = nil
             end
+            cls.setup_schema
         end
 
         def install_processors processors
