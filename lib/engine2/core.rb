@@ -428,18 +428,54 @@ module Engine2
 
     class << self
         attr_accessor :core_loading
-    end
 
-    self.core_loading = true
+        def database name
+            Object.const_set(name, yield) unless Object.const_defined?(name)
+        end
 
-    def self.database name
-        Object.const_set(name, yield) unless Object.const_defined?(name)
-    end
+        def connect *args
+            db = Sequel.connect *args
+            db.models = {}
+            db
+        end
 
-    def self.connect *args
-        db = Sequel.connect *args
-        db.models = {}
-        db
+        def boot &blk
+            @boot_blk = blk
+        end
+
+        def model_boot &blk
+            @model_boot_blk = blk
+        end
+
+        def bootstrap app = APP_LOCATION
+            require 'engine2/pre_bootstrap'
+            t = Time.now
+            Action.count = 0
+            SCHEMES.user.clear
+
+            Sequel::DATABASES.each do |db|
+                db.models.each{|n, m| Object.send(:remove_const, n) if Object.const_defined?(n)} unless db == E2DB || db == DUMMYDB
+            end
+
+            load "#{app}/boot.rb"
+
+            Sequel::DATABASES.each &:load_schema_cache_from_file
+            @model_boot_blk.() if @model_boot_blk
+            load 'engine2/models/Files.rb'
+            load 'engine2/models/UserInfo.rb'
+            Dir["#{app}/models/*"].each{|m| load m}
+            puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
+            Sequel::DATABASES.each &:dump_schema_cache_to_file
+
+            Engine2.send(:remove_const, :ROOT) if defined? ROOT
+            Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
+
+            @boot_blk.(ROOT)
+            ROOT.setup_action_tree
+            puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
+            self.core_loading = false
+            require 'engine2/post_bootstrap'
+        end
     end
 
     e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/engine2.db" : "sqlite://#{APP_LOCATION}/engine2.db"
@@ -447,43 +483,7 @@ module Engine2
     DUMMYDB ||= Sequel::Database.new uri: 'dummy'
     def DUMMYDB.synchronize *args;end
 
-    def self.boot &blk
-        @boot_blk = blk
-    end
-
-    def self.model_boot &blk
-        @model_boot_blk = blk
-    end
-
-    def self.bootstrap app = APP_LOCATION
-        require 'engine2/pre_bootstrap'
-        t = Time.now
-        Action.count = 0
-        SCHEMES.user.clear
-
-        Sequel::DATABASES.each do |db|
-            db.models.each{|n, m| Object.send(:remove_const, n) if Object.const_defined?(n)} unless db == E2DB || db == DUMMYDB
-        end
-
-        load "#{app}/boot.rb"
-
-        Sequel::DATABASES.each &:load_schema_cache_from_file
-        @model_boot_blk.() if @model_boot_blk
-        load 'engine2/models/Files.rb'
-        load 'engine2/models/UserInfo.rb'
-        Dir["#{app}/models/*"].each{|m| load m}
-        puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
-        Sequel::DATABASES.each &:dump_schema_cache_to_file
-
-        Engine2.send(:remove_const, :ROOT) if defined? ROOT
-        Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
-
-        @boot_blk.(ROOT)
-        ROOT.setup_action_tree
-        puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
-        self.core_loading = false
-        require 'engine2/post_bootstrap'
-    end
+    self.core_loading = true
 
     class E2Error < RuntimeError
         def initialize msg
