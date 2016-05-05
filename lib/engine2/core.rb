@@ -375,7 +375,6 @@ module E2Model
             @opts[:select].compact!
 
             joins.reduce(self) do |joined, (table, assoc)|
-                assoc = model.many_to_one_associations[table] # || model.one_to_one_associations[table]
                 m = Object.const_get(assoc[:class_name])
                 keys = assoc[:qualified_key]
                 keys = [keys] unless keys.is_a?(Array)
