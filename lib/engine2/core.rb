@@ -373,8 +373,7 @@ module E2Model
             joins.reduce(self) do |joined, (table, assoc)|
                 m = Object.const_get(assoc[:class_name])
                 keys = assoc[:qualified_key]
-                keys = [keys] unless keys.is_a?(Array)
-                joined.left_join(table, m.primary_keys.zip(keys))
+                joined.left_join(table, m.primary_keys.zip(keys.is_a?(Array) ? keys : [keys]))
             end
         end
 
