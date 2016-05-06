@@ -155,7 +155,7 @@ module Engine2
         meta_type :star_to_many_list
         def pre_run
             super
-            panel_title "#{glyphicon('list')} #{LOCS[assets[:assoc][:name]]}"
+            panel_title "#{:list.icon} #{LOCS[assets[:assoc][:name]]}"
         end
 
         # def decode_panel_title handler
