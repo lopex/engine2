@@ -386,7 +386,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             selection = scope.action.selection
             out = ''
             _.each scope.action.entries, (e, i) ->
-                out += if selection then "<tr ng-class='action.selected_class(#{i})' class='tr_hover' ng-click='action.select(#{i}, $event)'>" else "<tr>"
+                out += if selection then "<tr ng-class='action.selected_class(#{i})' class='tr_hover' ng-click='action.select(#{i}, $event)'>" else
+                    row_cls = e.$row_info?.class
+                    if row_cls then "<tr class=\"#{row_cls}\">" else "<tr>"
                 out += "<td>"
                 out += "<div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div>" if meta.config.show_item_menu #  data='action.entries[#{i}]'></div>
                 out += "</td>"
