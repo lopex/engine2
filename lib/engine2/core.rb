@@ -30,9 +30,9 @@ class Proc
 
     def chain &blk
         proc = self
-        lambda do
-            instance_eval(&proc)
-            instance_eval(&blk)
+        lambda do |obj|
+            obj.instance_eval(&proc)
+            obj.instance_eval(&blk)
         end
     end
 end
