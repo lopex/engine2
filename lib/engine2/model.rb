@@ -8,8 +8,7 @@ module Engine2
         attr_reader :validation_in_transaction
 
         def self.extended cls
-            # cls.dataset.row_proc = nil
-            models = cls.db.models ||= {}
+            models = cls.db.models
             raise E2Error.new("Model '#{cls.name}' already defined") if models[cls.name.to_sym]
             models[cls.name.to_sym] = cls
 

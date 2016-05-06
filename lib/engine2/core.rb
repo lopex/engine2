@@ -443,7 +443,6 @@ module Engine2
 
         def connect *args
             db = Sequel.connect *args
-            db.models = {}
             db
         end
 
