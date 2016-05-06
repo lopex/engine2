@@ -27,6 +27,14 @@ class Proc
         loc = source_location
         "\"#<Proc:#{loc.first[/\w+.rb/]}:#{loc.last}>\""
     end
+
+    def chain &blk
+        proc = self
+        lambda do
+            instance_eval(&proc)
+            instance_eval(&blk)
+        end
+    end
 end
 
 class Hash

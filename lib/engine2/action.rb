@@ -1,10 +1,11 @@
 # coding: utf-8
 
 module Engine2
+
     class Action < BasicObject
         ACCESS_FORBIDDEN ||= ->h{false}
         attr_reader :parent, :name, :number, :actions, :recheck_access
-        attr_reader :meta_proc, :meta_proc_chained
+        attr_reader :meta_proc
 
         class << self
             attr_accessor :count
@@ -20,17 +21,7 @@ module Engine2
         end
 
         def * &blk
-            if blk
-                @meta_proc = if meta_proc = @meta_proc
-                    @meta_proc_chained = true
-                    ::Kernel::lambda do |obj|
-                        obj.instance_eval(&meta_proc)
-                        obj.instance_eval(&blk)
-                    end
-                else
-                    blk
-                end
-            end
+            @meta_proc = @meta_proc ? @meta_proc.chain(&blk) : blk if blk
             @meta
         end
 
