@@ -427,7 +427,7 @@ module Engine2
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
 
     class << self
-        attr_accessor :core_loading
+        attr_accessor :core_loaded
 
         def database name
             Object.const_set(name, yield) unless Object.const_defined?(name)
@@ -448,6 +448,7 @@ module Engine2
         end
 
         def bootstrap app = APP_LOCATION
+            self.core_loaded = true
             require 'engine2/pre_bootstrap'
             t = Time.now
             Action.count = 0
@@ -473,7 +474,7 @@ module Engine2
             @boot_blk.(ROOT)
             ROOT.setup_action_tree
             puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
-            self.core_loading = false
+
             require 'engine2/post_bootstrap'
         end
     end
@@ -483,7 +484,7 @@ module Engine2
     DUMMYDB ||= Sequel::Database.new uri: 'dummy'
     def DUMMYDB.synchronize *args;end
 
-    self.core_loading = true
+    self.core_loaded = false
 
     class E2Error < RuntimeError
         def initialize msg
