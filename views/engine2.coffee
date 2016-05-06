@@ -391,7 +391,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 out += "<div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div>" if meta.config.show_item_menu #  data='action.entries[#{i}]'></div>
                 out += "</td>"
                 # out += "<td><div e2-button-set='item_menu' index='#{i}' ng-if='action.meta.config.show_item_menu'></div></td>"
-                _.each meta.fields, (f) -> out += "<td>#{scope.action.list_cell(e, f) ? ''}</td>"
+                _.each meta.fields, (f) ->
+                    col_cls = meta.info[f].column_class
+                    out += "<td #{col_cls && "class=\"#{col_cls}\"" || ''}>#{scope.action.list_cell(e, f) ? ''}</td>"
                 out += "</tr>"
 
             elem.empty()
