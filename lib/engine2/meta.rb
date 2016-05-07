@@ -143,6 +143,10 @@ module Engine2
     end
 
     module MetaAPISupport
+        def reload_routes!
+            @meta[:reload_routes] = true
+        end
+
         def info
             @meta[:info] ||= {}
         end
