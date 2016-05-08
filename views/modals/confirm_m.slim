@@ -8,7 +8,7 @@
       .modal-body
         | modal-content-to-replace
 
-      .modal-footer
+      .modal-footer ng-if="::action.meta.panel.footer"
         .loader.pull-left: img src="img/ajax-loader.gif"
         .btn-group
           .btn.btn-default ng-click="action.confirm()"

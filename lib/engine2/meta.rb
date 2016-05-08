@@ -424,6 +424,7 @@ module Engine2
                 panel_panel_template 'menu_m' unless panel[:panel_template] == false
                 # modal_action false if panel[:panel_template] == false
                 panel_class '' unless panel[:class]
+                footer true unless panel[:footer] == false
             end
         end
 
@@ -449,6 +450,10 @@ module Engine2
 
         def panel_title tle
             panel[:title] = tle
+        end
+
+        def footer ftr
+            panel[:footer] = ftr
         end
     end
 

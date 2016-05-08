@@ -8,6 +8,6 @@
       .modal-body
         | modal-content-to-replace
 
-      .modal-footer
+      .modal-footer ng-if="::action.meta.panel.footer"
         .loader.pull-left: img src="img/ajax-loader.gif"
         div e2-button-set="action.meta.menus.panel_menu"
