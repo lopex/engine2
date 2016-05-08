@@ -28,7 +28,7 @@ require 'engine2/version'
     meta/link_meta.rb
     meta/infra_meta.rb
 ].each do |f|
-    require "engine2/#{f}"
+    load "engine2/#{f}"
 end
 
 Engine2.bootstrap
