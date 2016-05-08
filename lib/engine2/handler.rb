@@ -113,7 +113,10 @@ module Engine2
         get '/*' do |name|
             headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
             if name.empty?
-                load 'engine2.rb' if settings.environment == :development
+                if settings.environment == :development
+                    load('engine2.rb') if Engine2::reloading
+                    Engine2::reload
+                end
                 name = 'index'
             end
             slim name.to_sym

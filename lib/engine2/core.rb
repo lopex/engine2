@@ -131,7 +131,7 @@ class Sequel::Database
     attr_accessor :models, :default_schema
 
     def cache_file
-        "#{APP_LOCATION}/#{opts[:orig_opts][:name]}.dump"
+        "#{Engine2::app}/#{opts[:orig_opts][:name]}.dump"
     end
 
     def load_schema_cache_from_file
@@ -435,7 +435,8 @@ module Engine2
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
 
     class << self
-        attr_accessor :core_loaded
+        attr_reader :app, :reloading
+        attr_reader :core_loaded
 
         def database name
             Object.const_set(name, yield) unless Object.const_defined?(name)
@@ -454,9 +455,15 @@ module Engine2
             @model_boot_blk = blk
         end
 
-        def bootstrap app = APP_LOCATION
-            self.core_loaded = true
-            require 'engine2/pre_bootstrap'
+        def bootstrap_e2db
+            e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{@app}/engine2.db" : "sqlite://#{@app}/engine2.db"
+            Engine2.const_set :E2DB, connect(e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2)
+            Engine2.const_set :DUMMYDB, Sequel::Database.new(uri: 'dummy')
+            def DUMMYDB.synchronize *args;end
+        end
+
+        def reload
+            @core_loaded = true
             t = Time.now
             Action.count = 0
             SCHEMES.user.clear
@@ -481,17 +488,20 @@ module Engine2
             @boot_blk.(ROOT)
             ROOT.setup_action_tree
             puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
+        end
 
+        def bootstrap app, opts = {}
+            @app = app
+            @reloading = opts[:reloading]
+            bootstrap_e2db
+
+            require 'engine2/pre_bootstrap'
+            reload
             require 'engine2/post_bootstrap'
         end
     end
 
-    e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{APP_LOCATION}/engine2.db" : "sqlite://#{APP_LOCATION}/engine2.db"
-    E2DB ||= connect e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2
-    DUMMYDB ||= Sequel::Database.new uri: 'dummy'
-    def DUMMYDB.synchronize *args;end
-
-    self.core_loaded = false
+    @core_loaded = false
 
     class E2Error < RuntimeError
         def initialize msg

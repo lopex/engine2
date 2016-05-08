@@ -30,5 +30,3 @@ require 'engine2/version'
 ].each do |f|
     load "engine2/#{f}"
 end
-
-Engine2.bootstrap
