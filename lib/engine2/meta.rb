@@ -769,7 +769,7 @@ module Engine2
         end
     end
 
-    module DeleteMetaSupport
+    module MetaDeleteSupport
         include MetaModelSupport
 
         def self.included meta
@@ -783,7 +783,7 @@ module Engine2
         end
     end
 
-    module BulkDeleteMetaSupport
+    module MetaBulkDeleteSupport
         include MetaModelSupport
 
         def self.included meta

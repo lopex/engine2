@@ -39,7 +39,7 @@ module Engine2
     end
 
     class DeleteMeta < DeleteMetaBase
-        include DeleteMetaSupport
+        include MetaDeleteSupport
 
         def invoke handler
             handler.permit id = handler.params[:id]
@@ -48,7 +48,7 @@ module Engine2
     end
 
     class BulkDeleteMeta < DeleteMetaBase
-        include BulkDeleteMetaSupport
+        include MetaBulkDeleteSupport
 
         def invoke handler
             ids = handler.param_to_json(:ids)
