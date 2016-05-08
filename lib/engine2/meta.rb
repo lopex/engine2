@@ -548,11 +548,9 @@ module Engine2
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
                 option :search_toggle, icon: "search", show: "action.meta.search_fields", class: "action.ui_state.search_active && 'active'", button_loc: false
-
                 # divider
                 option :refresh, icon: "refresh", button_loc: false
                 option :default_order, icon: "signal", button_loc: false
-                option :select_toggle, icon: "check", enabled: "action.meta.config.selectable", button_loc: false
                 divider
                 option :debug_info, icon: "list-alt" do
                     option :show_meta, icon: "eye-open"
@@ -564,6 +562,13 @@ module Engine2
             end
 
             @meta[:state] = [:query, :ui_state]
+        end
+
+        def select_toggle_menu
+            m = menu :menu
+            unless m.option_index(:select_toggle, false)
+                m.option_after :default_order, :select_toggle, icon: "check", enabled: "action.meta.config.selectable", button_loc: false
+            end
         end
 
         def post_run
@@ -793,6 +798,7 @@ module Engine2
 
         def pre_run
             super
+            action.parent.parent.*.select_toggle_menu
             action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_delete, icon: "trash", show: "action.selected_size() > 0"
         end
     end

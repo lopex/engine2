@@ -535,9 +535,9 @@ module Engine2
             option name, properties, index, &blk
         end
 
-        def option_index iname
+        def option_index iname, raise = true
             index = @entries.index{|e| (e.is_a?(MenuBuilder) ? e.name : e[:name]) == iname}
-            raise E2Error.new("No menu option #{iname} found") unless index
+            raise E2Error.new("No menu option #{iname} found") if !index && raise
             index
         end
 

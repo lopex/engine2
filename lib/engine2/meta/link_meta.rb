@@ -113,6 +113,7 @@ module Engine2
 
         def pre_run
             super
+            action.parent.parent.*.select_toggle_menu
             action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_unlink, icon: "minus", show: "action.selected_size() > 0", button_loc: false
         end
 
