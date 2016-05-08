@@ -279,14 +279,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         error: (title, msg, html) ->
             body = if html then msg else "<div class='alert alert-danger'>#{msg}</div>"
             clazz = if html then "modal-huge" else "modal-large"
-            @show meta: panel: (panel_template: "close_m", template_string: body, title: title, class: clazz) # message: msg,
+            @show meta: panel: (panel_template: "close_m", template_string: body, title: title, class: clazz, footer: true) # message: msg,
 
         confirm: (title, msg, action) ->
             body = "<div class='alert alert-warning'>#{msg}</div>"
             clazz = "modal-large"
             @show
                 confirm: action,
-                meta: panel: (panel_template: "confirm_m", template_string: body, title: title, class: clazz) # message: msg,
+                meta: panel: (panel_template: "confirm_m", template_string: body, title: title, class: clazz, footer: true) # message: msg,
 
 .directive 'e2Modal', ($e2Modal) ->
     restrict: 'E'
@@ -301,7 +301,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 return if ev.defaultPrevented
                 ev.preventDefault()
 
-                panel = panel_template: attrs.panelTemplate, title: attrs.title, class: attrs.clazz
+                panel = panel_template: attrs.panelTemplate, title: attrs.title, class: attrs.clazz, footer: true
                 if obody then panel.template_string = obody.outerHTML else panel.template = attrs.template
                 action = meta: (panel: panel), scope: -> scope
                 _.assign(action, args)
