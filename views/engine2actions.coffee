@@ -81,22 +81,20 @@ angular.module('Engine2')
                 E2.merge(@meta, response.data.meta)
                 @process_meta()
                 _.assign(@, response.data.response)
-                if @meta.response
-                    E2.merge(@, @meta.response)
-                    delete @meta.response
-                @arguments = _.keys(response.data.response)
-                unless @meta.panel # persistent action
-                    prnt = @parent()
-                    throw "Attempted parent merge for root action: #{info.name}" unless prnt
-                    E2.merge(prnt.meta, @meta)
-                    _.assign(prnt, response.data.response)
+                (if @meta.reload_routes then $route.load_routes() else $q.when({})).then =>
+                    if @meta.response
+                        E2.merge(@, @meta.response)
+                        delete @meta.response
+                    @arguments = _.keys(response.data.response)
+                    unless @meta.panel # persistent action
+                        prnt = @parent()
+                        throw "Attempted parent merge for root action: #{info.name}" unless prnt
+                        E2.merge(prnt.meta, @meta)
+                        _.assign(prnt, response.data.response)
 
-                # promise = if @meta.panel && !@action_invoked
-                # $q.when(promise) # .then -> response.data
-                if @meta.panel && !@action_invoked
-                    @action_invoked = true
-                    @panel_render()
-                # else $q.when()
+                    if @meta.panel && !@action_invoked
+                        @action_invoked = true
+                        @panel_render()
             ,
             (err) =>
                 @parent().action_pending = false
