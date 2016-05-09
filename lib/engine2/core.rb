@@ -457,8 +457,8 @@ module Engine2
 
         def bootstrap_e2db
             e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{@app}/engine2.db" : "sqlite://#{@app}/engine2.db"
-            Engine2.const_set :E2DB, connect(e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2)
-            Engine2.const_set :DUMMYDB, Sequel::Database.new(uri: 'dummy')
+            const_set :E2DB, connect(e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2)
+            const_set :DUMMYDB, Sequel::Database.new(uri: 'dummy')
             def DUMMYDB.synchronize *args;end
         end
 
@@ -482,8 +482,8 @@ module Engine2
             puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
             Sequel::DATABASES.each &:dump_schema_cache_to_file
 
-            Engine2.send(:remove_const, :ROOT) if defined? ROOT
-            Engine2.const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
+            send(:remove_const, :ROOT) if defined? ROOT
+            const_set(:ROOT, Action.new(nil, :api, DummyMeta, {}))
 
             @boot_blk.(ROOT)
             ROOT.setup_action_tree
