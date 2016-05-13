@@ -26,10 +26,6 @@ module Engine2
             @static = static
         end
 
-        # def self.method_added name
-        #     puts "ADDED #{name}"
-        # end
-
         def http_method
             @http_method # || (raise E2Error.new("No http method for meta #{self.class}"))
         end
