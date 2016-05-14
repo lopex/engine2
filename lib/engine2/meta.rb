@@ -540,7 +540,6 @@ module Engine2
             super
             config.merge!(per_page: 10, use_count: false, show_item_menu: true, selectable: true) # search_active: false,
 
-            # modal_action self.class != ListMeta
             panel_template 'scaffold/list'
             panel_panel_template 'panels/menu_m' unless action.parent.*.assets[:model]
             search_template 'scaffold/search'
