@@ -198,6 +198,10 @@ module Engine2
             @menus[menu_name]
         end
 
+        def menu? menu_name
+            @menus && @menus[menu_name]
+        end
+
         def post_process
             super
             if @menus && !@menus.empty?
@@ -420,7 +424,7 @@ module Engine2
                 panel_panel_template 'menu_m' unless panel[:panel_template] == false
                 # modal_action false if panel[:panel_template] == false
                 panel_class '' unless panel[:class]
-                panel_footer true if panel[:footer] != false && !menu(:panel_menu).entries.empty?
+                panel_footer true if panel[:footer] != false && menu?(:panel_menu)
             end
         end
 
