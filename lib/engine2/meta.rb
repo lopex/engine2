@@ -741,6 +741,78 @@ module Engine2
         end
     end
 
+    module MetaFormSupport
+        include MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaAngularSupport, MetaOnChangeSupport
+
+        def field_template template
+            panel[:field_template] = template
+        end
+
+        def pre_run
+            super
+            panel_template 'scaffold/form'
+            field_template 'scaffold/fields'
+            panel_class 'modal-large'
+
+            menu :panel_menu do
+                option :approve, icon: "ok", disabled: 'action.action_pending' # text: true,
+                option :cancel, icon: "remove" # text: true,
+            end
+            # modal_action false
+        end
+
+        def record handler, record
+        end
+
+        def post_process
+            if fields = @meta[:fields]
+                fields = fields - static.get[:fields] if dynamic?
+
+                decorate(fields)
+
+                fields.each do |name|
+                    # type_info = model.type_info.fetch(name)
+                    type_info = get_type_info(name)
+
+                    info[name][:render] ||= begin
+                        renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)
+                        raise E2Error.new("No form renderer found for field '#{type_info[:name]}' of type '#{type_info[:type]}'") unless renderer
+                        renderer.(self, type_info)
+                    end
+
+                    proc = FormRendererPostProcessors[type_info[:type]]
+                    proc.(self, name, type_info) if proc
+                end
+
+                assoc = assets[:assoc]
+                if assoc && assoc[:type] == :one_to_many
+                    # fields.select{|f| assoc[:keys].include? f}.each do |key|
+                    #     # hide_fields(key) if self[:info, key, :hidden] == nil
+                    #     info! key, disabled: true
+                    # end
+                    assoc[:keys].each do |key|
+                        info! key, disabled: true if fields.include? key
+                    end
+                end
+            end
+
+            super
+        end
+
+        def post_run
+            super
+            @meta[:primary_fields] = assets[:model].primary_keys
+        end
+
+        def template
+            Templates
+        end
+
+        def hr_after field, message = '-'
+            info! field, hr: message
+        end
+    end
+
     module MetaViewSupport
         include MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport
 
