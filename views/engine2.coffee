@@ -460,7 +460,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     scope: true # because $index
     link: (scope, elem, attrs) ->
         menu = $parse(attrs.e2ButtonSet)(scope)
-        unless _.isEmpty(menu.entries)
+        if menu && menu.entries.length > 0
             group_class = menu.properties.group_class || ''
             brk = menu.properties.break
             out = ""
