@@ -47,8 +47,6 @@ angular.module('Engine2')
                 act = act.parent() while act && !act.meta.panel
                 unless act # no modal for top level panels
                     @meta.panel.modal_action = false
-                    if @meta.menus.panel_menu
-                        _.remove(@meta.menus.panel_menu.entries, (m) -> m.name == 'cancel')
 
             @initialize()
 

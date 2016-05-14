@@ -544,7 +544,6 @@ module Engine2
             panel_panel_template 'panels/menu_m' unless action.parent.*.assets[:model]
             search_template 'scaffold/search'
             panel_title "#{:list.icon} #{LOCS[assets[:model].name.to_sym]}"
-            menu(:panel_menu).option :cancel, icon: "remove"
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
                 option :search_toggle, icon: "search", show: "action.meta.search_fields", class: "action.ui_state.search_active && 'active'", button_loc: false
