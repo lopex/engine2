@@ -47,6 +47,7 @@ angular.module('Engine2')
                 act = act.parent() while act && !act.meta.panel
                 unless act # no modal for top level panels
                     @meta.panel.modal_action = false
+                    @meta.panel.footer = true unless @meta.panel.footer == false
 
             @initialize()
 
