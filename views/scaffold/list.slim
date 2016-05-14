@@ -24,11 +24,11 @@ div
         .pull-right
           .badge
             | Strona:
-            span ng-bind="action.page_info()"
+            span< ng-bind="action.page_info()"
             |&nbsp;
           .badge ng-if="action.selection"
-            | Zaznaczonych
-            span ng-bind="action.selected_size()"
+            | Zaznaczonych:
+            span< ng-bind="action.selected_size()"
         ul.pagination
           li ng-if="action.prev_active()"
             a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
