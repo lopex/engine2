@@ -102,7 +102,8 @@ module Engine2
                 decode = assoc[:model].type_info[assoc[:keys].first][:decode]
 
                 if decode[:search][:multiple] && action.parent.parent.*.is_a?(ListMeta)
-                    action.list.*.menu(:panel_menu).option_at 0, :choose, icon: :ok # , disabled: "action.selected_size() == 0"
+                    action.list.*.menu(:panel_menu).option :choose, icon: :ok #, disabled: "action.selected_size() == 0"
+                    action.list.*.menu(:panel_menu).option :cancel, icon: "remove"
                 end
             end
         end

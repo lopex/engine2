@@ -420,7 +420,7 @@ module Engine2
                 panel_panel_template 'menu_m' unless panel[:panel_template] == false
                 # modal_action false if panel[:panel_template] == false
                 panel_class '' unless panel[:class]
-                panel_footer true unless panel[:footer] == false
+                panel_footer true if panel[:footer] != false && !menu(:panel_menu).entries.empty?
             end
         end
 

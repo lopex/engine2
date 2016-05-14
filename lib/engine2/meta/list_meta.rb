@@ -144,7 +144,6 @@ module Engine2
 
         def pre_run
             super
-            menu(:panel_menu).option_at 0, :cancel, icon: "remove"
         end
     end
 
