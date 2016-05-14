@@ -386,13 +386,15 @@ angular.module('Engine2')
 
         prev_active: -> @query.page > 0
         prev: ->
-            @query.page = Math.max(0, @query.page - @meta.config.per_page)
-            @invoke()
+            if @prev_active()
+                @query.page = Math.max(0, @query.page - @meta.config.per_page)
+                @invoke()
 
         next_active: -> @entries.length == @meta.config.per_page
         next: ->
-            @query.page += @meta.config.per_page # min & count
-            @invoke()
+            if @next_active()
+                @query.page += @meta.config.per_page # min & count
+                @invoke()
 
         page_info: ->
             page = @ui.page / @meta.config.per_page + 1
