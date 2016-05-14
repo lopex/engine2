@@ -15,4 +15,4 @@ div
             td
               div ng-bind-html="action.view_cell(action.record, f)"
 
-  span ng-if="::action.alert": .alert.alert-danger[] {{::action.alert}}
+  span ng-if="::action.alert": .alert.alert-danger ng-bind="action.alert"
