@@ -372,6 +372,7 @@ angular.module('Engine2')
             _.merge(query, arg)
             super(query).then =>
                 @ui = _.pick @query, ['order', 'asc', 'page']
+                @ui.pagination_active = @ui.page != 0 || @entries.length >= @meta.config.per_page
                 @scope().$broadcast 'render_table'
 
         load_new: ->

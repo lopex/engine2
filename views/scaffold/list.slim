@@ -29,7 +29,7 @@ div
           .badge ng-if="action.selection"
             | Zaznaczonych:
             span< ng-bind="action.selected_size()"
-        ul.pagination
+        ul.pagination ng-if="action.ui.pagination_active"
           li ng-if="action.prev_active()"
             a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
           li.disabled ng-if="!action.prev_active()"
