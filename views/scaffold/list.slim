@@ -19,19 +19,18 @@ div
           /     div e2-button-set="item_menu" ng-if="action.meta.config.show_item_menu"
           /   td ng-repeat="f in action.meta.fields track by ::f" ng-bind-html="action.list_cell(e, f)"
 
-      span
-        .pull-right
-          .badge
-            | Strona:
-            span< ng-bind="action.page_info()"
-            |&nbsp;
-          .badge ng-if="action.selection"
-            | Zaznaczonych:
-            span< ng-bind="action.selected_size()"
-        ul.pagination ng-if="action.ui.pagination_active"
+      span ng-if="action.ui.pagination_active"
+        ul.pagination.pagination-md
           li ng-class="!action.prev_active() && 'disabled'"
             a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
           li ng-class="!action.next_active() && 'disabled'"
             a href="" ng-click="action.next()": span.glyphicon.glyphicon-forward
+            |&nbsp;
+        .badge
+          | Strona:
+          span< ng-bind="action.page_info()"
+      .badge ng-if="action.selection"
+        | Zaznaczonych:
+        span< ng-bind="action.selected_size()"
 
       span ng-if="action.alert": .alert.alert-danger ng-bind="action.alert"
