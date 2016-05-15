@@ -25,12 +25,13 @@ div
             a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
           li ng-class="!action.next_active() && 'disabled'"
             a href="" ng-click="action.next()": span.glyphicon.glyphicon-forward
-            |&nbsp;
+          |&nbsp;
         .badge
-          | Strona:
+          |Strona:
           span< ng-bind="action.page_info()"
+        |&nbsp;
       .badge ng-if="action.selection"
-        | Zaznaczonych:
+        |Zaznaczonych:
         span< ng-bind="action.selected_size()"
 
       span ng-if="action.alert": .alert.alert-danger ng-bind="action.alert"
