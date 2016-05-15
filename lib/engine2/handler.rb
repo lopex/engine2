@@ -30,7 +30,7 @@ module Engine2
         end
 
         def permit access
-            halt_forbidden 'Permission denied' unless access
+            settings.development? ? raise(E2Error.new("Permission denied")) : halt_forbidden('Permission denied') unless access
         end
 
         def initial?
