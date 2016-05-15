@@ -5,10 +5,15 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 .factory 'E2Snippets', ->
     icon = (name) -> "<span class='glyphicon glyphicon-#{name}'></span>"
     aicon = (name) -> "<i class='fa fa-#{name}'></i>"
+    ng_class_names = ['active', 'enabled', 'disabled']
     icon: icon
     aicon: aicon
     boolean_true_value:     icon('check')
     boolean_false_value:    icon('unchecked')
+    make_ng_class: (o) ->
+        out = []
+        _.each ng_class_names, (e) -> out.push "'#{e}':#{o[e]}" if o[e]
+        if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
 .config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider) ->
     loaderOn = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'visible')
@@ -404,7 +409,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 .directive 'e2DropDown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
     dropdown_sub_tmpl = _.template("<li class='dropdown-submenu'><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
-    dropdown_tmpl = _.template("<li {{show}} {{hide}} {{disabled}} {{enabled}}> <a href='{{href}}' {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
+    dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a href='{{href}}' {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
+
     render = (menu, level) ->
         out = menu.map (m) ->
             switch
@@ -418,11 +424,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         sub: render(m.menu.entries)
                 else
                     dropdown_tmpl
+                        clazz: E2Snippets.make_ng_class(m)
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
-                        disabled: m.disabled && "ng-class=\"#{m.disabled} && 'disabled'\"" || ''
-                        enabled: m.enabled && "ng-class=\"#{m.enabled} || 'disabled'\"" || ''
-                        # active: m.active && "ng-class='#{m.active}' || \"active\"'" || ''
                         href: m.href || ''
                         click: m.click && "ng-click=\"#{m.disabled && m.disabled + " ||" || ''} #{m.enabled && m.enabled + " &&" || ''} #{m.click}\""
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
@@ -455,7 +459,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         elem.on "mousedown", hook
 
 .directive 'e2ButtonSet', ($parse, $compile, E2Snippets) ->
-    button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{disabled}} {{enabled}} {{title}}> {{icon}}{{aicon}} {{loc}}</div>")
+    button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}}{{aicon}} {{loc}}</div>")
     button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-drop-down='{{dropdown}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
     scope: true # because $index
     link: (scope, elem, attrs) ->
@@ -475,12 +479,10 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 else if m.divider
                 else
                     out += button_set_tmpl
-                        clazz: m.class && "ng-class=\"#{m.class}\"" || ''
+                        clazz: E2Snippets.make_ng_class(m)
                         click: m.click && "ng-click=\"#{m.click}\"" || ''
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
-                        disabled: m.disabled && "ng-class=\"#{m.disabled} && 'disabled'\"" || ''
-                        enabled: m.enabled && "ng-class=\"#{m.enabled} || 'disabled'\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: !(m.button_loc == false) && m.loc || ''

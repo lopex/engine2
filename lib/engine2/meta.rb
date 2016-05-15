@@ -550,7 +550,7 @@ module Engine2
             panel_title "#{:list.icon} #{LOCS[assets[:model].name.to_sym]}"
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
-                option :search_toggle, icon: "search", show: "action.meta.search_fields", class: "action.ui_state.search_active && 'active'", button_loc: false
+                option :search_toggle, icon: "search", show: "action.meta.search_fields", active: "action.ui_state.search_active", button_loc: false
                 # divider
                 option :refresh, icon: "refresh", button_loc: false
                 option :default_order, icon: "signal", button_loc: false
@@ -570,7 +570,7 @@ module Engine2
         def select_toggle_menu
             m = menu :menu
             unless m.option_index(:select_toggle, false)
-                m.option_after :default_order, :select_toggle, icon: "check", enabled: "action.meta.config.selectable", button_loc: false
+                m.option_after :default_order, :select_toggle, icon: "check", enabled: "action.meta.config.selectable", active: "action.selection", button_loc: false
             end
         end
 
