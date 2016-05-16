@@ -12,7 +12,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     boolean_false_value:    icon('unchecked')
     make_ng_class: (o) ->
         out = []
-        _.each ng_class_names, (e) -> out.push "'#{e}':#{o[e]}" if o[e]
+        _.each ng_class_names, (e) -> out.push(if e == 'enabled' then "'disabled': !(#{o[e]})" else "'#{e}': #{o[e]}") if o[e]
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
 .config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider) ->
