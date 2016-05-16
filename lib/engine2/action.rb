@@ -71,11 +71,6 @@ module Engine2
             end
         end
 
-        def undefine_action name
-            ::Kernel.raise E2Error.new("No action #{name} defined") unless @actions[name]
-            @actions.delete(name)
-        end
-
         def define_action_bundle name, *actions
             define_singleton_method!(name) do |&blk|
                 if blk
