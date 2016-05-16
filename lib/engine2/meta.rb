@@ -920,7 +920,6 @@ module Engine2
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = info[:keys]
             field_info[:type] = info[:otype]
-            # field_info[:table_loc] = LOCS[info[:assoc_name]]
 
             (info[:keys] - [field]).each do |of|
                 f_info = meta.info.fetch(of)
@@ -989,7 +988,6 @@ module Engine2
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = keys
             field_info[:type] = info[:otype]
-            # field_info[:table_loc] = LOCS[info[:assoc_name]]
 
             (keys - [field]).each do |of|
                 f_info = meta.info[of]
@@ -1042,7 +1040,7 @@ module Engine2
             end
         },
         star_to_many_field: lambda{|meta, info| Templates.scaffold},
-        many_to_one: lambda{|meta, info| # Templates.scaffold_picker
+        many_to_one: lambda{|meta, info|
             tmpl_type = info[:decode][:form]
             case
             when tmpl_type[:scaffold]; Templates.scaffold_picker
