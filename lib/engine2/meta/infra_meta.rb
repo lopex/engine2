@@ -231,7 +231,8 @@ module Engine2
     #     end
     # end
 
-    class LoginFormMeta < FormMeta
+    class LoginFormMeta < Meta
+        include MetaFormSupport
         meta_type :login_form
 
         def pre_run
