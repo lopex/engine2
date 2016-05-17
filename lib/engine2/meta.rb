@@ -356,6 +356,10 @@ module Engine2
             end
         end
 
+        def find_record handler, id
+            get_query[assets[:model].primary_keys_hash_qualified(split_keys(id))]
+        end
+
         def select *args, &blk
             assets[:model].select(*args, &blk).ensure_primary_key.setup! (@meta[:fields] = [])
         end
@@ -875,7 +879,7 @@ module Engine2
 
         def invoke handler
             handler.permit id = handler.params[:id]
-            record = get_query[assets[:model].primary_keys_hash_qualified(split_keys(id))]
+            record = find_record(handler, id)
 
             if record
                 static.record(handler, record)
@@ -910,6 +914,17 @@ module Engine2
         end
 
         def record handler, record
+        end
+
+        def invoke handler
+            handler.permit id = handler.params[:id]
+            record = find_record(handler, id)
+            if record
+                static.record(handler, record)
+                {record: record}
+            else
+                handler.halt_not_found LOCS[:no_entry]
+            end
         end
 
         def post_process
