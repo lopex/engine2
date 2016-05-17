@@ -2,6 +2,7 @@
 
 module Engine2
     class FormMeta < Meta
+        include MetaQuerySupport
     end
 
     class CreateMeta < FormMeta

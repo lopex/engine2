@@ -241,6 +241,7 @@ module Engine2
             panel_title LOCS[:login_title]
             info! :name, loc: LOCS[:user_name]
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
+            @meta[:fields] = [:name, :password]
         end
 
         def invoke handler

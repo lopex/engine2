@@ -746,7 +746,7 @@ module Engine2
     end
 
     module MetaFormSupport
-        include MetaQuerySupport, MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaAngularSupport, MetaOnChangeSupport
+        include MetaModelSupport, MetaAPISupport, MetaTabSupport, MetaPanelSupport, MetaMenuSupport, MetaAngularSupport, MetaOnChangeSupport
 
         def field_template template
             panel[:field_template] = template
