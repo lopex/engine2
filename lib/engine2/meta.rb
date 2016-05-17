@@ -909,6 +909,9 @@ module Engine2
             action.parent.*.menu(:item_menu).option action.name, icon: "file", button_loc: false
         end
 
+        def record handler, record
+        end
+
         def post_process
             if fields = @meta[:fields]
                 fields = fields - static.get[:fields] if dynamic?

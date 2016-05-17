@@ -4,9 +4,6 @@ module Engine2
     class ViewMeta < Meta
         include MetaViewSupport, MetaQuerySupport
 
-        def record handler, record
-        end
-
         def invoke handler
             handler.permit id = handler.params[:id]
             record = get_query[assets[:model].primary_keys_hash_qualified(split_keys(id))]
