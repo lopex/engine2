@@ -481,7 +481,7 @@ module Engine2
             panel_class 'modal-default'
 
             menu :panel_menu do
-                option :approve, icon: "ok", loc: LOCS[:ok], disabled: 'action.action_pending'
+                option :approve, icon: "ok", loc: LOCS[:ok], disabled: 'action.action_pending()'
                 option :cancel, icon: "remove"
             end
         end
@@ -763,7 +763,7 @@ module Engine2
             panel_class 'modal-large'
 
             menu :panel_menu do
-                option :approve, icon: "ok", disabled: 'action.action_pending' # text: true,
+                option :approve, icon: "ok", disabled: 'action.action_pending()' # text: true,
                 option :cancel, icon: "remove" # text: true,
             end
             # modal_action false

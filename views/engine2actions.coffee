@@ -22,6 +22,7 @@ angular.module('Engine2')
                 $scope.action = new E2Actions.default_action(mresponse.data, $scope, null, $element, action_resource: 'api')
 
 .factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location) ->
+    action_pending = false
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
             @find_action_info = (name, raise = true) ->
@@ -96,7 +97,7 @@ angular.module('Engine2')
                         @panel_render()
             ,
             (err) =>
-                @parent().action_pending = false
+                action_pending = false
                 @handle_error(err, info, @element())
 
         create_action: (name, sc, el) ->
@@ -123,14 +124,12 @@ angular.module('Engine2')
             _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
+        action_pending: -> action_pending
+
         pre_invoke: ->
-            @parent().action_pending = true
-            @action_pending = true
-            # @parent().parent().action_pending = true if @parent().parent()
+            action_pending = true
         post_invoke: ->
-            delete @parent().action_pending # = false
-            delete @action_pending
-            # @parent().parent().action_pending = false if @parent().parent()
+            action_pending = false
         invoke: ->
             args = arguments
             @pre_invoke(args...)
@@ -809,11 +808,9 @@ angular.module('Engine2')
                 upload = $injector.get('Upload').upload url: "#{@action_info().action_resource}/upload", file: file
                 upload.progress (e) =>
                     @progress = parseInt(100.0 * e.loaded / e.total)
-                    # @parent().action_pending = true
                 upload.success (data, status, headers, config) =>
                     @files.push mime: file.type, name: file.name, rackname: data.response.rackname, id: data.response.id
                     @message = "Wysłano, #{file.name}"
-                    # @parent().action_pending = false
             @sync_record()
 
         delete_file: (file) ->
