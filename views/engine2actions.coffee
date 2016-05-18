@@ -19,7 +19,7 @@ angular.module('Engine2')
                     create(action)
         else
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
-                $scope.action = new E2Actions.default_action(mresponse.data, $scope, null, $element, action_resource: 'api')
+                $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
 .factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location) ->
     action_pending = false
@@ -194,6 +194,10 @@ angular.module('Engine2')
 
         panel_menu_cancel: ->
             @panel_close()
+
+    root: class RootAction extends Action
+        initialize: ->
+            super()
 
     default_action: class DefaultAction extends Action
         initialize: ->
