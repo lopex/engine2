@@ -138,6 +138,13 @@ module Engine2
         meta_type :dummy
     end
 
+    class RootMeta < Meta
+        def initialize *args
+            super
+            @meta[:environment] = Handler::environment
+        end
+    end
+
     module MetaAPISupport
         def reload_routes!
             @meta[:reload_routes] = true
