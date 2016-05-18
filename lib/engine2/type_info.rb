@@ -303,7 +303,6 @@ module Engine2
                 info[:type] = :list_select
                 info[:list] = case list
                     when Hash
-                        # list.map{|k, v| {id: k, value: v}}
                         list.to_a
                     else
                         raise E2Error.new("type '#{list.class}' not supported for list_select modifier for field #{name}")
