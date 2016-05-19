@@ -811,10 +811,12 @@ angular.module('Engine2')
             _.each files, (file) =>
                 upload = $injector.get('Upload').upload url: "#{@action_info().action_resource}/upload", file: file
                 upload.progress (e) =>
+                    action_pending = true
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>
                     @files.push mime: file.type, name: file.name, rackname: data.response.rackname, id: data.response.id
                     @message = "Wysłano, #{file.name}"
+                    action_pending = false
             @sync_record()
 
         delete_file: (file) ->
