@@ -120,7 +120,7 @@ class Symbol
 end
 
 class << Sequel
-    attr_accessor :alias_tables_in_joins
+    attr_accessor :alias_columns_in_joins
 
     def split_keys id
         id.split('|')
@@ -147,7 +147,7 @@ end
 Sequel.quote_identifiers = false
 Sequel.extension :core_extensions
 Sequel::Inflections.clear
-Sequel.alias_tables_in_joins = true
+Sequel.alias_columns_in_joins = true
 # Sequel::Model.plugin :json_serializer, :naked => true
 # Sequel::Model.plugin :timestamps
 # Sequel::Model.plugin :validation_class_methods
@@ -364,7 +364,7 @@ module E2Model
                     #     nil
                     else
                         if table != model_table_name
-                            if Sequel.alias_tables_in_joins
+                            if Sequel.alias_columns_in_joins
                                 name.qualify(table).as(:"#{table}__#{name}")
                             else
                                 name.qualify(table)
