@@ -226,7 +226,6 @@ module Engine2
             super
             modal_action false
             panel_panel_template false
-            # panel_template nil
         end
 
         def list_context query, handler
