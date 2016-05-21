@@ -400,7 +400,7 @@ angular.module('Engine2')
 
         page_info: ->
             page = @ui.page / @meta.config.per_page + 1
-            if @count then "#{page} / #{Math.ceil(@count / @meta.config.per_page)} (#{@count})" else page || ''
+            @meta.loc.page + ": " + if @count then "#{page} / #{Math.ceil(@count / @meta.config.per_page)} (#{@count})" else page || ''
 
         search_reset: ->
             E2.clean(@query.search)
@@ -422,6 +422,9 @@ angular.module('Engine2')
 
         selected_size: ->
             _.size(@selection)
+
+        selected_info: ->
+            @meta.loc.selected + ": " + @selected_size()
 
     bulk_delete: class BulkDeleteAction extends Action
         invoke: ->
