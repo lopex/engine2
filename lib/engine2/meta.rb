@@ -170,7 +170,7 @@ module Engine2
         end
 
         def loc! hash
-            hash.each{|k, v| info! k, loc: v}
+            (@meta[:loc] ||= {}).merge! hash
         end
 
         def decorate list
@@ -559,6 +559,7 @@ module Engine2
             panel_panel_template 'panels/menu_m' unless action.parent.*.assets[:model]
             search_template 'scaffold/search'
             panel_title "#{:list.icon} #{LOCS[assets[:model].name.to_sym]}"
+            loc! page: LOCS[:list_page], search: LOCS[:list_search], selected: LOCS[:list_selected]
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
                 option :search_toggle, icon: "search", show: "action.meta.search_fields", active: "action.ui_state.search_active", button_loc: false
