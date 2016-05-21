@@ -142,6 +142,7 @@ module Engine2
         def initialize *args
             super
             @meta[:environment] = Handler::environment
+            @meta[:application] = Engine2::app_name
         end
     end
 
