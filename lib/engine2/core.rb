@@ -435,7 +435,7 @@ module Engine2
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
 
     class << self
-        attr_reader :app, :reloading
+        attr_reader :app, :app_name, :reloading
         attr_reader :core_loaded
 
         def database name
@@ -492,6 +492,7 @@ module Engine2
 
         def bootstrap app, opts = {}
             @app = app
+            @app_name = opts[:name] || File::basename(app)
             @reloading = opts[:reloading]
             bootstrap_e2db
 
