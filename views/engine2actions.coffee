@@ -77,6 +77,8 @@ angular.module('Engine2')
                 $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
             else $q.when(data: (response: {}))
 
+            action_pending = if @meta.panel then @ else @parent()
+
             get_invoke.then (response) =>
                 E2.merge(@meta, response.data.meta)
                 @process_meta()
@@ -92,9 +94,11 @@ angular.module('Engine2')
                         E2.merge(prnt.meta, @meta)
                         _.assign(prnt, response.data.response)
 
+                    action_pending = false
                     if @meta.panel && !@action_invoked
                         @action_invoked = true
                         @panel_render()
+
             ,
             (err) =>
                 action_pending = false
@@ -124,16 +128,14 @@ angular.module('Engine2')
             _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
-        action_pending: -> action_pending
+        action_pending: -> action_pending == @
         pre_invoke: ->
         post_invoke: ->
 
         invoke: ->
             args = arguments
             @pre_invoke(args...)
-            action_pending = true
             @perform_invoke(args...).then (response) =>
-                action_pending = false
                 @post_invoke(args...)
                 @
 
