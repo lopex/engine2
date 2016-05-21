@@ -92,3 +92,7 @@
 :access_unauthorized:           Dostęp nieautoryzowany
 :access_not_found:              Nie znaleziono
 :access_method_not_allowed:     Metoda niedozwolona
+
+:list_search:                   Szukaj
+:list_page:                     Strona
+:list_selected:                 Wybranych

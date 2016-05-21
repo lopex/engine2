@@ -92,3 +92,7 @@
 :access_unauthorized:           Access unauthorized
 :access_not_found:              Not found
 :access_method_not_allowed:     Metod not allowed
+
+:list_search:                   Search
+:list_page:                     Page
+:list_selected:                 Selected
