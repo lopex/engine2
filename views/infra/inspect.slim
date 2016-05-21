@@ -79,3 +79,7 @@ e2-action action="'inspect'"
                   .row
                     .col-lg-12
                       pre ng-bind="action.activeAssoc | json"
+    div title="Globals" bs-pane=""
+      .panel.panel-default
+        .panel-body
+          pre ng-bind="action.globals() | json"
