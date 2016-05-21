@@ -1,6 +1,5 @@
 div
   e2-include template="action.meta.panel.search_template" ng-if="action.ui_state.search_active"
-  /.well.well-sm
   .panel.panel-default
     .panel-body
       table.table.table-striped.table-condensed.table-hover
@@ -14,10 +13,6 @@ div
                 span.glyphicon ng-class="action.ui.asc ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down'"
               span ng-if="!action.meta.info[f].sort" ng-bind="::action.meta.info[f].loc"
         tbody e2-table-body=""
-          / tr ng-repeat="e in action.entries track by action.id_for(e)" ng-class="action.selected_class($index)" ng-click="action.select($index, $event)"
-          /   td
-          /     div e2-button-set="item_menu" ng-if="action.meta.config.show_item_menu"
-          /   td ng-repeat="f in action.meta.fields track by ::f" ng-bind-html="action.list_cell(e, f)"
 
       span ng-if="action.ui.pagination_active"
         ul.pagination.pagination-md
