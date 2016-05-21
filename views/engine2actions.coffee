@@ -125,15 +125,15 @@ angular.module('Engine2')
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
         action_pending: -> action_pending
-
         pre_invoke: ->
-            action_pending = true
         post_invoke: ->
-            action_pending = false
+
         invoke: ->
             args = arguments
             @pre_invoke(args...)
+            action_pending = true
             @perform_invoke(args...).then (response) =>
+                action_pending = false
                 @post_invoke(args...)
                 @
 
