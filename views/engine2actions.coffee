@@ -386,13 +386,13 @@ angular.module('Engine2')
             @query.order = col
             @load_new()
 
-        prev_active: -> @query.page > 0
+        prev_active: -> !@action_pending() && @query.page > 0
         prev: ->
             if @prev_active()
                 @query.page = Math.max(0, @query.page - @meta.config.per_page)
                 @invoke()
 
-        next_active: -> @entries.length == @meta.config.per_page
+        next_active: -> !@action_pending() && @entries.length == @meta.config.per_page
         next: ->
             if @next_active()
                 @query.page += @meta.config.per_page # min & count
