@@ -200,6 +200,8 @@ angular.module('Engine2')
     root: class RootAction extends Action
         initialize: ->
             super()
+            E2.merge(globals, @meta)
+            @meta  = {}
 
     default_action: class DefaultAction extends Action
         initialize: ->
