@@ -22,7 +22,7 @@ angular.module('Engine2')
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
 .factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location) ->
-    action_pending = false
+    globals = {}
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
             @find_action_info = (name, raise = true) ->
@@ -77,7 +77,7 @@ angular.module('Engine2')
                 $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
             else $q.when(data: (response: {}))
 
-            action_pending = if @meta.panel then @ else @parent()
+            globals.action_pending = if @meta.panel then @ else @parent()
 
             get_invoke.then (response) =>
                 E2.merge(@meta, response.data.meta)
@@ -94,14 +94,14 @@ angular.module('Engine2')
                         E2.merge(prnt.meta, @meta)
                         _.assign(prnt, response.data.response)
 
-                    action_pending = false
+                    globals.action_pending = false
                     if @meta.panel && !@action_invoked
                         @action_invoked = true
                         @panel_render()
 
             ,
             (err) =>
-                action_pending = false
+                globals.action_pending = false
                 @handle_error(err, info, @element())
 
         create_action: (name, sc, el) ->
@@ -128,7 +128,7 @@ angular.module('Engine2')
             _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
-        action_pending: -> action_pending == @
+        action_pending: -> globals.action_pending == @
         pre_invoke: ->
         post_invoke: ->
 
@@ -816,12 +816,12 @@ angular.module('Engine2')
             _.each files, (file) =>
                 upload = $injector.get('Upload').upload url: "#{@action_info().action_resource}/upload", file: file
                 upload.progress (e) =>
-                    action_pending = true
+                    globals.action_pending = false
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>
                     @files.push mime: file.type, name: file.name, rackname: data.response.rackname, id: data.response.id
                     @message = "Wysłano, #{file.name}"
-                    action_pending = false
+                    globals.action_pending = false
             @sync_record()
 
         delete_file: (file) ->
