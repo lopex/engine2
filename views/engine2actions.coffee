@@ -128,6 +128,7 @@ angular.module('Engine2')
             _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
+        globals: -> globals
         action_pending: -> globals.action_pending == @
         pre_invoke: ->
         post_invoke: ->
