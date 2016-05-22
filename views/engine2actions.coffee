@@ -316,14 +316,7 @@ angular.module('Engine2')
 
             delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.fields, @query.order)
             _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_fields, sn))
-
             _.each @meta.info, (info, name) =>
-                if info.remote_onchange
-                    @scope().$watch (=> @query.search?[name]), (n) => if n?
-                        params = value: @query.search[name]
-                        params.record = @query.search if info.remote_onchange_record
-                        @invoke_action(info.remote_onchange, params)
-
                 if info.onchange
                     @scope().$watch (=> @query.search?[name]), (n) => if n?
                         @scope().$eval(info.onchange)
@@ -413,7 +406,14 @@ angular.module('Engine2')
             @load_new()
 
         search_field_change: (f) ->
-            @load_new() if @meta.info[f].search_live
+            info = @meta.info[f]
+            if remote_onchange = info.remote_onchange
+                params = value: @query.search[f]
+                params.record = @query.search if info.remote_onchange_record
+                @invoke_action(remote_onchange, params).then =>
+                    @load_new() if info.search_live
+            else
+                @load_new() if info.search_live
 
         selected_class: (index) ->
             (entry = @entries[index]) && @selection && @selection[E2.id_for(entry, @meta)] && 'info'
