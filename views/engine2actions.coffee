@@ -412,7 +412,7 @@ angular.module('Engine2')
             @scope().$broadcast "search_reset"
             @load_new()
 
-        search_live: (f) ->
+        search_field_change: (f) ->
             @load_new() if @meta.info[f].search_live
 
         selected_class: (index) ->
@@ -593,7 +593,7 @@ angular.module('Engine2')
 
         reset: ->
             @clean()
-            @parentp().search_live?(@decode_field)
+            @parentp().search_field_change?(@decode_field)
 
         decode_description: (entry) ->
             fields = @meta.decode_fields ? @meta.fields
@@ -631,7 +631,7 @@ angular.module('Engine2')
                     _(@dinfo.fields).zip(E2.split_keys(@selected)).each(([fk, k]) => record[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value
                 else @clear_record()
 
-            @parentp().search_live?(@decode_field)
+            @parentp().search_field_change?(@decode_field)
 
         clean: ->
             @clear_selected()
@@ -657,7 +657,7 @@ angular.module('Engine2')
                     [ids, rec] = _(sel).toPairs().head()
                     _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k] = E2.parse_entry(v, @parentp().meta.info[k])).value
                     @invoke_decode [rec]
-                @parentp().search_live?(@decode_field)
+                @parentp().search_field_change?(@decode_field)
 
         invoke_decode: (recs, f) ->
             if @multiple && _.size(recs) > @meta.show_max_selected
@@ -692,7 +692,7 @@ angular.module('Engine2')
             @scope().$on "$typeahead.select", (e, v, index) =>
                 e.stopPropagation()
                 _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value
-                @parentp().search_live?(@decode_field)
+                @parentp().search_field_change?(@decode_field)
 
             @scope().$watch "action.decode", (e) => if e?
                 @reset() if e.length == 0

@@ -5,14 +5,14 @@
         type="text"
         ng-model="action.query.search[f]"
         ng-model-options="{debounce: 200}"
-        ng-change="action.search_live(f)"
+        ng-change="action.search_field_change(f)"
         class="form-control"
         placeholder="{{::action.meta.info[f].loc}}"
         e2-search-field=""
         e2-integer=""
       ]
       .input-group-btn
-        a.btn.btn-default ng-disabled="!action.query.search[f]" ng-click="action.query.search[f] = null; action.search_live(f)"
+        a.btn.btn-default ng-disabled="!action.query.search[f]" ng-click="action.query.search[f] = null; action.search_field_change(f)"
           span.glyphicon.glyphicon-off
 
       /button.btn ng-click="action.query.search[f] = null": i.icon-remove

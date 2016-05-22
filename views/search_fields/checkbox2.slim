@@ -2,7 +2,7 @@
   .btn-group.btn-group-sm [
     ng-model="action.query.search[f]"
     bs-buttons-radio=""
-    ng-change="action.search_live(f)"
+    ng-change="action.search_field_change(f)"
   ]
     button.btn.btn-default type="button" value="{{action.meta.info[f].render.true_value}}": span.glyphicon.glyphicon-ok
     button.btn.btn-default type="button" value="{{action.meta.info[f].render.false_value}}": span.glyphicon.glyphicon-remove

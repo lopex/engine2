@@ -551,7 +551,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             date = format(model, attr.e2ModelFormat)
             if action.query
                 action.query.search[scope.f][mode] = date
-                scope.action.search_live(scope.f) if date?
+                scope.action.search_field_change(scope.f) if date?
             else
                 action.record[field] = date
 

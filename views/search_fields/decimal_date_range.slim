@@ -8,7 +8,7 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
           placeholder="{{::action.meta.info[f].loc}} <"
           xng-model="value"
           ng-model="action.query.search[f].from"
-          ng-change="action.search_live(f)"
+          ng-change="action.search_field_change(f)"
           xe2-decimal-date-picker="" range="from"
           data-max-date="{{action.query.search[f].to}}"
           data-date-format="{{::action.meta.info[f].render.format}}"
@@ -20,7 +20,7 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
         ]
         .input-group-btn
           a.btn.btn-default.disabled data-toggle="datepicker": span.glyphicon.glyphicon-calendar
-          a.btn.btn-default ng-disabled="!action.query.search[f].from" ng-click="action.query.search[f].from = null; action.search_live(f)": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.query.search[f].from" ng-click="action.query.search[f].from = null; action.search_field_change(f)": span.glyphicon.glyphicon-off
 
   .col-lg-3.col-md-4.col-sm-4
     .form-group
@@ -31,7 +31,7 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
           placeholder="{{::action.meta.info[f].loc}} >"
           xng-model="value"
           ng-model="action.query.search[f].to"
-          ng-change="action.search_live(f)"
+          ng-change="action.search_field_change(f)"
           xe2-decimal-date-picker="" range="to"
           data-min-date="{{action.query.search[f].from}}"
           data-date-format="{{::action.meta.info[f].render.format}}"
@@ -44,4 +44,4 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
         ]
         .input-group-btn
           a.btn.btn-default.disabled data-toggle="datepicker": span.glyphicon.glyphicon-calendar
-          a.btn.btn-default ng-disabled="!action.query.search[f].to" ng-click="action.query.search[f].to = null; action.search_live(f)": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.query.search[f].to" ng-click="action.query.search[f].to = null; action.search_field_change(f)": span.glyphicon.glyphicon-off

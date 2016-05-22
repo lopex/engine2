@@ -7,7 +7,7 @@
         ng-model="action.query.search[f]"
         bs-options="v[0] as v[1] for v in info.render.list"
         data-html="true"
-        ng-change="action.search_live(f)"
+        ng-change="action.search_field_change(f)"
         ng-class="info.render.class"
         class="form-control"
 
@@ -20,5 +20,5 @@
       ]
 
       .input-group-btn
-        a.btn.btn-default ng-disabled="action.query.search[f].length == 0" ng-click="action.query.search[f] = []; action.search_live(f)"
+        a.btn.btn-default ng-disabled="action.query.search[f].length == 0" ng-click="action.query.search[f] = []; action.search_field_change(f)"
           span.glyphicon.glyphicon-off
