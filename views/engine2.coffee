@@ -12,7 +12,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     boolean_false_value:    icon('unchecked')
     make_ng_class: (o) ->
         out = []
-        _.each ng_class_names, (e) -> out.push(if e == 'enabled' then "'disabled': !(#{o[e]})" else "'#{e}': #{o[e]}") if o[e]
+        _.each ng_class_names, (e) -> out.push(if e == 'enabled' then "'disabled': !(#{o[e]})" else "'#{e}': #{o[e]}") if o[e]?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
 .config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider) ->
@@ -112,18 +112,20 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     process_menu: (action, menu_name) ->
         processor = @menu_processors[menu_name]
         @each_menu action.meta.menus[menu_name].entries, (m) ->
-            menu_fun_name = "#{menu_name}_#{m.name}"
-            menu_fun_invoke = "action['#{menu_fun_name}'](#{processor.arg_name})"
+            fun_name = "#{menu_name}_#{m.name}"
+            fun_invoke = "action['#{fun_name}'](#{processor.arg_name})"
+            fun_invoke = "(#{m.enabled}) && #{fun_invoke}" if m.enabled?
+            fun_invoke = "!(#{m.disabled}) && #{fun_invoke}" if m.disabled?
 
             click = m.click
-            m.click = menu_fun_invoke
+            m.click = fun_invoke
 
             if click
-                action[menu_fun_name] = (args...) ->
+                action[fun_name] = (args...) ->
                     processor.arg_fun(action, args...)
                     action.scope().$eval(click)
             else
-                action[menu_fun_name] ?= (args...) ->
+                action[fun_name] ?= (args...) ->
                     processor.arg_fun(action, args...)
                     action.invoke_action(m.name, processor.arg_ret(action))
 
