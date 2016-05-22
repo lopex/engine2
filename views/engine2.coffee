@@ -117,11 +117,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
             click = m.click
             m.click = menu_fun_invoke
-            action[menu_fun_name] ?= (args...) ->
-                processor.arg_fun(action, args...)
-                if click
+
+            if click
+                action[menu_fun_name] = (args...) ->
+                    processor.arg_fun(action, args...)
                     action.scope().$eval(click)
-                else
+            else
+                action[menu_fun_name] ?= (args...) ->
+                    processor.arg_fun(action, args...)
                     action.invoke_action(m.name, processor.arg_ret(action))
 
             if action.find_action_info(m.name, false)?
@@ -142,8 +145,6 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             arg_ret: (action) -> id: action.current_id
             arg_fun: (action, index) ->
                 action.current_id = $injector.get('E2').id_for(action.entries[index], action.meta)
-
-
 
     renderers:
         boolean: (value, render) =>
