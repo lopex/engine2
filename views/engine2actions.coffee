@@ -316,11 +316,6 @@ angular.module('Engine2')
 
             delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.fields, @query.order)
             _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_fields, sn))
-            _.each @meta.info, (info, name) =>
-                if info.onchange
-                    @scope().$watch (=> @query.search?[name]), (n) => if n?
-                        @scope().$eval(info.onchange)
-
             # $window.addEventListener 'beforeunload', (e, v) => @save_state()
 
         destroy: ->
@@ -407,6 +402,9 @@ angular.module('Engine2')
 
         search_field_change: (f) ->
             info = @meta.info[f]
+
+            @scope().$eval(info.onchange) if info.onchange
+
             if remote_onchange = info.remote_onchange
                 params = value: @query.search[f]
                 params.record = @query.search if info.remote_onchange_record
