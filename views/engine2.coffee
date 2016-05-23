@@ -431,7 +431,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
                         href: m.href || ''
-                        click: m.click && "ng-click=\"#{m.disabled && m.disabled + " ||" || ''} #{m.enabled && m.enabled + " &&" || ''} #{m.click}\""
+                        click: m.click && "ng-click=\"#{m.click}\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: m.loc
