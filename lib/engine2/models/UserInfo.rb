@@ -13,7 +13,8 @@ module Engine2
             password :password
         end
 
-        def after_validation
+        def validate_record handler, record
+            super
             @values[:password] = nil
         end
 
