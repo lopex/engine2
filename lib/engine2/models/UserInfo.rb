@@ -13,11 +13,6 @@ module Engine2
             password :password
         end
 
-        def validate_record handler, record
-            super
-            @values[:password] = nil
-        end
-
         def to_hash
             {name: @values[:name]}
         end

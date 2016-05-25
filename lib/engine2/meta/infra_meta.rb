@@ -253,6 +253,11 @@ module Engine2
         include MetaApproveSupport
         meta_type :login
 
+        def validate_record handler, record
+            super
+            record.values[:password] = nil
+        end
+
         def after_approve handler, record
             handler.session[:user] = record
         end
