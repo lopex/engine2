@@ -4,9 +4,10 @@ module Engine2
     SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
         define_action :infra! do
             self.* do
-                extend MetaPanelSupport, MetaMenuSupport
+                extend MetaPanelSupport, MetaMenuSupport, MetaAPISupport
                 panel_panel_template false
                 panel_template 'infra/index'
+                loc! logged_on: LOCS[:logged_on]
                 menu :menu do
                     properties group_class: "btn-group-sm"
                     option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
