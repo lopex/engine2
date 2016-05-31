@@ -93,8 +93,9 @@
 :access_not_found:              Nie znaleziono
 :access_method_not_allowed:     Metoda niedozwolona
 
-:list_search:                   Szukaj
-:list_page:                     Strona
-:list_selected:                 Wybranych
+:list_locs:
+    :search:                    Szukaj
+    :page:                      Strona
+    :selected:                  Wybranych
 
 :logged_on:                     Zalogowany

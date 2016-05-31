@@ -93,8 +93,9 @@
 :access_not_found:              Not found
 :access_method_not_allowed:     Metod not allowed
 
-:list_search:                   Search
-:list_page:                     Page
-:list_selected:                 Selected
+:list_locs:
+    :search:                    Search
+    :page:                      Page
+    :selected:                  Selected
 
 :logged_on:                     Logged on
