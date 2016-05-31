@@ -162,11 +162,7 @@ module Engine2
         def info! *fields, options
             raise E2Error.new("No fields given to info") if fields.empty?
             fields.each do |field|
-                if options
-                    (info[field] ||= {}).merge! options # rmerge ?
-                else
-                    info[field] = false
-                end
+                (info[field] ||= {}).merge! options # rmerge ?
             end
         end
 
