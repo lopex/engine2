@@ -82,9 +82,6 @@ angular.module('Engine2')
                 E2.merge(@, response.data)
                 @process_meta()
                 (if @meta.reload_routes then $route.load_routes() else $q.when({})).then =>
-                    if @meta.response
-                        E2.merge(@, @meta.response)
-                        delete @meta.response
                     @arguments = _.keys(response.data)
                     unless @meta.panel # persistent action
                         prnt = @parent()

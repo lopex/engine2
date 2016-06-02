@@ -51,10 +51,6 @@ module Engine2
             end
         end
 
-        def response args
-            (@meta[:response] ||= {}).merge!(args)
-        end
-
         def get
             @meta
         end
@@ -473,6 +469,10 @@ module Engine2
     class ConfirmMeta < Meta
         include MetaPanelSupport, MetaMenuSupport
         meta_type :confirm
+
+        def message msg
+            @meta[:message] = msg
+        end
 
         def pre_run
             super

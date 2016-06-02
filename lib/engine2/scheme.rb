@@ -47,7 +47,7 @@ module Engine2
 
         define_scheme :delete do
             define_action :confirm_delete, ConfirmMeta do
-                self.*.response message: LOCS[:delete_question]
+                self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_delete_title]
                 define_action :delete, DeleteMeta
             end
@@ -55,7 +55,7 @@ module Engine2
 
         define_scheme :bulk_delete do
             define_action :confirm_bulk_delete, ConfirmMeta do
-                self.*.response message: LOCS[:delete_question]
+                self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_bulk_delete_title]
                 define_action :bulk_delete, BulkDeleteMeta
             end
@@ -111,7 +111,7 @@ module Engine2
         #
         define_scheme :star_to_many_unlink do
             define_action :confirm_unlink, ConfirmMeta do
-                self.*.response message: LOCS[:unlink_question]
+                self.*.message LOCS[:unlink_question]
                 self.*.panel_title LOCS[:confirm_unlink_title]
                 define_action :unlink, StarToManyUnlinkMeta
             end
@@ -119,7 +119,7 @@ module Engine2
 
         define_scheme :star_to_many_bulk_unlink do
             define_action :confirm_bulk_unlink, ConfirmMeta do
-                self.*.response message: LOCS[:unlink_question]
+                self.*.message LOCS[:unlink_question]
                 self.*.panel_title LOCS[:confirm_bulk_unlink_title]
                 define_action :bulk_unlink, StarToManyBulkUnlinkMeta
             end
@@ -181,7 +181,7 @@ module Engine2
             define_action :"#{field}!", StarToManyFieldMeta, assoc: assoc do
                 run_scheme :view
                 define_action :confirm_unlink, ConfirmMeta do
-                    self.*.response message: LOCS[:unlink_question]
+                    self.*.message LOCS[:unlink_question]
                     define_action :unlink, StarToManyFieldUnlinkMeta
                 end
                 define_action :link_list, StarToManyFieldLinkListMeta do
