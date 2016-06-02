@@ -43,15 +43,11 @@ module Engine2
                 meta = self.class.new(action, assets, self)
                 meta.instance_exec(handler, *meta.request_meta_proc_params(handler), &rmp)
                 meta.post_process
-
-                {response: meta.invoke(handler), meta: meta.get}
+                response = meta.invoke(handler)
+                response[:meta] = meta.get
+                response
             else
-                response = invoke(handler)
-                if response.is_a?(Hash)
-                    {response: response}
-                else
-                    response
-                end
+                invoke(handler)
             end
         end
 

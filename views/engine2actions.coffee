@@ -54,7 +54,7 @@ angular.module('Engine2')
 
         initialize: ->
             @process_static_meta()
-            @process_meta()
+            # @process_meta()
             console.log "CREATE #{@action_info().action_resource}"
 
         process_static_meta: ->
@@ -80,19 +80,17 @@ angular.module('Engine2')
             globals.action_pending = if @meta.panel then @ else @parent()
 
             get_invoke.then (response) =>
-                E2.merge(@meta, response.data.meta)
+                E2.merge(@, response.data)
                 @process_meta()
-                _.assign(@, response.data.response)
                 (if @meta.reload_routes then $route.load_routes() else $q.when({})).then =>
                     if @meta.response
                         E2.merge(@, @meta.response)
                         delete @meta.response
-                    @arguments = _.keys(response.data.response)
+                    @arguments = _.keys(response.data)
                     unless @meta.panel # persistent action
                         prnt = @parent()
                         throw "Attempted parent merge for root action: #{info.name}" unless prnt
-                        E2.merge(prnt.meta, @meta)
-                        _.assign(prnt, response.data.response)
+                        E2.merge(prnt, response.data)
 
                     globals.action_pending = false
                     if @meta.panel && !@action_invoked
@@ -511,6 +509,11 @@ angular.module('Engine2')
                 _(@meta.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
             $timeout (=> @scope().$broadcast("focus_field", field)), 300 # hack, on shown ?
 
+    approve: class ApproveAction extends Action
+        process_meta: ->
+            super()
+            @parent().errors = {}
+
     infra: class InfraAction extends Action
         initialize: ->
             super()
@@ -820,7 +823,7 @@ angular.module('Engine2')
                     globals.action_pending = false
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>
-                    @files.push mime: file.type, name: file.name, rackname: data.response.rackname, id: data.response.id
+                    @files.push mime: file.type, name: file.name, rackname: data.rackname, id: data.id
                     @message = "Wysłano, #{file.name}"
                     globals.action_pending = false
             @sync_record()
@@ -856,6 +859,6 @@ angular.module('Engine2')
                 upload.progress (e) =>
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>
-                    @file = mime: file.type, name: file.name, rackname: data.response.rackname, id: data.response.id
+                    @file = mime: file.type, name: file.name, rackname: data.rackname, id: data.id
                     @message = "Wysłano, #{file.name}"
                     @sync_record()
