@@ -54,7 +54,6 @@ angular.module('Engine2')
 
         initialize: ->
             @process_static_meta()
-            # @process_meta()
             console.log "CREATE #{@action_info().action_resource}"
 
         process_static_meta: ->
@@ -96,7 +95,6 @@ angular.module('Engine2')
                     if @meta.panel && !@action_invoked
                         @action_invoked = true
                         @panel_render()
-
             ,
             (err) =>
                 globals.action_pending = false
