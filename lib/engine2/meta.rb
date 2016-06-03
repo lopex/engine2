@@ -728,7 +728,7 @@ module Engine2
         def invoke handler
             json = handler.post_to_json
             record = allocate_record(handler, json)
-            validate_and_approve(handler, record, json) ? static.record(handler, record) : {record: record.to_hash, errors: record.errors}
+            validate_and_approve(handler, record, json) ? static.record(handler, record) : {record!: record.to_hash, errors!: record.errors}
         end
 
         def validate name, &blk

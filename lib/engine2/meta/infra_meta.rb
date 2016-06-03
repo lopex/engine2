@@ -64,7 +64,7 @@ module Engine2
                             handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
                             handler.permit model = db.models[handler.params[:model].to_sym]
                             {
-                                model: {
+                                model!: {
                                     info: {
                                         name: model.to_s,
                                         table: model.table_name
@@ -264,7 +264,7 @@ module Engine2
         end
 
         def record handler, record
-            {errors: nil, user: handler.user.to_hash}
+            {errors: nil, user!: handler.user.to_hash}
         end
     end
 

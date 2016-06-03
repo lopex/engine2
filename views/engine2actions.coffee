@@ -504,11 +504,6 @@ angular.module('Engine2')
                 _(@meta.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
             $timeout (=> @scope().$broadcast("focus_field", field)), 300 # hack, on shown ?
 
-    approve: class ApproveAction extends Action
-        process_meta: ->
-            super()
-            @parent().errors = {}
-
     infra: class InfraAction extends Action
         initialize: ->
             super()

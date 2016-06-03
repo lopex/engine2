@@ -66,13 +66,16 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             else
                 # delete o[k]
                 o[k] = null
-    merge: (o1, o2) ->
-        for p of o2
-            o1[p] = if _.isObject(o2[p]) && !_.isArray(o2[p])
-                @merge(o1[p] ? {}, o2[p])
+    merge: (dst, src) ->
+        for p of src
+            if _.isObject(src[p]) && !_.isArray(src[p])
+                if p.slice(-1) == '!'
+                    dst[p.slice(0, -1)] = src[p]
+                else
+                    dst[p] = @merge(dst[p] ? {}, src[p])
             else
-                o2[p]
-        o1
+                dst[p] = src[p]
+        dst
 
     transpose: (a) ->
         _.keys(a[0]).map((c) -> a.map (r) -> r[c])
