@@ -68,13 +68,10 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 o[k] = null
     merge: (o1, o2) ->
         for p of o2
-            try # if o1 and no try ?
-                if _.isObject(o2[p]) && !_.isArray(o2[p])
-                    o1[p] = @merge(o1[p] ? {}, o2[p])
-                else
-                    o1[p] = o2[p]
-            catch
-                o1[p] = o2[p]
+            o1[p] = if _.isObject(o2[p]) && !_.isArray(o2[p])
+                @merge(o1[p] ? {}, o2[p])
+            else
+                o2[p]
         o1
 
     transpose: (a) ->
