@@ -276,14 +276,11 @@ module Engine2
             panel_template 'scaffold/message'
             panel_title LOCS[:logout_title]
             panel_class 'modal-default'
+            @meta[:message] = LOCS[:logout_message]
             menu :panel_menu do
                 option :logout, icon: "ok", loc: LOCS[:ok]
                 option :cancel, icon: "remove"
             end
-        end
-
-        def invoke handler
-            {message: LOCS[:logout_message]}
         end
     end
 
