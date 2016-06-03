@@ -67,14 +67,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 # delete o[k]
                 o[k] = null
     merge: (dst, src) ->
-        for p of src
-            if _.isObject(src[p]) && !_.isArray(src[p])
-                if p.slice(-1) == '!'
-                    dst[p.slice(0, -1)] = src[p]
+        for k, v of src
+            if _.isObject(v) && !_.isArray(v)
+                if k.slice(-1) == '!'
+                    dst[k.slice(0, -1)] = v
                 else
-                    dst[p] = @merge(dst[p] ? {}, src[p])
+                    dst[k] = @merge(dst[k] ? {}, v)
             else
-                dst[p] = src[p]
+                dst[k] = v
         dst
 
     transpose: (a) ->
