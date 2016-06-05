@@ -135,6 +135,7 @@ module Engine2
             super
             @meta[:environment] = Handler::environment
             @meta[:application] = Engine2::app_name
+            @meta[:key_separator] = Engine2::key_separator
         end
     end
 
