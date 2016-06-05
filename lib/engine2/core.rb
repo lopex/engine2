@@ -123,7 +123,7 @@ class << Sequel
     attr_accessor :alias_columns_in_joins
 
     def split_keys id
-        id.split(Engine2::key_separator)
+        id.split(Engine2::SETTINGS[:key_separator])
     end
 end
 

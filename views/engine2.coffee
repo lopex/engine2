@@ -83,8 +83,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     transpose: (a) ->
         _.keys(a[0]).map((c) -> a.map (r) -> r[c])
 
-    join_keys: (keys) -> keys.join('|')
-    split_keys: (key) -> key.split('|')
+    join_keys: (keys) -> keys.join(@globals.key_separator)
+    split_keys: (key) -> key.split(@globals.key_separator)
     id_for: (rec, meta) -> @join_keys(meta.primary_fields.map((e) -> rec[e]))
     from_id: (id, meta) -> _.zipObject(meta.primary_fields, id) # _.zip(meta.primary_fields, id).reduce(((rec, [k, v]) -> rec[k] = v; rec), {})
 
