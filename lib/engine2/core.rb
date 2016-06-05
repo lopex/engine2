@@ -123,7 +123,7 @@ class << Sequel
     attr_accessor :alias_columns_in_joins
 
     def split_keys id
-        id.split('|')
+        id.split(Engine2::key_separator)
     end
 end
 
@@ -435,7 +435,7 @@ module Engine2
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
 
     class << self
-        attr_reader :app, :app_name, :reloading
+        attr_reader :app, :app_name, :reloading, :key_separator
         attr_reader :core_loaded
 
         def database name
@@ -493,6 +493,7 @@ module Engine2
         def bootstrap app, opts = {}
             @app = app
             @app_name = opts[:name] || File::basename(app)
+            @key_separator = opts[:key_separator] || '|'
             @reloading = opts[:reloading]
             bootstrap_e2db
 
