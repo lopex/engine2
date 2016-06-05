@@ -52,6 +52,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         $q.reject(response)
 
 .factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, e2HttpInterceptor, $route, $dateFormatter) ->
+    globals: {}
+
     compact: (o) ->
         _.each o, (v, k) =>
             if (v == null || (_.isString(v) && !v)) || (!_.isDate(v) && _.isObject(v) && @compact(v) && _.isEmpty(v))
@@ -66,6 +68,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             else
                 # delete o[k]
                 o[k] = null
+
     merge: (dst, src) ->
         for k, v of src
             if _.isObject(v) && !_.isArray(v)

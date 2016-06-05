@@ -22,7 +22,7 @@ angular.module('Engine2')
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
 .factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location) ->
-    globals = {}
+    globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
             @find_action_info = (name, raise = true) ->
