@@ -133,9 +133,7 @@ module Engine2
     class RootMeta < Meta
         def initialize *args
             super
-            @meta[:environment] = Handler::environment
-            @meta[:application] = Engine2::app_name
-            @meta[:key_separator] = Engine2::key_separator
+            @meta.merge! environment: Handler::environment, application: Engine2::SETTINGS[:name], key_separator: Engine2::SETTINGS[:key_separator]
         end
     end
 

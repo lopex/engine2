@@ -114,7 +114,7 @@ module Engine2
             headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
             if name.empty?
                 if settings.development?
-                    load('engine2.rb') if Engine2::reloading
+                    load('engine2.rb') if Engine2::SETTINGS[:reloading]
                     Engine2::reload
                 end
                 name = 'index'

@@ -433,9 +433,10 @@ end
 module Engine2
     LOCS ||= Hash.new{|h, k| ":#{k}:"}
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
+    SETTINGS ||= {key_separator: '|'}
 
     class << self
-        attr_reader :app, :app_name, :reloading, :key_separator
+        attr_reader :app
         attr_reader :core_loaded
 
         def database name
@@ -490,11 +491,10 @@ module Engine2
             puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
         end
 
-        def bootstrap app, opts = {}
+        def bootstrap app, settings = {}
             @app = app
-            @app_name = opts[:name] || File::basename(app)
-            @key_separator = opts[:key_separator] || '|'
-            @reloading = opts[:reloading]
+            SETTINGS.merge! settings
+            SETTINGS[:name] ||= File::basename(app)
             bootstrap_e2db
 
             require 'engine2/pre_bootstrap'
