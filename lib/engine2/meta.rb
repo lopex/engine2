@@ -1026,14 +1026,10 @@ module Engine2
         },
         file_store: lambda{|meta, field, info|
             meta.info[field][:render].merge! multiple: info[:multiple]
-            # meta[:model] = meta.action.model.table_name
         },
         star_to_many_field: lambda{|meta, field, info|
             field_info = meta.info[field]
             field_info[:assoc] = :"#{info[:assoc_name]}!"
-            # meta.info[field][:render].merge! multiple: info[:multiple]
-            # field_info = meta.info[field]
-            # field_info[:resource] ||= "#{Handler::API}#{meta.model.namespace}/#{info[:assoc_name]}"
         }
     )
 
