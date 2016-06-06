@@ -599,7 +599,7 @@ angular.module('Engine2')
             @multiple = @dinfo.render.multiple
             @clear_selected()
             @if_fk_values (fk_values) =>
-                @selected = if @multiple then E2.transpose(fk_values).map(E2.join_keys) else E2.join_keys(fk_values)
+                @selected = if @multiple then E2.transpose(fk_values).map((e) -> E2.join_keys(e)) else E2.join_keys(fk_values)
             @invoke()
 
         clear_selected: -> @selected = if @multiple then [] else null # no need to null complex keys
