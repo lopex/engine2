@@ -1070,14 +1070,6 @@ module Engine2
             else
                 meta.check_static_meta
                 model = Object.const_get(model.many_to_one_associations[field[/^\w+?(?=__)/].to_sym][:class_name])
-                # meta.action.define_action :"#{info[:assoc_name]}!" do # assoc_#{aname}
-                #     define_action :decode, DecodeEntryMeta, assoc: model.association_reflections[info[:assoc_name]] do
-                #         run_scheme :default_many_to_one
-                #     end
-                # end
-
-                # verify associations ?
-                # model = Model.models.fetch(field[/^\w+?(?=__)/].to_sym)
                 keys = info[:keys].map{|k| :"#{model.table_name}__#{k}"}
             end
 
