@@ -92,6 +92,8 @@
 :access_not_found:              Nie znaleziono
 :access_method_not_allowed:     Metoda niedozwolona
 
+:currency_symbol:               zł
+
 :list_locs:
     :search:                    Szukaj
     :page:                      Strona

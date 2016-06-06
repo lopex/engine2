@@ -1001,6 +1001,9 @@ module Engine2
         datetime: lambda{|meta, field, info|
             meta.info[field][:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
         },
+        currency: lambda{|meta, field, info|
+            meta.info[field][:render].merge! symbol: info[:symbol]
+        },
         # date_range: lambda{|meta, field, info|
         #     meta.info[field][:render].merge! other_date: info[:other_date], format: info[:format], model_format: info[:model_format]
         #     meta.hide_fields info[:other_date]

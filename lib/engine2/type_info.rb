@@ -247,9 +247,10 @@ module Engine2
             end
         end
 
-        def currency field
+        def currency field, symbol = LOCS[:currency_symbol]
             modify_field field do |info|
                 info[:type] = :currency
+                info[:symbol] = symbol
                 info[:validations][:currency] = true
             end
         end

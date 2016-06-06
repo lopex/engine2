@@ -87,6 +87,8 @@
 :invalid_email_format:          Incorrect email format
 :invalid_format:                Incorrect format
 
+:currency_symbol:               $
+
 :access_forbidden:              Access forbidden
 :access_unauthorized:           Access unauthorized
 :access_not_found:              Not found
