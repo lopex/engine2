@@ -450,7 +450,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             # event.preventDefault()
             # event.stopPropagation()
             menu = $parse(attrs.e2Dropdown)(scope)
-            dropdown = $dropdown(elem, (scope: scope, template: render(menu, 0), animation: 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
+            dropdown = $dropdown(elem, (scope: scope, template: render(menu, 0), animation: attrs.animation || 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
             dropdown.$promise.then ->
                 event_hide = scope.$on "#{event_num}.tooltip.hide", (e) ->
                     e.stopPropagation()
@@ -467,13 +467,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
 .directive 'e2ButtonSet', ($parse, $compile, E2Snippets) ->
     button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}}{{aicon}} {{loc}}</div>")
-    button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-dropdown='{{dropdown}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
+    button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-dropdown='{{dropdown}}' data-animation='{{animation}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
     scope: true # because $index
     link: (scope, elem, attrs) ->
         menu = $parse(attrs.e2ButtonSet)(scope)
         if menu && menu.entries.length > 0
             group_class = menu.properties.group_class || ''
             brk = menu.properties.break
+            animation = menu.properties.animation
             out = ""
             for m, i in menu.entries
                 if i >= brk
@@ -481,6 +482,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 else if m.menu
                     out += button_set_arr_tmpl
                         dropdown: "#{attrs.e2ButtonSet}.entries[#{i}].menu.entries"
+                        animation: animation
                         icon: m.menu.icon && "#{E2Snippets.icon(m.menu.icon)}&nbsp;" || ''
                         aicon: m.menu.aicon && "#{E2Snippets.aicon(m.menu.aicon)}&nbsp;" || ''
                 else if m.divider
@@ -495,7 +497,13 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         loc: !(m.button_loc == false) && m.loc || ''
                         title: (m.button_loc == false) && "title=\"#{m.loc}\"" || ''
 
-            out += button_set_arr_tmpl dropdown: "#{attrs.e2ButtonSet}.entries.slice(#{brk})", icon: '', aicon: '' if menu.entries.length > brk
+            if menu.entries.length > brk
+                out += button_set_arr_tmpl
+                    dropdown: "#{attrs.e2ButtonSet}.entries.slice(#{brk})"
+                    animation: animation
+                    icon: ''
+                    aicon: ''
+
             out = "<div class='btn-group #{group_class}'>#{out}</div>"
             out = $compile(angular.element(out))(scope)
             if attrs.index && !scope.$index?

@@ -282,14 +282,16 @@ angular.module('Engine2')
 
         traverse: (routes) ->
             menu_tmpl = _.template("<li><a href='{{href}}'>{{icon}}{{aicon}} {{loc}}</a></li>")
-            menu_sub_tmpl = _.template("<li e2-dropdown='{{dropdown}}'><a href='javascript://'>{{icon}}{{aicon}} {{loc}}<span class='caret'></span></a></li>")
+            menu_sub_tmpl = _.template("<li e2-dropdown='{{dropdown}}' data-animation='{{animation}}'><a href='javascript://'>{{icon}}{{aicon}} {{loc}}<span class='caret'></span></a></li>")
+            animation = @meta.menus.menu.properties.animation
             out = routes.map (route, i) ->
                 if route.menu
                     menu_sub_tmpl
+                        dropdown: "routes[#{i}].menu.entries"
+                        animation: animation
                         icon: route.menu.icon && E2.icon(route.menu.icon) || ""
                         aicon: route.menu.aicon && E2.aicon(route.menu.aicon) || ""
                         loc: route.menu.loc
-                        dropdown: "routes[#{i}].menu.entries"
                 else
                     menu_tmpl
                         href: route.href
