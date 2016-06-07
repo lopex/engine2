@@ -281,7 +281,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
             $injector.get('E2').fetch_panel(scope.action.meta.panel, true).then (template) ->
                 # template = "<div class='modal' ng-class='action.meta.panel.class'>#{template}</div>"
-                modal = $modal(scope: scope, template: template, backdrop: manager.backdrop(), animation: 'am-fade', show: false)
+                modal = $modal(scope: scope, template: template, backdrop: manager.backdrop(), animation: scope.action.meta.panel.animation ? 'am-fade', show: false)
                 scope.action.modal_hide = -> modal.$scope.$hide()
                 modal.$promise.then ->
                     modal.show()
@@ -449,7 +449,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             elem.off "mousedown"
             # event.preventDefault()
             # event.stopPropagation()
-            dropdown = $dropdown(elem, (scope: scope, template: render($parse(attrs.e2Dropdown)(scope), 0), animation: 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
+            menu = $parse(attrs.e2Dropdown)(scope)
+            dropdown = $dropdown(elem, (scope: scope, template: render(menu, 0), animation: 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
             dropdown.$promise.then ->
                 event_hide = scope.$on "#{event_num}.tooltip.hide", (e) ->
                     e.stopPropagation()
