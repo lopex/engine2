@@ -412,7 +412,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             elem.empty()
             elem.append($compile(out)(scope)) unless out.length == 0 # leak ?
 
-.directive 'e2DropDown', ($parse, $dropdown, $timeout, E2Snippets) ->
+.directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
     dropdown_sub_tmpl = _.template("<li class='dropdown-submenu'><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
     dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a href='{{href}}' {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
@@ -449,7 +449,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             elem.off "mousedown"
             # event.preventDefault()
             # event.stopPropagation()
-            dropdown = $dropdown(elem, (scope: scope, template: render($parse(attrs.e2DropDown)(scope), 0), animation: 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
+            dropdown = $dropdown(elem, (scope: scope, template: render($parse(attrs.e2Dropdown)(scope), 0), animation: 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
             dropdown.$promise.then ->
                 event_hide = scope.$on "#{event_num}.tooltip.hide", (e) ->
                     e.stopPropagation()
@@ -466,7 +466,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
 .directive 'e2ButtonSet', ($parse, $compile, E2Snippets) ->
     button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}}{{aicon}} {{loc}}</div>")
-    button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-drop-down='{{dropdown}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
+    button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-dropdown='{{dropdown}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
     scope: true # because $index
     link: (scope, elem, attrs) ->
         menu = $parse(attrs.e2ButtonSet)(scope)
