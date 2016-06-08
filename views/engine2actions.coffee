@@ -654,7 +654,7 @@ angular.module('Engine2')
 
         invoke_decode: (recs, f) ->
             if @multiple && _.size(recs) > @meta.show_max_selected
-                @decode = "#{_.size(recs)} #{@meta.decode_selected}"
+                @decode = "#{_.size(recs)} #{@meta.loc.decode_selected}"
             else
                 decode_descriptions = (recs) => @decode = recs.map((fields) => @decode_description(fields)).join(' | ')
                 recs = recs.map (r) => if _.isArray(r) then E2.from_id(r, @meta) else r

@@ -36,7 +36,7 @@ module Engine2
                 decode = assoc[:model].type_info[assoc[:keys].first][:decode]
                 if decode[:search][:multiple]
                     show_max_selected 3
-                    @meta[:decode_selected] = LOCS[:decode_selected]
+                    loc! decode_selected: LOCS[:decode_selected]
                 end
             end
         end
