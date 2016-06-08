@@ -395,7 +395,7 @@ module E2Model
                 end
             when Sequel::SQL::QualifiedIdentifier
                 yield sel.table, sel.column, al
-            when Sequel::SQL::AliasedExpression
+            when Sequel::SQL::AliasedExpression, Sequel::SQL::Function
                 sel
                 # extract_select sel.expression, sel.aliaz, &blk
                 # expr = sel.expression
