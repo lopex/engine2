@@ -1,10 +1,9 @@
-e2-action action="[action.meta.info[f].assoc, 'typeahead']"
+e2-action action="[info.assoc, 'typeahead']"
   .col-lg-3.col-md-4.col-sm-5
     .form-group
       .input-group.input-group-sm
         input.btn.btn-default [
           type="text"
-          ng-init="info = action.meta.info[f]"
           ng-model="action.decode"
           bs-options="v.value for v in action.load($viewValue)"
           ng-keypress="action.key_pressed = true"

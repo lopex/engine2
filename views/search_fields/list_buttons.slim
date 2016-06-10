@@ -1,8 +1,8 @@
 .col-lg-3.col-md-4.col-sm-5
   /.container
   .form-group
-    .btn-group.btn-group-sm ng-init="info = action.meta.info[f]" ng-model="action.query.search[f]" e2-search-field=""
+    .btn-group.btn-group-sm ng-model="action.query.search[f]" e2-search-field=""
       a.btn.btn-default ng-class="action.query.search[f] == v[0] && 'active'" ng-click="action.query.search[f] = v[0]; action.search_field_change(f)" ng-repeat="v in info.render.list" ng-bind-html="v[1]"
       a.btn.btn-default ng-disabled="action.query.search[f] == null" ng-click="action.query.search[f] = null; action.search_field_change(f)"
-        span ng-bind="::action.meta.info[f].loc"
+        span ng-bind="::info.loc"
         span.glyphicon.glyphicon-off<

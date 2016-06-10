@@ -2,7 +2,6 @@
   .form-group
     .input-group.input-group-sm
       select.btn.btn-default [
-        ng-init="info = action.meta.info[f]"
         ng-model="action.query.search[f]"
         ng-options="v[0] as v[1] for v in info.render.list"
         ng-change="action.search_field_change(f)"
@@ -10,7 +9,7 @@
         class="form-control"
         e2-search-field=""
       ]
-        option value="" ng-bind="::action.meta.info[f].loc"
+        option value="" ng-bind="::info.loc"
 
       .input-group-btn
         a.btn.btn-default ng-disabled="action.query.search[f] == null" ng-click="action.query.search[f] = null; action.search_field_change(f)"

@@ -3,7 +3,6 @@
     .input-group.input-group-sm
       button.btn.btn-default [
         type="button"
-        ng-init="info = action.meta.info[f]"
         ng-model="action.query.search[f]"
         bs-options="v[0] as v[1] for v in info.render.list"
         data-html="true"

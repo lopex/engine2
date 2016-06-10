@@ -2,14 +2,14 @@
   .panel-body
     form
       span ng-if="::!action.meta.tabs"
-        span ng-repeat="f in action.meta.search_fields track by $index" ng-if="!action.meta.info[f].hidden_search"
-          e2-include template="action.meta.info[f].render.template"
+        span ng-repeat="f in action.meta.search_fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
+          e2-include template="info.render.template"
       span ng-if="::action.meta.tabs"
         div bs-tabs="" ng-init="action.ui_state.search_tab = (action.ui_state.search_tab + 0) <= 0 ? 0 : action.ui_state.search_tab" bs-active-pane="action.ui_state.search_tab"
           div ng-repeat="t in ::action.meta.tabs track by $index" title="{{::t.loc}}" bs-pane=""
             br
-            span ng-repeat="f in t.fields track by $index" ng-if="!action.meta.info[f].hidden_search"
-              e2-include template="action.meta.info[f].render.template"
+            span ng-repeat="f in t.fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
+              e2-include template="info.render.template"
 
       .btn-group.btn-group-sm.pull-right
         button.btn.btn-default ng-click="action.load_new()"

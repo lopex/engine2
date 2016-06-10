@@ -1,11 +1,11 @@
 input [
   type="checkbox"
   ng-model="action.query.search[f]"
-  ng-true-value="{{::action.meta.info[f].render.true_value}}"
-  ng-false-value="{{::action.meta.info[f].render.false_value}}"
+  ng-true-value="{{::info.render.true_value}}"
+  ng-false-value="{{::info.render.false_value}}"
 
   xe2-search-field=""
 ]
 
-/ ng-false-value="{{action.meta.info[f].render.false_value}}"
+/ ng-false-value="{{info.render.false_value}}"
 / ng-init="action.record[f] = '0'"

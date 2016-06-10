@@ -4,11 +4,11 @@
     bs-buttons-radio=""
     ng-change="action.search_field_change(f)"
   ]
-    button.btn.btn-default type="button" value="{{action.meta.info[f].render.true_value}}": span.glyphicon.glyphicon-ok
-    button.btn.btn-default type="button" value="{{action.meta.info[f].render.false_value}}": span.glyphicon.glyphicon-remove
+    button.btn.btn-default type="button" value="{{info.render.true_value}}": span.glyphicon.glyphicon-ok
+    button.btn.btn-default type="button" value="{{info.render.false_value}}": span.glyphicon.glyphicon-remove
     button.btn.btn-default type="button" ng-disabled="!action.query.search[f]": span.glyphicon.glyphicon-off
-  span ng-bind="::action.meta.info[f].loc"
+  span ng-bind="::info.loc"
 
-/input type="checkbox" id="{{f}}" ng-model="action.query.search[f]" ng-true-value="{{action.meta.info[f].render.true_value}}" ng-false-value="{{action.meta.info[f].render.false_value}}"
-/ ng-false-value="{{action.meta.info[f].render.false_value}}"
+/input type="checkbox" id="{{f}}" ng-model="action.query.search[f]" ng-true-value="{{info.render.true_value}}" ng-false-value="{{info.render.false_value}}"
+/ ng-false-value="{{info.render.false_value}}"
 / ng-init="action.record[f] = '0'"
