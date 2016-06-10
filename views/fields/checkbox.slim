@@ -1,7 +1,7 @@
 .col-lg-1
   .checkbox
     input [
-      ng-init="info = action.meta.info[f]; action.record[f] = action.record[f] || info.render.false_value"
+      ng-init="action.record[f] = action.record[f] || info.render.false_value"
       type="checkbox"
       ng-model="action.record[f]"
       ng-true-value="{{::info.render.true_value}}"

@@ -1,8 +1,7 @@
 /.col-lg-7.col-md-8.col-sm-12
-div e2-input-cols="{{::action.meta.info[f].render.length}}"
+div e2-input-cols="{{::info.render.length}}"
   button.btn.btn-default.btn-sm [
     type="button"
-    ng-init="info = action.meta.info[f]"
     ng-model="action.record[f]"
     bs-options="v[0] as v[1] for v in info.render.list"
     data-html="true"

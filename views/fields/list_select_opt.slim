@@ -1,8 +1,7 @@
 /.col-lg-7.col-md-8.col-sm-12
-div e2-input-cols="{{::action.meta.info[f].render.length}}"
+div e2-input-cols="{{::info.render.length}}"
   .input-group.input-group-sm
     select.btn.btn-default.btn-sm [
-      ng-init="info = action.meta.info[f]"
       ng-model="action.record[f]"
       ng-options="v[0] as v[1] for v in info.render.list"
       ng-disabled="info.disabled"
@@ -11,5 +10,5 @@ div e2-input-cols="{{::action.meta.info[f].render.length}}"
       e2-field=""
     ]
     .input-group-btn
-      a.btn.btn-default ng-disabled="action.meta.info[f].disabled || action.record[f] == null" ng-click="action.record[f] = null"
+      a.btn.btn-default ng-disabled="info.disabled || action.record[f] == null" ng-click="action.record[f] = null"
         span.glyphicon.glyphicon-remove

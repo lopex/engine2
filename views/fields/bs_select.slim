@@ -2,9 +2,9 @@
   select [
     ng-model="action.record[f]"
     bs-options="v.id as v.value for v in values"
-    select-resource="action.meta.info[f].render.resource"
+    select-resource="info.render.resource"
     bs-select=""
-    ng-disabled="action.meta.info[f].disabled"
+    ng-disabled="info.disabled"
     class="form-control input-sm"
     e2-field=""
   ]

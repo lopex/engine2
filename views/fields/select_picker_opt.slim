@@ -1,8 +1,7 @@
-e2-action action="[action.meta.info[f].assoc, 'list']"
+e2-action action="[info.assoc, 'list']"
   .col-lg-7.col-md-12.col-sm-12
     .input-group.input-group-sm
       select.btn.btn-default.btn-sm [
-        ng-init="info = action.meta.info[f]"
         ng-model="action.selected"
         ng-options="v.id as v.value for v in action.values"
         ng-change="action.change()"
