@@ -67,6 +67,11 @@ module Engine2
             end
         end
 
+        def boolean_field field
+            define_field field, :boolean do |info|
+            end
+        end
+
         def date_field field, format, model_format
             define_field field, :date do |info|
                 info[:format] = format
