@@ -88,6 +88,10 @@ angular.module('Engine2')
                         throw "Attempted parent merge for root action: #{info.name}" unless prnt
                         E2.merge(prnt, response.data)
 
+                    if @$execute?
+                        @scope().$eval(@$execute)
+                        delete @$execute
+
                     globals.action_pending = false
                     if @meta.panel && !@action_invoked
                         @action_invoked = true
