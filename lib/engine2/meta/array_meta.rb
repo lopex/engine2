@@ -7,7 +7,7 @@ module Engine2
 
         (DefaultFilters ||= {}).merge!(
             string: lambda{|entries, name, value, type_info, hash|
-                entries.select{|e|e[name][value]}
+                entries.select{|e|e[name].to_s[value]}
             },
             integer: lambda{|entries, name, value, type_info, hash|
                 if value.is_a? Hash
@@ -41,7 +41,7 @@ module Engine2
             if order_str = params[:order]
                 order = order_str.to_sym
                 handler.permit lookup(:info, order, :sort)
-                entries = entries.sort_by{|e|e[order]}
+                entries = entries.sort_by{|e|e[order].to_s}
                 entries = entries.reverse if params[:asc] == "true"
             end
 
