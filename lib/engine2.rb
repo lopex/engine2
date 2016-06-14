@@ -19,6 +19,7 @@ require 'engine2/version'
     action.rb
     scheme.rb
 
+    meta/array_meta.rb
     meta/list_meta.rb
     meta/view_meta.rb
     meta/form_meta.rb
