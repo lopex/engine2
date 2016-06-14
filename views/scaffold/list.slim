@@ -5,7 +5,7 @@ div
       table.table.table-striped.table-condensed.table-hover
         thead
           tr
-            th
+            th class="{{::action.meta.menus.menu.properties.class}}"
               div e2-button-set="action.meta.menus.menu"
             th ng-repeat="f in action.meta.fields" ng-init="info = action.meta.info[f]"
               a> ng-if="info.sort" ng-click="action.order(f)" title="{{::info.title}}": strong ng-bind="::info.loc"
