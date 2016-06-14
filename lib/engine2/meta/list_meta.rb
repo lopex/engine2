@@ -123,7 +123,7 @@ module Engine2
                     name = model.type_info[name] ? name.qualify(model.table_name) : Sequel.expr(name)
                     filter.(query, name, value, type_info, hash)
                 else
-                    raise E2Error.new("Filter not found for field #{name} in model #{model}") unless filter
+                    raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
                 end
 
                 handler.permit query
