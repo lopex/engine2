@@ -132,20 +132,17 @@ angular.module('Engine2')
 
         invoke: ->
             args = arguments
-            @pre_invoke(args...)
-            @perform_invoke(args...).then (response) =>
-                @post_invoke(args...)
-                @
-
-        repeat_invoke: ->
-            args = arguments
-            delay = args[0]?.delay ? 1000
-            invoke = =>
-                @invoke(args...)
-                $timeout invoke, delay
-
-            invoke()
-            @scope().$on "$destroy", -> invoke = ->
+            if repeat = args[0]?.repeat
+                delete args[0].repeat
+                invoke = =>
+                    @invoke(args...)
+                    $timeout invoke, repeat
+                invoke()
+            else
+                @pre_invoke(args...)
+                @perform_invoke(args...).then (response) =>
+                    @post_invoke(args...)
+                    @
 
         save_state: () ->
             _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
