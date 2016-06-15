@@ -41,7 +41,7 @@ module Engine2
                     extend MetaPanelSupport, MetaMenuSupport
                     modal_action
                     panel_template 'infra/inspect'
-                    panel_title "Inspect"
+                    panel_title "#{:wrench.icon} Inspect"
                     panel_class "modal-huge"
                     menu(:panel_menu).option :cancel, icon: "remove"
 
