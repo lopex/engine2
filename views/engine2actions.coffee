@@ -107,7 +107,7 @@ angular.module('Engine2')
             get_meta = if !info.terminal || info.meta
                 $http.get("#{info.action_resource}/meta", cache: true).then (response) =>
                     if info.recheck_access
-                        $http.get("#{info.action_resource}/meta", params: (access: true, parent_id: @current_id)).then (aresponse) ->
+                        $http.get("#{info.action_resource}/meta", params: (access: true, parent_id: @current_id())).then (aresponse) ->
                             response.data.actions[k].access = v for k, v of aresponse.data
                             response
                     else response # $q.when ^
@@ -364,8 +364,11 @@ angular.module('Engine2')
         #     @current_id = E2.id_for(@entries[index], @meta)
         #     @invoke_action(assoc)
 
-        current_entry: () ->
+        current_entry: ->
             @entries[@current_index]
+
+        current_id: ->
+            E2.id_for(@current_entry(), @meta)
 
         list_cell: (e, f) ->
             E2.render_field(e, f, @meta)
@@ -738,7 +741,7 @@ angular.module('Engine2')
     star_to_many_list: class StarToManyList extends ListAction
         initialize: ->
             super()
-            @query.parent_id = @parent().current_id
+            @query.parent_id = @parent().current_id()
 
         # link_list: implicit
         item_menu_confirm_unlink: (index) ->
