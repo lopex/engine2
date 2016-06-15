@@ -138,6 +138,7 @@ angular.module('Engine2')
                     @invoke(args...)
                     $timeout invoke, repeat
                 invoke()
+                @scope().$on "$destroy", -> invoke = ->
             else
                 @pre_invoke(args...)
                 @perform_invoke(args...).then (response) =>
