@@ -270,7 +270,7 @@ angular.module('Engine2')
                 if route.menu then @register(route.menu.entries) else
                     name = '/' + route.name
                     route.href = '#' + route.name
-                    $templateCache.put(route.name, "<div e2-action='' action=\"'#{route.bootstrap}/#{route.name}'\" invoke='true'></div>") if route.bootstrap
+                    $templateCache.put(route.name, "<div e2-action='' action=\"'#{if route.bootstrap == true then '' else route.bootstrap + '/'}#{route.name}'\" invoke='true'></div>") if route.bootstrap?
                     $route.routes[name] =
                         reloadOnSearch: true
                         templateUrl: route.name
