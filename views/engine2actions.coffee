@@ -79,6 +79,10 @@ angular.module('Engine2')
             globals.action_pending = if @meta.panel then @ else @parent()
 
             get_invoke.then (response) =>
+                if exec = response.data.$execute
+                    @scope().$eval(exec)
+                    delete response.data.$execute
+
                 E2.merge(@, response.data)
                 @process_meta()
                 (if @meta.reload_routes then $route.load_routes() else $q.when({})).then =>
@@ -87,10 +91,6 @@ angular.module('Engine2')
                         prnt = @parent()
                         throw "Attempted parent merge for root action: #{info.name}" unless prnt
                         E2.merge(prnt, response.data)
-
-                    if @$execute?
-                        @scope().$eval(@$execute)
-                        delete @$execute
 
                     globals.action_pending = false
                     if @meta.panel && !@action_invoked
