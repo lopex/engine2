@@ -72,7 +72,7 @@ angular.module('Engine2')
         perform_invoke: (params) ->
             info = @action_info()
             get_invoke = if info.invokable
-                params.initial = true if !@action_invoked && params && info.method == 'get'
+                (params ?= {}).initial = true if @meta.panel && !@action_invoked && info.method == 'get'
                 $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
             else $q.when(data: (response: {}))
 
