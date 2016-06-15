@@ -52,7 +52,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         _.each(o.class, (v, k) -> out.push "#{k}: #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
-.factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, e2HttpInterceptor, $route, $dateFormatter) ->
+.factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, e2HttpInterceptor, $route, $dateFormatter, $parse) ->
     globals: {}
 
     compact: (o) ->
@@ -131,7 +131,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             else
                 action[fun_name] ?= (args...) ->
                     processor.arg_fun(action, args...)
-                    action.invoke_action(m.name, processor.arg_ret(action))
+                    args = processor.arg_ret(action)
+                    _.merge(args, $parse(m.arguments)(action.scope())) if m.arguments?
+                    action.invoke_action(m.name, args)
 
             if action.find_action_info(m.name, false)?
                 show = if m.show then " && " + m.show else ""
@@ -140,12 +142,12 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     menu_processors:
         menu:
             arg_name: ''
-            arg_fun: (action) -> undefined
-            arg_ret: (action) -> undefined
+            arg_fun: (action) -> {}
+            arg_ret: (action) -> {}
         panel_menu:
             arg_name: ''
-            arg_fun: (action) -> undefined
-            arg_ret: (action) -> undefined
+            arg_fun: (action) -> {}
+            arg_ret: (action) -> {}
         item_menu:
             arg_name: '$index'
             arg_ret: (action) -> id: action.current_id
