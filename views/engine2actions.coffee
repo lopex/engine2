@@ -137,6 +137,16 @@ angular.module('Engine2')
                 @post_invoke(args...)
                 @
 
+        repeat_invoke: ->
+            args = arguments
+            delay = args[0]?.delay ? 1000
+            invoke = =>
+                @invoke(args...)
+                $timeout invoke, delay
+
+            invoke()
+            @scope().$on "$destroy", -> invoke = ->
+
         save_state: () ->
             _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
         load_state: () ->
