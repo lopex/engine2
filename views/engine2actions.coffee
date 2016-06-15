@@ -364,6 +364,9 @@ angular.module('Engine2')
         #     @current_id = E2.id_for(@entries[index], @meta)
         #     @invoke_action(assoc)
 
+        current_entry: () ->
+            @entries[@current_index]
+
         list_cell: (e, f) ->
             E2.render_field(e, f, @meta)
 

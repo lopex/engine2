@@ -142,16 +142,17 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     menu_processors:
         menu:
             arg_name: ''
-            arg_fun: (action) -> {}
+            arg_fun: (action) ->
             arg_ret: (action) -> {}
         panel_menu:
             arg_name: ''
-            arg_fun: (action) -> {}
+            arg_fun: (action) ->
             arg_ret: (action) -> {}
         item_menu:
             arg_name: '$index'
             arg_ret: (action) -> id: action.current_id
             arg_fun: (action, index) ->
+                action.current_index = index
                 action.current_id = $injector.get('E2').id_for(action.entries[index], action.meta)
 
     renderers:
