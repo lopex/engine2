@@ -143,6 +143,9 @@ angular.module('Engine2')
                 @pre_invoke(args...)
                 @perform_invoke(args...).then (response) =>
                     @post_invoke(args...)
+                    if execute = args[0]?.execute
+                        delete args[0].execute
+                        @scope().$eval(execute)
                     @
 
         save_state: () ->
