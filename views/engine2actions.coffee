@@ -134,9 +134,7 @@ angular.module('Engine2')
             args = arguments
             if repeat = args[0]?.repeat
                 delete args[0].repeat
-                invoke = =>
-                    @invoke(args...)
-                    $timeout invoke, repeat
+                invoke = => @invoke(args...).then(-> $timeout invoke, repeat)
                 invoke()
                 @scope().$on "$destroy", -> invoke = ->
             else
