@@ -185,7 +185,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             if f_info? && type = f_info.type
                 @renderers[type](value, f_info.render)
             else
-                (value + "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                if f_info.escape == false then value else
+                    (value + "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
         else
             value
 
