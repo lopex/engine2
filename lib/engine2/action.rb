@@ -9,6 +9,10 @@ module Engine2
 
         class << self
             attr_accessor :count
+
+            def default_meta
+                DummyMeta
+            end
         end
 
         def initialize parent, name, meta_class, assets
@@ -46,7 +50,7 @@ module Engine2
             result
         end
 
-        def define_action name, meta_class = DummyMeta, assets = {}, &blk
+        def define_action name, meta_class = Action.default_meta, assets = {}, &blk
             ::Kernel.raise E2Error.new("Action #{name} already defined") if @actions[name]
             action = @actions[name] = Action.new(self, name, meta_class, assets)
             action.*.pre_run
@@ -59,13 +63,13 @@ module Engine2
             action
         end
 
-        def define_action_meta name, meta_class = DummyMeta, assets = {}, &blk
+        def define_action_meta name, meta_class = Action.default_meta, assets = {}, &blk
             define_action name, meta_class, assets do
                 self.* &blk
             end
         end
 
-        def define_action_invoke name, meta_class = DummyMeta, assets = {}, &blk
+        def define_action_invoke name, meta_class = Action.default_meta, assets = {}, &blk
             define_action name, meta_class, assets do
                 self.*.define_singleton_method(:invoke, &blk)
             end
