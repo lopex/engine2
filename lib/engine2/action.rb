@@ -11,7 +11,7 @@ module Engine2
             attr_accessor :count
 
             def default_meta
-                DummyMeta
+                Class.new(InlineMeta){meta_type :inline}
             end
         end
 

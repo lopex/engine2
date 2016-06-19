@@ -126,8 +126,8 @@ module Engine2
         end
     end
 
-    class DummyMeta < Meta
-        meta_type :dummy
+    class InlineMeta < Meta
+        meta_type :inline
     end
 
     class RootMeta < Meta
