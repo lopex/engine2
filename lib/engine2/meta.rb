@@ -127,7 +127,19 @@ module Engine2
     end
 
     class InlineMeta < Meta
+        def self.define_invoke &blk
+            define_method :invoke, &blk
+        end
+
         meta_type :inline
+        def invoke *args, &blk
+            check_static_meta
+            if block_given?
+                self.class.define_invoke &blk
+            else
+                raise E2Error.new("Invoke is not defined")
+            end
+        end
     end
 
     class RootMeta < Meta
