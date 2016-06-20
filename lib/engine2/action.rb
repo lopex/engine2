@@ -71,7 +71,7 @@ module Engine2
 
         def define_action_invoke name, meta_class = Action.default_meta, assets = {}, &blk
             define_action name, meta_class, assets do
-                self.*.define_singleton_method(:invoke, &blk)
+                self.*.define_invoke &blk
             end
         end
 
@@ -105,8 +105,7 @@ module Engine2
                     access: recheck_access ? nil : a.check_access!(handler),
                     recheck_access: a.recheck_access,
                     terminal: a.actions.empty?,
-                    meta: !meta.get.empty?,
-                    invokable: meta.invokable
+                    meta: !meta.get.empty?
                 }
                 h
             end

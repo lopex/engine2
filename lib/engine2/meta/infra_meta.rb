@@ -18,7 +18,7 @@ module Engine2
 
                 @meta_type = :infra
 
-                def invoke handler
+                define_invoke do |handler|
                     user = handler.user
                     {user: user ? user.to_hash : nil}
                 end
@@ -52,29 +52,25 @@ module Engine2
                         @meta_type = :inspect
                     end
 
-                    define_action :models do
-                        def (self.*).invoke handler
-                            {models: Sequel::DATABASES.map{|db| {name: db.uri, models: db.models.keys} }}
-                        end
+                    define_action_invoke :models do |handler|
+                        {models: Sequel::DATABASES.map{|db| {name: db.uri, models: db.models.keys} }}
                     end
 
-                    define_action :model_info do
-                        def (self.*).invoke handler
-                            db_name = handler.params[:db]
-                            handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
-                            handler.permit model = db.models[handler.params[:model].to_sym]
-                            {
-                                model!: {
-                                    info: {
-                                        name: model.to_s,
-                                        table: model.table_name
-                                    },
-                                    assoc: model.association_reflections,
-                                    schema: model.db_schema,
-                                    type_info: model.type_info
-                                }
+                    define_action_invoke :model_info do |handler|
+                        db_name = handler.params[:db]
+                        handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
+                        handler.permit model = db.models[handler.params[:model].to_sym]
+                        {
+                            model!: {
+                                info: {
+                                    name: model.to_s,
+                                    table: model.table_name
+                                },
+                                assoc: model.association_reflections,
+                                schema: model.db_schema,
+                                type_info: model.type_info
                             }
-                        end
+                        }
                     end
                 end
             end

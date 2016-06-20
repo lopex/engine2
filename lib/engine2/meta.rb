@@ -1,7 +1,7 @@
 # coding: utf-8
 module Engine2
     class Meta
-        attr_reader :action, :assets, :invokable, :static
+        attr_reader :action, :assets, :static
 
         class << self
             def meta_type mt = nil
@@ -36,6 +36,11 @@ module Engine2
 
         def check_static_meta
             raise E2Error.new("Static meta required") if dynamic?
+        end
+
+        def define_invoke &blk
+            check_static_meta
+            self.class.class_eval{define_method :invoke, &blk}
         end
 
         def invoke! handler
@@ -114,7 +119,7 @@ module Engine2
         end
 
         def post_run
-            @invokable = respond_to?(:invoke)
+            @meta[:invokable] = false unless respond_to?(:invoke)
             post_process
         end
 
@@ -127,19 +132,7 @@ module Engine2
     end
 
     class InlineMeta < Meta
-        def self.define_invoke &blk
-            define_method :invoke, &blk
-        end
-
         meta_type :inline
-        def invoke *args, &blk
-            check_static_meta
-            if block_given?
-                self.class.define_invoke &blk
-            else
-                raise E2Error.new("Invoke is not defined")
-            end
-        end
     end
 
     class RootMeta < Meta

@@ -71,10 +71,9 @@ angular.module('Engine2')
 
         perform_invoke: (params) ->
             info = @action_info()
-            get_invoke = if info.invokable
+            get_invoke = if @meta.invokable == false then $q.when(data: (response: {})) else
                 (params ?= {}).initial = true if @meta.panel && !@action_invoked && info.method == 'get'
                 $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
-            else $q.when(data: (response: {}))
 
             globals.action_pending = if @meta.panel then @ else @parent()
 
@@ -312,8 +311,6 @@ angular.module('Engine2')
                         icon: route.icon && E2.icon(route.icon) || ''
                         aicon: route.aicon && E2.aicon(route.aicon) || ''
             out.join('')
-
-    # dummy: class DummyAction extends Action
 
     list: class ListAction extends Action
         initialize: ->

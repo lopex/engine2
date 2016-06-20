@@ -77,7 +77,7 @@ module Engine2
             response = if is_meta
                 params[:access] ? action.access_info(self) : {meta: meta.get, actions: action.actions_info(self)}
             else
-                if meta.http_method == verb && meta.invokable
+                if meta.http_method == verb && meta.get[:invokable] != false
                     begin
                         meta.invoke!(self)
                     rescue => error
