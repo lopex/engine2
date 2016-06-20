@@ -131,18 +131,15 @@ angular.module('Engine2')
 
         invoke: ->
             args = arguments
-            if repeat = args[0]?.repeat
-                delete args[0].repeat
-                invoke = => @invoke(args...).then(-> $timeout invoke, repeat)
-                invoke()
-                @scope().$on "$destroy", -> invoke = ->
+            if repeat = @meta.repeat
+                delete @meta.repeat
+                ivk = => @invoke(args...).then -> $timeout ivk, repeat
+                ivk()
+                @scope().$on "$destroy", -> ivk = ->
             else
                 @pre_invoke(args...)
                 @perform_invoke(args...).then (response) =>
                     @post_invoke(args...)
-                    if execute = args[0]?.execute
-                        delete args[0].execute
-                        @scope().$eval(execute)
                     @
 
         save_state: () ->

@@ -56,6 +56,10 @@ module Engine2
             end
         end
 
+        def repeat time
+            @meta[:repeat] = time
+        end
+
         def get
             @meta
         end
