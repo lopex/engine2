@@ -140,6 +140,7 @@ angular.module('Engine2')
                 @pre_invoke(args...)
                 @perform_invoke(args...).then (response) =>
                     @post_invoke(args...)
+                    @scope().$eval(@meta.execute) if @meta.execute
                     @
 
         save_state: () ->
