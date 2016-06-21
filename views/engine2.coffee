@@ -283,8 +283,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 scope.$destroy()
 
             $injector.get('E2').fetch_panel(scope.action.meta.panel, true).then (template) ->
-                # template = "<div class='modal' ng-class='action.meta.panel.class'>#{template}</div>"
-                modal = $modal(scope: scope, template: template, backdrop: manager.backdrop(), animation: scope.action.meta.panel.animation ? 'am-fade', show: false)
+                modal = $modal(scope: scope, template: template, backdrop: scope.action.meta.backdrop ? manager.backdrop(), animation: scope.action.meta.panel.animation ? 'am-fade', show: false)
                 scope.action.modal_hide = -> modal.$scope.$hide()
                 modal.$promise.then ->
                     modal.show()
