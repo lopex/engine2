@@ -276,10 +276,13 @@ angular.module('Engine2')
                 if route.menu then @register(route.menu.entries) else
                     name = '/' + route.name
                     route.href = '#' + route.name
-                    $templateCache.put(route.name, "<div e2-action='' action=\"'#{if route.bootstrap == true then '' else route.bootstrap + '/'}#{route.name}'\" invoke='true'></div>") if route.bootstrap?
+                    if route.bootstrap?
+                        action = if route.bootstrap == true then '' else route.bootstrap + '/'
+                        $templateCache.put(route.name + '_route_template!', "<div e2-action='' action=\"'#{action}#{route.name}'\" invoke='true'></div>")
+
                     $route.routes[name] =
                         reloadOnSearch: true
-                        templateUrl: route.name
+                        templateUrl: if route.bootstrap? then route.name + '_route_template!' else route.name
                         originalPath: name
                         regexp: new RegExp("^#{name}$")
                         keys: []
