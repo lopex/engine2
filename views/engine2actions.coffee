@@ -131,17 +131,16 @@ angular.module('Engine2')
 
         invoke: ->
             args = arguments
-            if repeat = @meta.repeat
-                delete @meta.repeat
-                ivk = => @invoke(args...).then -> $timeout ivk, repeat
-                ivk()
-                @scope().$on "$destroy", -> ivk = ->
-            else
-                @pre_invoke(args...)
-                @perform_invoke(args...).then (response) =>
-                    @post_invoke(args...)
-                    @scope().$eval(@meta.execute) if @meta.execute
-                    @
+            @pre_invoke(args...)
+            @perform_invoke(args...).then (response) =>
+                @post_invoke(args...)
+                @scope().$eval(@meta.execute) if @meta.execute
+                if @meta.repeat
+                    unless @meta.destroy_repeat
+                        @scope().$on("$destroy", => delete @meta.repeat)
+                        @meta.destroy_repeat = true
+                    $timeout (=> @invoke(args...)), @meta.repeat
+                @
 
         save_state: () ->
             _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
