@@ -116,8 +116,8 @@ angular.module('Engine2')
             ,
             (err) => @handle_error(err, info, el)
 
-        invoke_action: (name, arg) ->
-            @create_action(name, @scope()).then (act) -> act.invoke(arg)
+        invoke_action: (name, args) ->
+            @create_action(name, @scope()).then (act) -> act.invoke(args)
 
         create_action_path: (action_names, sc, elem) ->
             last_name = action_names.pop()
@@ -129,17 +129,16 @@ angular.module('Engine2')
         pre_invoke: ->
         post_invoke: ->
 
-        invoke: ->
-            args = arguments
-            @pre_invoke(args...)
-            @perform_invoke(args...).then (response) =>
-                @post_invoke(args...)
+        invoke: (args) ->
+            @pre_invoke(args)
+            @perform_invoke(args).then (response) =>
+                @post_invoke(args)
                 @scope().$eval(@meta.execute) if @meta.execute
                 if @meta.repeat
                     unless @meta.destroy_repeat
                         @scope().$on("$destroy", => delete @meta.repeat)
                         @meta.destroy_repeat = true
-                    $timeout (=> @invoke(args...)), @meta.repeat
+                    $timeout (=> @invoke(args)), @meta.repeat
                 @
 
         save_state: () ->
@@ -371,11 +370,11 @@ angular.module('Engine2')
         list_cell: (e, f) ->
             E2.render_field(e, f, @meta)
 
-        invoke: (arg = {}) ->
+        invoke: (args = {}) ->
             @save_state()
             query = _.cloneDeep(@query)
             delete query.search if _.isEmpty(E2.compact(query.search))
-            _.merge(query, arg)
+            _.merge(query, args)
             super(query).then =>
                 @ui = _.pick @query, ['order', 'asc', 'page']
                 @ui.pagination_active = @ui.page != 0 || @entries.length >= @meta.config.per_page
@@ -804,8 +803,8 @@ angular.module('Engine2')
                 @panel_close()
 
     star_to_many_field_unlink: class StarToManyFieldUnlink extends Action
-        invoke: (arg) ->
-            id = arg.id
+        invoke: (args) ->
+            id = args.id
             pparent = @parent().parent()
             if _.includes(pparent.links.linked, id) then _.pull(pparent.links.linked, id) else pparent.links.unlinked.push id
             pparent.sync_record()

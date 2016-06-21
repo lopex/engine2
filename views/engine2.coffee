@@ -125,12 +125,12 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             m.click = fun_invoke
 
             if click
-                action[fun_name] = (args...) ->
-                    processor.arg_fun(action, args...)
+                action[fun_name] = (arg) ->
+                    processor.arg_fun(action, arg)
                     action.scope().$eval(click)
             else
-                action[fun_name] ?= (args...) ->
-                    processor.arg_fun(action, args...)
+                action[fun_name] ?= (arg) ->
+                    processor.arg_fun(action, arg)
                     args = processor.arg_ret(action)
                     _.merge(args, $parse(m.arguments)(action.scope())) if m.arguments?
                     action.invoke_action(m.name, args)
@@ -150,8 +150,10 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             arg_ret: (action) -> {}
         item_menu:
             arg_name: '$index'
+            arg_fun: (action, index) ->
+                console.log index
+                action.current_index = index
             arg_ret: (action) -> id: action.current_id()
-            arg_fun: (action, index) -> action.current_index = index
 
     renderers:
         boolean: (value, render) =>
