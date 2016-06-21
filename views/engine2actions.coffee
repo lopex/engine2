@@ -132,7 +132,7 @@ angular.module('Engine2')
         invoke: (args) ->
             @pre_invoke(args)
             _.merge(args ?= {}, @meta.arguments) if @meta.arguments
-            @perform_invoke(args).then (response) =>
+            @perform_invoke(args).then =>
                 @post_invoke(args)
                 @scope().$eval(@meta.execute) if @meta.execute
                 if @meta.repeat
