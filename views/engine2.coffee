@@ -150,9 +150,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             arg_ret: (action) -> {}
         item_menu:
             arg_name: '$index'
-            arg_fun: (action, index) ->
-                console.log index
-                action.current_index = index
+            arg_fun: (action, index) -> action.current_index = index
             arg_ret: (action) -> id: action.current_id()
 
     renderers:
