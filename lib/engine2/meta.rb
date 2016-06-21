@@ -60,6 +60,10 @@ module Engine2
             @meta[:repeat] = time
         end
 
+        def arguments args
+            @meta[:arguments] = args
+        end
+
         def execute time
             @meta[:execute] = time
         end

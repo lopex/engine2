@@ -131,6 +131,7 @@ angular.module('Engine2')
 
         invoke: (args) ->
             @pre_invoke(args)
+            _.merge(args ?= {}, @meta.arguments) if @meta.arguments
             @perform_invoke(args).then (response) =>
                 @post_invoke(args)
                 @scope().$eval(@meta.execute) if @meta.execute
