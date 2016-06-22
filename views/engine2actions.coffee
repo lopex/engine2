@@ -145,7 +145,7 @@ angular.module('Engine2')
         save_state: () ->
             _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
         load_state: () ->
-            _.each @meta.state, (s) => E2.merge(@[s], localStorageService.get("#{globals.application}/#{@action_info().action_resource}/#{s}"))
+            _.each @meta.state, (s) => _.merge(@[s], localStorageService.get("#{globals.application}/#{@action_info().action_resource}/#{s}"))
 
         destroy: (e) ->
             console.log "DESTROY #{@action_info().action_resource}"
@@ -203,7 +203,7 @@ angular.module('Engine2')
     root: class RootAction extends Action
         initialize: ->
             super()
-            E2.merge(globals, @meta)
+            _.merge(globals, @meta)
             @meta  = {}
 
     default_action: class DefaultAction extends Action
