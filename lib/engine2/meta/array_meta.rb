@@ -6,12 +6,14 @@ module Engine2
         include MetaListSupport
 
         (DefaultFilters ||= {}).merge!(
+            exact: lambda{|entries, name, value, type_info, hash|
+                entries.select{|e|e[name] == value}
+            },
             string: lambda{|entries, name, value, type_info, hash|
                 entries.select{|e|e[name].to_s[value]}
             },
-            boolean: lambda{|entries, name, value, type_info, hash|
-                entries.select{|e|e[name] == value}
-            },
+            boolean: lambda{|*args| DefaultFilters[:exact].(*args)},
+            list_select: lambda{|*args| DefaultFilters[:exact].(*args)},
             integer: lambda{|entries, name, value, type_info, hash|
                 if value.is_a? Hash
                     from, to = value[:from], value[:to]
