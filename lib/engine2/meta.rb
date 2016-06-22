@@ -1,7 +1,7 @@
 # coding: utf-8
 module Engine2
     class Meta
-        attr_reader :action, :assets, :static
+        attr_reader :action, :assets, :static, :invokable
 
         class << self
             def meta_type mt = nil
@@ -131,7 +131,7 @@ module Engine2
         end
 
         def post_run
-            @meta[:invokable] = false unless respond_to?(:invoke)
+            respond_to?(:invoke) ? @invokable = true : @meta[:invokable] = false
             post_process
         end
 
