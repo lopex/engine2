@@ -259,32 +259,38 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 e.stopPropagation()
                 manager.modal = m.$element
                 manager.backdrop = m.$backdrop
-                throw "Modal has element" if scope.action.element?()
-                scope.action.element = -> m.$element
-                scope.action.panel_show?()
+                throw "Modal has element" if action.element?()
+                action.element = -> m.$element
+                action.panel_show?()
                 manager.show_before()
                 MManager.index++
 
             scope.$on 'modal.show', (e, m) ->
                 e.stopPropagation()
                 manager.show()
-                scope.action.panel_shown?()
+                action.panel_shown?()
 
             scope.$on 'modal.hide.before', (e) ->
                 e.stopPropagation()
                 MManager.index--
                 manager.hide_before()
-                scope.action.panel_hide?()
+                action.panel_hide?()
 
             scope.$on 'modal.hide', (e) ->
                 e.stopPropagation()
                 manager.hide()
-                scope.action.panel_hidden?()
+                action.panel_hidden?()
                 scope.$destroy()
 
-            $injector.get('E2').fetch_panel(scope.action.meta.panel, true).then (template) ->
-                modal = $modal(scope: scope, template: template, backdrop: scope.action.meta.backdrop ? manager.backdrop(), animation: scope.action.meta.panel.animation ? 'am-fade', show: false)
-                scope.action.modal_hide = -> modal.$scope.$hide()
+            $injector.get('E2').fetch_panel(action.meta.panel, true).then (template) ->
+                modal = $modal
+                    scope: scope
+                    show: false
+                    template: template
+                    backdrop: action.meta.panel.backdrop ? manager.backdrop()
+                    animation: action.meta.panel.animation ? 'am-fade'
+
+                action.modal_hide = -> modal.$scope.$hide()
                 modal.$promise.then ->
                     modal.show()
                     modal
