@@ -46,9 +46,9 @@ module Engine2
         def invoke! handler
             if rmp = @request_meta_proc
                 meta = self.class.new(action, assets, self)
-                meta.instance_exec(handler, *meta.request_meta_proc_params(handler), &rmp)
+                meta_result = meta.instance_exec(handler, *meta.request_meta_proc_params(handler), &rmp)
                 meta.post_process
-                response = meta.invoke(handler)
+                response = @requestable ? (meta_result || {}) : meta.invoke(handler)
                 response[:meta] = meta.get
                 response
             else
@@ -131,7 +131,16 @@ module Engine2
         end
 
         def post_run
-            respond_to?(:invoke) ? @invokable = true : @meta[:invokable] = false
+            if respond_to? :invoke
+                @invokable = true
+            else
+                if @request_meta_proc
+                    @invokable = true
+                    @requestable = true
+                else
+                    @meta[:invokable] = false
+                end
+            end
             post_process
         end
 
