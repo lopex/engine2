@@ -192,24 +192,6 @@ module Engine2
             end
 
             ::Kernel::puts "ACTIONS: #{Action.count}, Time: #{::Time.now - time}"
-            # verify_action_usage
-        end
-
-        def verify_action_usage
-            t = ::Time.now
-            each_action do |action|
-                meta = action.*
-                model = meta.assets[:model]
-                if model
-                    model.one_to_many_associations.each do |a|
-                    end
-                    true
-                else
-                    true
-                end
-
-            end
-            ::Kernel::puts "VERIFY #{::Time.now - t}"
         end
 
         def p *args
