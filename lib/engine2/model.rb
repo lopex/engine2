@@ -46,7 +46,7 @@ module Engine2
                 @model.primary_keys.each{|pk| (schema[pk]||={})[:primary_key] = true} if @model.primary_key
 
                 schema.each_pair do |name, db_info|
-                    @info[name] = {otype: db_info[:type]}
+                    @info[name] = {}
 
                     case db_info[:type]
                     when :integer

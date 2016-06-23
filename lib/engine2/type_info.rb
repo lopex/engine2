@@ -19,6 +19,7 @@ module Engine2
 
             info.merge!({
                 name: field,
+                otype: type,
                 type: type,
                 validations: {}
             })
