@@ -48,8 +48,7 @@ module Engine2
                             if keys.length == 1
                                 query.where(name => value)
                             else
-                                query.where(keys.map{|k| hash[k]}.transpose.map{|vals| Hash[keys.zip(vals)]}.inject{|q, c| q | c
-                                })
+                                query.where(keys.map{|k| hash[k]}.transpose.map{|vals| Hash[keys.zip(vals)]}.inject{|q, c| q | c})
                             end
                         when :list_select
                             query.where(name => value) # decode in sql query ?
