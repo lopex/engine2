@@ -13,7 +13,6 @@ module Engine2
                 entries.select{|e|e[name].to_s[value]}
             },
             boolean: lambda{|*args| DefaultFilters[:exact].(*args)},
-            list_select: lambda{|*args| DefaultFilters[:exact].(*args)},
             integer: lambda{|entries, name, value, type_info, hash|
                 if value.is_a? Hash
                     from, to = value[:from], value[:to]
@@ -68,7 +67,7 @@ module Engine2
                 type_info = get_type_info(name)
                 entries = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
                     filter.(entries, hash, handler)
-                elsif filter = DefaultFilters[type_info[:type]]
+                elsif filter = DefaultFilters[type_info[:otype]]
                     filter.(entries, name, value, type_info, hash)
                 else
                     raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
