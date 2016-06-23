@@ -190,5 +190,9 @@ module Engine2
             end
         end
 
+        Engine2::SCHEMES.define_scheme :array do |name, model|
+            define_action name, Engine2::ArrayListMeta, model: model do
+            end
+        end
     end
 end
