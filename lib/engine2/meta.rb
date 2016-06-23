@@ -934,6 +934,7 @@ module Engine2
             super
             panel_template 'scaffold/view'
             panel_title LOCS[:view_title]
+            panel[:backdrop] = true
 
             menu(:panel_menu).option :cancel, icon: "remove"
             action.parent.*.menu(:item_menu).option action.name, icon: "file", button_loc: false
