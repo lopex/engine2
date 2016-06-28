@@ -402,17 +402,19 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         scope.$on 'render_table', (a, ev) ->
             # ev.stopPropagation()
             meta = scope.action.meta
+            is_right = meta.menus.item_menu.properties.right_position
             selection = scope.action.selection
             out = ''
             _.each scope.action.entries, (e, i) ->
                 out += if selection then "<tr ng-class='action.selected_class(#{i})' class='tr_hover' ng-click='action.select(#{i}, $event)'>" else
                     row_cls = e.$row_info?.class
                     if row_cls then "<tr class=\"#{row_cls}\">" else "<tr>"
-                out += "<td><div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div></td>"
+                out += "<td><div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div></td>" unless is_right
                 _.each meta.fields, (f) ->
                     out += if col_cls = meta.info[f].column_class then "<td class='#{col_cls}'>" else "<td>"
                     out += scope.action.list_cell(e, f) ? ''
                     out += "</td>"
+                out += "<td style='text-align: right'><div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div></td>" if is_right
                 out += "</tr>"
 
             elem.empty()
