@@ -408,9 +408,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 out += if selection then "<tr ng-class='action.selected_class(#{i})' class='tr_hover' ng-click='action.select(#{i}, $event)'>" else
                     row_cls = e.$row_info?.class
                     if row_cls then "<tr class=\"#{row_cls}\">" else "<tr>"
-                out += "<td>"
-                out += "<div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div>" if meta.config.show_item_menu
-                out += "</td>"
+                out += "<td><div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div></td>"
                 _.each meta.fields, (f) ->
                     out += if col_cls = meta.info[f].column_class then "<td class='#{col_cls}'>" else "<td>"
                     out += scope.action.list_cell(e, f) ? ''
