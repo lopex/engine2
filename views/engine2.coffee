@@ -404,7 +404,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             # ev.stopPropagation()
             action = scope.action
             meta = action.meta
-            position = meta.menus.item_menu.properties.position ? 9
+            position = meta.menus.item_menu.properties.position ? 0
+            right_style = if position >= meta.fields.length then "style=\"text-align: right\"" else ""
 
             thead = ""
             fields = meta.fields.slice()
@@ -423,7 +424,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         thead += "<span #{title}>#{info.loc}</span>"
                     thead += "</th>"
                 else
-                    thead += "<th class=\"#{meta.menus.menu.properties.class || ''}\"><div e2-button-set=\"action.meta.menus.menu\"></div></th>"
+                    thead += "<th class=\"#{meta.menus.menu.properties.class || ''}\" #{right_style}><div e2-button-set=\"action.meta.menus.menu\"></div></th>"
 
             tbody = ""
             _.each action.entries, (e, i) ->
@@ -436,7 +437,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         tbody += action.list_cell(e, f) ? ''
                         tbody += "</td>"
                     else
-                        tbody += "<td><div e2-button-set=\"action.meta.menus.item_menu\" index=\"#{i}\"></div></td>"
+                        tbody += "<td #{right_style}><div e2-button-set=\"action.meta.menus.item_menu\" index=\"#{i}\"></div></td>"
                 tbody += "</tr>"
 
             elem.empty()
