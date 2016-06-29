@@ -431,7 +431,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                 tbody += if action.selection then "<tr ng-class=\"action.selected_class(#{i})\" class=\"tr_hover\" ng-click=\"action.select(#{i}, $event)\">" else
                     row_cls = e.$row_info?.class
                     if row_cls then "<tr class=\"#{row_cls}\">" else "<tr>"
-                _.each fields, (f, fi) ->
+                _.each fields, (f) ->
                     if f
                         tbody += if col_cls = meta.info[f].column_class then "<td class=\"#{col_cls}\">" else "<td>"
                         tbody += action.list_cell(e, f) ? ''
