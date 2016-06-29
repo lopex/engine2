@@ -206,7 +206,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             constructor: () ->
             backdrop_z_index: (num, index) -> angular.element(document.querySelectorAll('.modal-backdrop')).eq(num).css('z-index', index)
             modal_num: (num) -> angular.element(document.querySelectorAll('.modal')).eq(num)
-            backdrop: -> 'static'
+            backdrop: (bdr) -> bdr ? 'static'
             show_before: ->
                 @z_index = MManager.Z_INDEX + MManager.index * 2
                 @modal.css('z-index', @z_index + 1)
@@ -224,7 +224,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             constructor: () ->
                 super()
                 @threshold = 2
-            backdrop: -> if MManager.index > @threshold then false else super()
+            backdrop: (bdr) -> if MManager.index > @threshold then false else super(bdr)
             show_before: ->
                 super()
                 if MManager.index > @threshold
@@ -240,7 +240,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                     @modal_num((MManager.index - 1) - @threshold).css('display', 'block')
 
         class SingleBackdropMManager extends MManager
-            backdrop: -> if MManager.index > 0 then false else super()
+            backdrop: (bdr) -> if MManager.index > 0 then false else super(bdr)
             show_before: ->
                 super()
                 @backdrop_z_index(0, @z_index)
@@ -287,7 +287,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                     scope: scope
                     show: false
                     template: template
-                    backdrop: action.meta.panel.backdrop ? manager.backdrop()
+                    backdrop: manager.backdrop(action.meta.panel.backdrop)
                     animation: action.meta.panel.animation ? 'am-fade'
 
                 action.modal_hide = -> modal.$scope.$hide()
