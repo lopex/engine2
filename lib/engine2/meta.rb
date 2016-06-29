@@ -571,7 +571,7 @@ module Engine2
 
         def pre_run
             super
-            config.merge!(per_page: 10, use_count: false, show_item_menu: true, selectable: true) # search_active: false,
+            config.merge!(per_page: 10, use_count: false, selectable: true) # search_active: false,
 
             panel_template 'scaffold/list'
             panel_panel_template 'panels/menu_m' unless action.parent.*.assets[:model]

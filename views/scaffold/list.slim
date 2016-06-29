@@ -5,13 +5,15 @@ div
       table.table.table-striped.table-condensed.table-hover
         thead
           tr
-            th class="{{::action.meta.menus.menu.properties.class}}"
+            th class="{{::action.meta.menus.menu.properties.class}}" ng-if="::!action.meta.menus.item_menu.properties.right_position"
               div e2-button-set="action.meta.menus.menu"
             th ng-repeat="f in action.meta.fields" ng-init="info = action.meta.info[f]"
               a> ng-if="info.sort" ng-click="action.order(f)" title="{{::info.title}}": strong ng-bind="::info.loc"
               span ng-show="action.ui.order == f"
                 span.glyphicon ng-class="action.ui.asc ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down'"
               span ng-if="!info.sort" title="{{::info.title}}" ng-bind="::info.loc"
+            th class="{{::action.meta.menus.menu.properties.class}}" ng-if="::action.meta.menus.item_menu.properties.right_position" style="text-align: right"
+              div e2-button-set="action.meta.menus.menu"
         tbody e2-table-body=""
 
       span ng-if="action.ui.pagination_active"
