@@ -396,29 +396,51 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             elem.after($compile(body)(scope))
 
 .directive 'e2TableBody', ($parse, $compile) ->
+    table_tmpl = _.template("<thead><tr>{{thead}}</tr></thead><tbody>{{tbody}}</tbody>")
     scope: false
     restrict: 'A'
     link: (scope, elem, attrs) ->
         scope.$on 'render_table', (a, ev) ->
             # ev.stopPropagation()
-            meta = scope.action.meta
-            is_right = meta.menus.item_menu.properties.right_position
-            selection = scope.action.selection
-            out = ''
-            _.each scope.action.entries, (e, i) ->
-                out += if selection then "<tr ng-class='action.selected_class(#{i})' class='tr_hover' ng-click='action.select(#{i}, $event)'>" else
+            action = scope.action
+            meta = action.meta
+            position = meta.menus.item_menu.properties.position ? 9
+
+            thead = ""
+            fields = meta.fields.slice()
+            fields.splice(position, 0, null)
+            _.each fields, (f) ->
+                if f
+                    info = meta.info[f]
+                    thead += "<th>"
+                    title = if info.title then "title=\"#{info.title}\"" else ""
+                    if info.sort
+                        thead += "<a ng-click=\"action.order('#{f}')\" #{title}><strong>#{info.loc}</strong></a>"
+                        if action.ui.order == f
+                            cls = if action.ui.asc then "glyphicon-chevron-up" else "glyphicon-chevron-down"
+                            thead += " <span class=\"glyphicon #{cls}\"></span>"
+                    else
+                        thead += "<span #{title}>#{info.loc}</span>"
+                    thead += "</th>"
+                else
+                    thead += "<th class=\"#{meta.menus.menu.properties.class || ''}\"><div e2-button-set=\"action.meta.menus.menu\"></div></th>"
+
+            tbody = ""
+            _.each action.entries, (e, i) ->
+                tbody += if action.selection then "<tr ng-class=\"action.selected_class(#{i})\" class=\"tr_hover\" ng-click=\"action.select(#{i}, $event)\">" else
                     row_cls = e.$row_info?.class
                     if row_cls then "<tr class=\"#{row_cls}\">" else "<tr>"
-                out += "<td><div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div></td>" unless is_right
-                _.each meta.fields, (f) ->
-                    out += if col_cls = meta.info[f].column_class then "<td class='#{col_cls}'>" else "<td>"
-                    out += scope.action.list_cell(e, f) ? ''
-                    out += "</td>"
-                out += "<td style='text-align: right'><div e2-button-set='action.meta.menus.item_menu' index='#{i}'></div></td>" if is_right
-                out += "</tr>"
+                _.each fields, (f, fi) ->
+                    if f
+                        tbody += if col_cls = meta.info[f].column_class then "<td class=\"#{col_cls}\">" else "<td>"
+                        tbody += action.list_cell(e, f) ? ''
+                        tbody += "</td>"
+                    else
+                        tbody += "<td><div e2-button-set=\"action.meta.menus.item_menu\" index=\"#{i}\"></div></td>"
+                tbody += "</tr>"
 
             elem.empty()
-            elem.append($compile(out)(scope)) unless out.length == 0 # leak ?
+            elem.append($compile(table_tmpl thead: thead, tbody: tbody)(scope))
 
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
