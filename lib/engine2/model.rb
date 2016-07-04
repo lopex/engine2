@@ -119,7 +119,7 @@ module Engine2
 
         def verify_associations
             one_to_many_associations.each do |name, assoc|
-                other = Object.const_get(assoc[:class_name])
+                other = assoc.associated_class
                 other_type_info = other.type_info
                 if other_keys = assoc[:keys]
                     other_keys.each do |key|
@@ -307,7 +307,7 @@ module Engine2
         foreign_blob_store: lambda{|record, field, info|
             if value = record.values[field] # attachment info
                 assoc = record.model.association_reflections[info[:assoc_name]]
-                blob_model = Object.const_get(assoc[:class_name])
+                blob_model = assoc.associated_class
                 file_fields = {info[:bytes_field] => :$data, info[:name_field] => :$name_field, info[:mime_field] => :$mime_field}
                 upload = info[:store][:upload]
                 file_data = {data: Sequel.blob(open("#{upload}/#{value[:rackname]}", "rb"){|f|f.read}), name_field: value[:name], mime_field: value[:mime]}
@@ -331,7 +331,7 @@ module Engine2
             value = record.values[field]
             if value && value.is_a?(Hash)
                 assoc = record.model.association_reflections[info[:assoc_name]]
-                other_model = Object.const_get(assoc[:class_name])
+                other_model = assoc.associated_class
                 unlinked = value[:unlinked]
                 linked = value[:linked]
                 parent_key = record.primary_key_values
@@ -383,7 +383,7 @@ module Engine2
             assoc = record.model.association_reflections[info[:assoc_name]]
             key = record.model.naked.select(assoc[:key]).where(record.model.primary_keys_hash(record.primary_key_values)).first
             if key
-                blob_model = Object.const_get(assoc[:class_name])
+                blob_model = assoc.associated_class
                 blob_model.where(blob_model.primary_key => key[assoc[:key]]).delete
             end
         }

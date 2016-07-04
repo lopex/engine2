@@ -336,7 +336,7 @@ module E2Model
                         else
                             a = model.many_to_one_associations[table] # || model.one_to_one_associations[table]
                             raise Engine2::E2Error.new("Association #{table} not found for model #{model}") unless a
-                            m = Object.const_get(a[:class_name])
+                            m = a.associated_class
                         end
                         # raise Engine2::E2Error.new("Model not found for table #{table} in model #{model}") unless m
                         info = m.type_info
@@ -379,7 +379,7 @@ module E2Model
             @opts[:select].compact!
 
             joins.reduce(self) do |joined, (table, assoc)|
-                m = Object.const_get(assoc[:class_name])
+                m = assoc.associated_class
                 keys = assoc[:qualified_key]
                 joined.left_join(table, m.primary_keys.zip(keys.is_a?(Array) ? keys : [keys]))
             end

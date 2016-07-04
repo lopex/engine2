@@ -184,7 +184,7 @@ module Engine2
 
             inf = model.type_info[field]
             assoc = model.association_reflections[inf[:assoc_name]]
-            blob_model = Object.const_get(assoc[:class_name])
+            blob_model = assoc.associated_class
 
             rec = model.naked.select(assoc[:key]).where(model.primary_keys_hash(split_keys(id))).first
             handler.permit rec
@@ -203,7 +203,7 @@ module Engine2
             model = action.parent.*.model
             inf = model.type_info[action.parent.*.field]
             assoc = model.association_reflections[inf[:assoc_name]]
-            blob_model = Object.const_get(assoc[:class_name])
+            blob_model = assoc.associated_class
             handler.permit id = handler.params[:id]
             rec = model.naked.select(assoc[:key]).where(model.primary_keys_hash(split_keys(id))).first
             handler.permit rec

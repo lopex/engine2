@@ -245,7 +245,7 @@ module Engine2
                 end until mdl
 
                 if asc = @assets[:assoc]
-                    @assets[:model] = Object.const_get(asc[:class_name])
+                    @assets[:model] = asc.associated_class
                     # raise E2Error.new("Association '#{asc}' for model '#{asc[:class_name]}' not found") unless @assets[:model]
                 else
                     @assets[:model] = mdl
@@ -275,7 +275,7 @@ module Engine2
                 if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
                     assoc = model.many_to_one_associations[$1.to_sym] || model.one_to_one_associations[$1.to_sym]
                     raise E2Error.new("Association #{$1} not found for model #{model}") unless assoc
-                    m = Object.const_get(assoc[:class_name])
+                    m = assoc.associated_class
                     info = m.type_info.fetch($2.to_sym)
                 else
                     raise E2Error.new("Type info not found for '#{name}' in model '#{model}'")
@@ -1092,7 +1092,7 @@ module Engine2
                 keys = info[:keys]
             else
                 meta.check_static_meta
-                model = Object.const_get(model.many_to_one_associations[field[/^\w+?(?=__)/].to_sym][:class_name])
+                model = model.many_to_one_associations[field[/^\w+?(?=__)/].to_sym].associated_class
                 keys = info[:keys].map{|k| :"#{model.table_name}__#{k}"}
             end
 
