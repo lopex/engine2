@@ -695,6 +695,11 @@ module Engine2
             (@filters ||= {})[name] = blk
         end
 
+        def filter_case_insensitive name
+            raise E2Error.new("Field '#{name}' needs to be a string one") unless get_type_info(name)[:otype] == :string
+            filter(name){|query, hash, handler| query.where(name.ilike("%#{hash[name]}%")) }
+        end
+
         def order name, &blk
             (@orders ||= {})[name] = blk
         end
