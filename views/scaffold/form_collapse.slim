@@ -1,0 +1,19 @@
+form.form-horizontal role="form"
+  span ng-if="true"
+      div.panel-group[
+          bs-collapse=""
+          role="tablist"
+          data-allow-multiple="true"
+          aria-multiselectable="true"
+          ng-init="action.activeTab = [0]"
+          ng-model="action.activeTab"
+        ]
+        div.panel.panel-default ng-repeat="t in ::action.meta.tabs track by $index"
+          div.panel-heading role="tab"
+            h4.panel-title
+              a bs-collapse-toggle="" ng-click="" ng-bind="::t.loc"
+          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = t.fields"
+            div.panel-body
+              e2-include template="action.meta.panel.field_template"
+
+  span ng-if="action.alert": .alert.alert-danger[] {{action.alert}}

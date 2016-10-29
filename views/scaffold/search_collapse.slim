@@ -1,0 +1,26 @@
+.panel.panel-default
+  .panel-body
+    form
+      div.panel-group[
+          bs-collapse=""
+          role="tablist"
+          data-allow-multiple="true"
+          aria-multiselectable="true"
+          ng-init="action.ui_state.search_tab = (action.ui_state.search_tab + 0) <= 0 ? [0] : action.ui_state.search_tab"
+          ng-model="action.ui_state.search_tab"
+        ]
+        div.panel.panel-default ng-repeat="t in ::action.meta.tabs track by $index"
+          div.panel-heading role="tab"
+            h4.panel-title
+              a bs-collapse-toggle="" ng-click="" ng-bind="::t.loc"
+          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = t.fields"
+            div.panel-body
+              span ng-repeat="f in t.fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
+                e2-include template="info.render.template"
+
+      .btn-group.btn-group-sm.pull-right
+        button.btn.btn-default ng-click="action.load_new()"
+          span ng-bind="::action.meta.loc.search"
+          span.glyphicon.glyphicon-zoom-in<
+        button.btn.btn-default ng-click="action.search_reset()"
+          span.glyphicon.glyphicon-asterisk

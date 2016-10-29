@@ -1,0 +1,22 @@
+div
+  div.panel-group[
+      bs-collapse=""
+      role="tablist"
+      data-allow-multiple="true"
+      aria-multiselectable="true"
+      ng-init="action.activeTab = [0]"
+      ng-model="action.activeTab"
+    ]
+    div.panel.panel-default ng-repeat="t in ::action.meta.tabs track by $index"
+      div.panel-heading role="tab"
+        h4.panel-title
+          a bs-collapse-toggle="" ng-click="" ng-bind="::t.loc"
+      div.panel-collapse role="tabpanel" bs-collapse-target=""
+        div.panel-body
+          table.table.table-striped.table-condensed.table-hover
+            tr ng-repeat="f in t.fields" ng-hide="::action.meta.info[f].hidden"
+              td ng-bind="::action.meta.info[f].loc"
+              td
+                div ng-bind-html="action.view_cell(action.record, f)"
+
+  span ng-if="action.alert": .alert.alert-danger[] {{action.alert}}
