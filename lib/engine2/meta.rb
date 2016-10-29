@@ -805,6 +805,11 @@ module Engine2
             # modal_action false
         end
 
+        def field_tabs hash
+            super
+            panel_template 'scaffold/form_tabs'
+        end
+
         def record handler, record
         end
 
