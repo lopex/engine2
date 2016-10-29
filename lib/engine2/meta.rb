@@ -955,6 +955,11 @@ module Engine2
             action.parent.*.menu(:item_menu).option action.name, icon: "file", button_loc: false
         end
 
+        def field_tabs hash
+            super
+            panel_template 'scaffold/view_tabs'
+        end
+
         def record handler, record
         end
 
