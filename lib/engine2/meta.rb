@@ -597,6 +597,11 @@ module Engine2
             @meta[:state] = [:query, :ui_state]
         end
 
+        def field_tabs hash
+            super
+            search_template 'scaffold/search_tabs'
+        end
+
         def select_toggle_menu
             m = menu :menu
             unless m.option_index(:select_toggle, false)
