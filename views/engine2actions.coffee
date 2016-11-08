@@ -1,3 +1,4 @@
+'use strict'
 angular.module('Engine2')
 .directive 'e2Action', (E2Actions) ->
     scope: true
