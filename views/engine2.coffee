@@ -1,4 +1,12 @@
 'use strict'
+require 'angular-route'
+require 'angular-sanitize'
+require 'angular-animate'
+require 'angular-cookies'
+require 'angular-local-storage'
+require 'angular-ui-tree'
+require 'ng-file-upload'
+
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
