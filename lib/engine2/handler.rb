@@ -106,10 +106,6 @@ module Engine2
             halt_server_error Rack::Utils.escape_html(error.inspect) + "<hr>" + error.backtrace.take(30).map{|b| Rack::Utils.escape_html(b)}.join("<br>"), LOCS[:error]
         end
 
-        get "/js/*.js" do |c|
-            coffee c.to_sym
-        end
-
         get '/*' do |name|
             headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
             if name.empty?

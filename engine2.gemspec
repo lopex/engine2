@@ -24,11 +24,7 @@ Gem::Specification.new do |spec|
     end
     spec.add_dependency "sinatra", '~> 1.4'
     spec.add_dependency 'slim', '~> 3.0'
-    spec.add_dependency "execjs", '~> 2.6'
-    spec.add_dependency 'coffee-script', '~> 2.4'
 
     spec.add_development_dependency "bundler", "~> 1.11"
     spec.add_development_dependency "rake", "~> 11"
-    spec.add_development_dependency 'uglifier', '~> 3.0'
-    spec.add_development_dependency 'yui-compressor', '~> 0.12'
 end
