@@ -1,0 +1,40 @@
+{
+  "name": "engine2",
+  "description": "engine2",
+  "version": "1.0.0",
+  "scripts": {
+    "postinstall": "bower install",
+    "dev": "brunch w",
+    "build": "brunch build --production"
+  },
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-animate": "^1.5.8",
+    "angular-cookies": "^1.5.8",
+    "angular-i18n": "^1.5.8",
+    "angular-local-storage": "0.1.5",
+    "angular-motion": "^0.4.0",
+    "angular-route": "^1.5.8",
+    "angular-sanitize": "^1.5.8",
+    "angular-ui-tree": "2.22.1",
+    "bootstrap": "^3.3.0",
+    "bootstrap-additions": "0.3.1",
+    "bootswatch": "^3.3.7",
+    "font-awesome": "~4.7.0",
+    "lodash": "~4.16.0",
+    "ng-file-upload": "12.2.12"
+  },
+  "devDependencies": {
+    "auto-reload-brunch": "^2.7.1",
+    "bower": "~1.8.0",
+    "brunch": "^2.9.1",
+    "clean-css-brunch": "^2.0.0",
+    "coffee-script-brunch": "^2.1.0",
+    "copycat-brunch": "^1.1.0",
+    "css-brunch": "^2.6.1",
+    "javascript-brunch": "^2.0.0",
+    "ng-annotate-brunch": "^1.7.2",
+    "replacement-brunch": "^2.0.4",
+    "uglify-js-brunch": "^2.0.1"
+  }
+}
