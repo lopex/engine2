@@ -45,7 +45,7 @@ exports.config =
 
     replacement:
       replacements: [
-        files: [/\.js$/]
+        files: [/vendor.js$/]
         match: (
             fix = "$modal.$element = compileData.link(modalScope, function(clonedElement, scope) {});"
             find: fix.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
