@@ -22,13 +22,13 @@ exports.config =
   files:
     javascripts:
       joinTo:
-        'vendor.js': /^node_modules|bower_components/
-        'app.js': /^app/
+        'engine2vendor.js': /^node_modules|bower_components/
+        'engine2.js': /^app/
 
     stylesheets:
       joinTo:
-        'vendor.css': /^node_modules/
-        'app.css': /^app/
+        'engine2vendor.css': /^node_modules/
+        'engine2app.css': /^app/
       order:
         before: [
           /bootstrap.css$/
