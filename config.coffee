@@ -5,7 +5,7 @@ exports.config =
         _: 'lodash'
         angular: 'angular'
     styles:
-        "bootswatch": ["slate/bootstrap.css"]
+        "bootstrap": ["dist/css/bootstrap.css"]
         "bootstrap-additions": ["dist/bootstrap-additions.css"]
         "angular-motion": ["dist/angular-motion.css"]
         "angular-ui-tree": ["dist/angular-ui-tree.css"]
