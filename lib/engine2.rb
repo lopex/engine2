@@ -3,6 +3,7 @@
 require 'yaml'
 require 'logger'
 require 'sequel'
+require 'rack/contrib/try_static'
 require 'sinatra'
 require 'json'
 require 'slim'
