@@ -24,6 +24,10 @@ exports.config =
       joinTo:
         'engine2vendor.js': /^node_modules|bower_components/
         'engine2.js': /^app/
+      order:
+        before: [
+          "app/engine2.coffee"
+        ]
 
     stylesheets:
       joinTo:
