@@ -10,7 +10,7 @@ task :compile_slim do
         end
     end
 
-    open("app/engine2templates.js", "wb") << <<-EOF
+    open("app/templates.js", "wb") << <<-EOF
 angular.module('Engine2').run(['$templateCache', function($templateCache) {
 #{slims.join("\n")}
 }]);
