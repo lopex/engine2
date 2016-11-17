@@ -74,6 +74,8 @@ module Engine2
                         decimal_field name, size, scale
                     when :blob
                         blob_field name, 100000
+                    when :boolean
+                        boolean_field name
                     when nil
                         # ignore nil type
                     else
