@@ -32,7 +32,7 @@ exports.config =
     stylesheets:
       joinTo:
         'engine2vendor.css': /^node_modules/
-        'engine2app.css': /^app/
+        'engine2.css': /^app/
       order:
         before: [
           /bootstrap.css$/
