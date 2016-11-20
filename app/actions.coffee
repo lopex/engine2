@@ -535,23 +535,22 @@ angular.module('Engine2')
                 else
                     @invoke().then => @set_access(true, true)
 
-        set_access: (login, load_routes) ->
-            @find_action_info('logout_form').access = login
-            @find_action_info('inspect_modal').access = login
-            @find_action_info('login_form').access = !login
-            $route.load_routes() if load_routes
+            @scope().$on "set_access", (evt, login, load_routes, user) =>
+                @user = user
+                @find_action_info('logout_form').access = login
+                @find_action_info('inspect_modal').access = login
+                @find_action_info('login_form').access = !login
+                $route.load_routes() if load_routes
 
     login_form: class LoginFormAction extends FormBaseAction
         panel_menu_default_action: ->
             super().then =>
-                @parent().user = @user
-                @parent().set_access(true, !@dont_reload_routes)
+                $rootScope.$broadcast "set_access", true, !@dont_reload_routes, @user
 
     logout_form: class LogoutForm extends Action
         panel_menu_logout: ->
             @invoke_action('logout').then =>
-                @parent().user = null
-                @parent().set_access(false, true)
+                $rootScope.$broadcast "set_access", false, true, null
                 @panel_close()
 
     form: class FormAction extends FormBaseAction
