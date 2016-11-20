@@ -574,7 +574,6 @@ module Engine2
             config.merge!(per_page: 10, use_count: false, selectable: true) # search_active: false,
 
             panel_template 'scaffold/list'
-            panel_panel_template 'menu_m' unless action.parent.*.assets[:model]
             search_template 'scaffold/search'
             panel_title "#{:list.icon} #{LOCS[assets[:model].name.to_sym]}"
             loc! LOCS[:list_locs]
