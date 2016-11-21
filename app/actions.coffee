@@ -190,7 +190,7 @@ angular.module('Engine2')
         panel_close: ->
             if @meta.panel.modal_action
                 @modal_hide()
-            else
+            else if @parent().parent()
                 # @parent().panel_refresh()
                 @panel_hide?()
                 @panel_hidden()
@@ -206,6 +206,9 @@ angular.module('Engine2')
             super()
             _.merge(globals, @meta)
             @meta  = {}
+
+        invoke: (args) ->
+            throw "Root action invoked"
 
     default_action: class DefaultAction extends Action
         initialize: ->
