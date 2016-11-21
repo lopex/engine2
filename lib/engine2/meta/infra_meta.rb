@@ -1,6 +1,20 @@
 # coding: utf-8
 
 module Engine2
+    SCHEMES::define_scheme :login! do |user_info_model = UserInfo|
+        define_action :login_form, LoginFormMeta, model: user_info_model do
+            access!{|h|!h.logged_in?}
+            define_action :login, LoginMeta
+        end
+    end
+
+    SCHEMES::define_scheme :logout! do
+        define_action :logout_form, LogoutFormMeta do
+            access! &:logged_in?
+            define_action :logout, LogoutMeta
+        end
+    end
+
     SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
         define_action :infra! do
             self.* do
@@ -24,15 +38,9 @@ module Engine2
                 end
             end
 
-            define_action :login_form, LoginFormMeta, model: user_info_model do
-                access!{|h|!h.logged_in?}
-                define_action :login, LoginMeta
-            end
+            run_scheme :login!, user_info_model
+            run_scheme :logout!
 
-            define_action :logout_form, LogoutFormMeta do
-                access! &:logged_in?
-                define_action :logout, LogoutMeta
-            end
 
             define_action :inspect_modal do
                 access! &:logged_in?

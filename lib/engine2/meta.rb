@@ -796,10 +796,10 @@ module Engine2
             panel_template 'scaffold/form'
             field_template 'scaffold/fields'
             panel_class 'modal-large'
-
+            top = action.parent.parent == nil
             menu :panel_menu do
                 option :approve, icon: "ok", disabled: 'action.action_pending()' # text: true,
-                option :cancel, icon: "remove" # text: true,
+                option :cancel, icon: "remove" unless top # text: true,
             end
             # modal_action false
         end
