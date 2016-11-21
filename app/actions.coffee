@@ -536,14 +536,16 @@ angular.module('Engine2')
                         act.meta.info.name.disabled = true
                         act.dont_reload_routes = !reload_routes # true
                 else
-                    @invoke().then => @set_access(true, true)
+                    @invoke().then => @set_access(true, true, null)
 
-            @scope().$on "set_access", (evt, login, load_routes, user) =>
-                @user = user
-                @find_action_info('logout_form').access = login
-                @find_action_info('inspect_modal').access = login
-                @find_action_info('login_form').access = !login
-                $route.load_routes() if load_routes
+            @scope().$on "set_access", (evt, login, load_routes, user) => @set_access(login, load_routes, user)
+
+        set_access: (login, load_routes, user) ->
+            @user = user
+            @find_action_info('logout_form').access = login
+            @find_action_info('inspect_modal').access = login
+            @find_action_info('login_form').access = !login
+            $route.load_routes() if load_routes
 
     login_form: class LoginFormAction extends FormBaseAction
         panel_menu_default_action: ->
