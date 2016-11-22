@@ -536,7 +536,7 @@ angular.module('Engine2')
                         act.meta.info.name.disabled = true
                         act.dont_reload_routes = !reload_routes # true
                 else
-                    @invoke().then => @set_access(true, true, null)
+                    @invoke().then => @set_access(true, true, @user)
 
             @scope().$on "set_access", (evt, login, load_routes, user) => @set_access(login, load_routes, user)
 
