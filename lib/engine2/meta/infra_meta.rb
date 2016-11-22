@@ -225,9 +225,6 @@ module Engine2
             menu :menu do
                 properties group_class: "btn-group-sm"
                 option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
-
-                option :logout_form, icon: :"log-out" # , show: "action.logged_on"
-                option :login_form, icon: :"log-in", disabled: 'action.action_pending()' # , show: "!action.logged_on"
             end
         end
 
@@ -248,6 +245,7 @@ module Engine2
             info! :name, loc: LOCS[:user_name]
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
             @meta[:fields] = [:name, :password]
+            action.parent.*.menu(:menu).option :login_form, icon: :"log-in", disabled: 'action.action_pending()' # , show: "!action.logged_on"
         end
 
         def invoke handler
@@ -282,6 +280,7 @@ module Engine2
             panel_title LOCS[:logout_title]
             panel_class 'modal-default'
             @meta[:message] = LOCS[:logout_message]
+            action.parent.*.menu(:menu).option :logout_form, icon: :"log-out" # , show: "action.logged_on"
             menu :panel_menu do
                 option :logout, icon: "ok", loc: LOCS[:ok]
                 option :cancel, icon: "remove"
