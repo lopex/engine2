@@ -16,31 +16,9 @@ module Engine2
     end
 
     SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
-        define_action :infra! do
-            self.* do
-                extend MetaPanelSupport, MetaMenuSupport, MetaAPISupport
-                panel_panel_template false
-                panel_template 'infra/index'
-                loc! logged_on: LOCS[:logged_on]
-                menu :menu do
-                    properties group_class: "btn-group-sm"
-                    option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
-
-                    option :logout_form, icon: :"log-out" # , show: "action.logged_on"
-                    option :login_form, icon: :"log-in", disabled: 'action.action_pending()' # , show: "!action.logged_on"
-                end
-
-                @meta_type = :infra
-
-                define_invoke do |handler|
-                    user = handler.user
-                    {user: user ? user.to_hash : nil}
-                end
-            end
-
+        define_action :infra!, InfraMeta do
             run_scheme :login!, user_info_model
             run_scheme :logout!
-
 
             define_action :inspect_modal do
                 access! &:logged_in?
@@ -234,6 +212,30 @@ module Engine2
     #         {rackname: rackname}
     #     end
     # end
+
+    class InfraMeta < Meta
+        include MetaPanelSupport, MetaMenuSupport, MetaAPISupport
+        meta_type :infra
+
+        def pre_run
+            super
+            panel_panel_template false
+            panel_template 'infra/index'
+            loc! logged_on: LOCS[:logged_on]
+            menu :menu do
+                properties group_class: "btn-group-sm"
+                option :inspect_modal, icon: :wrench, button_loc: false # , show: "action.logged_on"
+
+                option :logout_form, icon: :"log-out" # , show: "action.logged_on"
+                option :login_form, icon: :"log-in", disabled: 'action.action_pending()' # , show: "!action.logged_on"
+            end
+        end
+
+        def invoke handler
+            user = handler.user
+            {user: user ? user.to_hash : nil}
+        end
+    end
 
     class LoginFormMeta < Meta
         include MetaFormSupport
