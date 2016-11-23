@@ -20,18 +20,8 @@ module Engine2
             run_scheme :login!, user_info_model
             run_scheme :logout!
 
-            define_action :inspect_modal do
+            define_action :inspect_modal, InspectModalMeta do
                 access! &:logged_in?
-                # access!{|h|h.user[:name] == 'admin'}
-                self.* do
-                    extend MetaPanelSupport, MetaMenuSupport
-                    modal_action
-                    panel_template 'infra/inspect'
-                    panel_title "#{:wrench.icon} Inspect"
-                    panel_class "modal-huge"
-                    panel[:backdrop] = true
-                    menu(:panel_menu).option :cancel, icon: "remove"
-                end
                 define_action :inspect do
                     self.* do
                         @meta_type = :inspect
@@ -231,6 +221,21 @@ module Engine2
         def invoke handler
             user = handler.user
             {user: user ? user.to_hash : nil}
+        end
+    end
+
+    class InspectModalMeta < Meta
+        include MetaPanelSupport, MetaMenuSupport
+        meta_type :inline
+
+        def pre_run
+            super
+            modal_action
+            panel_template 'infra/inspect'
+            panel_title "#{:wrench.icon} Inspect"
+            panel_class "modal-huge"
+            panel[:backdrop] = true
+            menu(:panel_menu).option :cancel, icon: "remove"
         end
     end
 
