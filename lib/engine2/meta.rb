@@ -586,7 +586,7 @@ module Engine2
                 divider
                 option :debug_info, icon: "list-alt" do
                     option :show_meta, icon: "eye-open"
-                end
+                end if Handler::development?
             end
 
             menu :item_menu do

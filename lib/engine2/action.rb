@@ -107,6 +107,7 @@ module Engine2
                     terminal: a.actions.empty?,
                     meta: !meta.get.empty?
                 }
+                h[name][:meta_class] = meta.class if Handler::development?
                 h
             end
 
