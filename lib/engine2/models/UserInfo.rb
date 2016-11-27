@@ -14,7 +14,9 @@ module Engine2
         end
 
         def to_hash
-            {name: @values[:name]}
+            hash = @values.dup
+            hash.delete(:password)
+            hash
         end
     end
 end
