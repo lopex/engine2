@@ -5,7 +5,7 @@ module Engine2
     class Action < BasicObject
         ACCESS_FORBIDDEN ||= ->h{false}
         attr_reader :parent, :name, :number, :actions, :recheck_access
-        attr_reader :meta_proc
+        attr_reader :meta_proc, :access_block
 
         class << self
             attr_accessor :count
@@ -109,7 +109,11 @@ module Engine2
                 act[:access] = true if !recheck_access && a.check_access!(handler)
                 act[:recheck_access] = true if a.recheck_access
 
-                act[:meta_class] = meta.class if Handler::development?
+                if Handler::development?
+                    act[:meta_class] = meta.class
+                    act[:acces_block] = a.access_block if a.access_block
+                end
+
                 h[name] = act
                 h
             end
