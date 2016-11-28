@@ -6,9 +6,9 @@ module Engine2
         extend MemoryModel
 
         type_info do
-            string_field :name, 10
+            string_field :name, 100
             required :name, LOCS[:user_required]
-            string_field :password, 20
+            string_field :password, 100
             required :password, LOCS[:password_required]
             password :password
         end
