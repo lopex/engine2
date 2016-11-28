@@ -98,16 +98,19 @@ module Engine2
         def actions_info handler
             info = actions.inject({}) do |h, (name, a)|
                 meta = a.*
-                h[name] = {
+                act = {
                     meta_type: meta.meta_type,
                     method: meta.http_method,
                     number: a.number,
-                    access: recheck_access ? nil : a.check_access!(handler),
-                    recheck_access: a.recheck_access,
                     terminal: a.actions.empty?,
                     meta: !meta.get.empty?
                 }
-                h[name][:meta_class] = meta.class if Handler::development?
+
+                act[:access] = true if !recheck_access && a.check_access!(handler)
+                act[:recheck_access] = true if a.recheck_access
+
+                act[:meta_class] = meta.class if Handler::development?
+                h[name] = act
                 h
             end
 
