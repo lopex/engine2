@@ -3,7 +3,7 @@
 module Engine2
     SCHEMES::define_scheme :login! do |user_info_model = UserInfo|
         define_action :login_form, LoginFormMeta, model: user_info_model do
-            access!{|h|!h.logged_in?}
+            access!{|h|!h.logged_in?} unless Handler::development?
             define_action :login, LoginMeta
         end
     end
