@@ -91,8 +91,8 @@ angular.module('Engine2')
                         E2.merge(prnt, response.data)
 
                     globals.action_pending = false
-                    @invoke_action _.keys(invk)[0], _.values(invk)[0] if invk
-                    @scope().$eval(exec) if exec
+                    @invoke_action _.keys(invk)[0], _.values(invk)[0] if invk?
+                    @scope().$eval(exec) if exec?
 
                     if @meta.panel && !@action_invoked
                         @action_invoked = true
