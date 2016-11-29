@@ -79,10 +79,7 @@ angular.module('Engine2')
             globals.action_pending = if @meta.panel then @ else @parent()
 
             get_invoke.then (response) =>
-                if exec = response.data.$execute
-                    @scope().$eval(exec)
-                    delete response.data.$execute
-
+                delete response.data.$execute if exec = response.data.$execute
                 E2.merge(@, response.data)
                 @process_meta()
                 (if @meta.reload_routes then $route.load_routes() else $q.when({})).then =>
@@ -93,6 +90,7 @@ angular.module('Engine2')
                         E2.merge(prnt, response.data)
 
                     globals.action_pending = false
+                    @scope().$eval(exec) if exec
                     if @meta.panel && !@action_invoked
                         @action_invoked = true
                         @panel_render()
