@@ -265,11 +265,11 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     scope: false
     link: (scope, elem, attrs) ->
         name = $parse(attrs.template)(scope)
-        $http.get(name, cache: $templateCache).success (body) ->
+        $http.get(name, cache: $templateCache).then (response) ->
             # elem.html($compile(body)(scope))
             # elem.replaceWith($compile(body)(scope))
             elem.empty()
-            elem.after($compile(body)(scope))
+            elem.after($compile(response.data)(scope))
 
 .directive 'e2TableBody', ($parse, $compile) ->
     table_tmpl = _.template("<thead><tr>{{thead}}</tr></thead><tbody>{{tbody}}</tbody>")
