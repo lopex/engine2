@@ -574,7 +574,6 @@ module Engine2
             config.merge!(per_page: 10, use_count: false, selectable: true) # search_active: false,
 
             panel_template 'scaffold/list'
-            search_template 'scaffold/search'
             panel_title "#{:list.icon} #{LOCS[assets[:model].name.to_sym]}"
             loc! LOCS[:list_locs]
             menu :menu do
@@ -683,6 +682,7 @@ module Engine2
 
         def searchable *flds
             @meta.delete(:tabs)
+            search_template 'scaffold/search'
             @meta[:search_fields] = *flds
         end
 
