@@ -25,7 +25,7 @@ end
 class Proc
     def to_json(*)
         loc = source_location
-        "\"#<Proc:#{loc.first[/\w+.rb/]}:#{loc.last}>\""
+        loc ? "\"#<Proc:#{loc.first[/\w+.rb/]}:#{loc.last}>\"" : '"?"'
     end
 
     def chain &blk
@@ -292,7 +292,7 @@ module E2Model
     module DatasetMethods
 
         def ensure_primary_key
-            pk = @model.primary_keys
+            pk = model.primary_keys
             raise Engine2::E2Error.new("No primary key defined for model #{model}") unless pk && pk.all?
 
             if opts_select = @opts[:select]
@@ -314,11 +314,11 @@ module E2Model
                 if pk.length == sel_pk.length
                     self
                 else
-                    sels = (pk - sel_pk).map{|k| k.qualify(@model.table_name)}
+                    sels = (pk - sel_pk).map{|k| k.qualify(model.table_name)}
                     select_more(*sels)
                 end
             else
-                select(*pk.map{|k| k.qualify(@model.table_name)})
+                select(*pk.map{|k| k.qualify(model.table_name)})
             end
 
         end
@@ -328,7 +328,7 @@ module E2Model
             type_info = model.type_info
             model_table_name = model.table_name
 
-            @opts[:select].map! do |sel|
+            @opts[:select] = @opts[:select].map do |sel|
                 extract_select sel do |table, name, aliaz|
                     if table
                         if table == model_table_name
@@ -376,7 +376,7 @@ module E2Model
                 end
             end
 
-            @opts[:select].compact!
+            @opts[:select].compact!.freeze
 
             joins.reduce(self) do |joined, (table, assoc)|
                 m = assoc.associated_class
