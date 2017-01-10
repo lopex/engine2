@@ -10,7 +10,7 @@ require 'ng-file-upload'
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
-.config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider) ->
+.config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider) ->
     loaderOn = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'visible')
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $httpProvider.defaults.transformRequest.push (data, headersGetter) ->
@@ -26,7 +26,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     $logProvider.debugEnabled(true)
     $httpProvider.useApplyAsync(true)
     $qProvider.errorOnUnhandledRejections(false)
-    # $locationProvider.html5Mode(true);
+    $locationProvider.hashPrefix('')
+    $locationProvider.html5Mode(false)
 
 .factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->
     loaderOff = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'hidden')
