@@ -12,11 +12,12 @@ module Engine2
             assoc = assets[:assoc]
             mtm_insert = record.new? && assoc && assoc[:type] == :many_to_many
 
+            parent_id = json[:parent_id]
             save = lambda do|c|
                 if super(handler, record, json)
                     result = record.save(transaction: false, validate: false)
                     if result && mtm_insert
-                        handler.permit parent_id = json[:parent_id]
+                        handler.permit parent_id
                         model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
                     end
                     result
