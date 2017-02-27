@@ -6,10 +6,11 @@ require 'angular-cookies'
 require 'angular-local-storage'
 require 'angular-ui-tree'
 require 'ng-file-upload'
+require 'angular-load'
 
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule']) # 'draggabilly'
+angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad']) # 'draggabilly'
 .config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider) ->
     loaderOn = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'visible')
     $httpProvider.interceptors.push 'e2HttpInterceptor'
