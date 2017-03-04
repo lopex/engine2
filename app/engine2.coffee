@@ -231,8 +231,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         if elem[0].type in ['text', 'password']
             elem.on 'keypress', (ev) ->
                 scope.$apply ->
-                    # scope.action.panel_menu_save() if ev.keyCode == 13 # && elem[0].type != 'textarea'
-                    scope.$emit "return_pressed" if ev.keyCode == 13 # && elem[0].type != 'textarea'
+                    scope.action.panel_menu_default_action() if ev.keyCode == 13
+
                 ev.stopPropagation()
 
             if info.filter

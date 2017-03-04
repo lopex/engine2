@@ -190,6 +190,18 @@ module Engine2
             end
         end
 
+        define_scheme :star_to_many_field_create do
+            define_action :create, CreateMeta do
+                define_action :approve, StarToManyFieldInsertMeta
+            end
+        end
+
+        define_scheme :star_to_many_field_modify do
+            define_action :modify, ModifyMeta do
+                define_action :approve, StarToManyFieldUpdateMeta
+            end
+        end
+
         define_scheme :array do |name, model|
             define_action name, ArrayListMeta, model: model do
             end
