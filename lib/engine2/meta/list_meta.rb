@@ -252,6 +252,15 @@ module Engine2
                 end unless linked.empty?
             end
 
+            if added = handler.params[:added]
+                added = handler.param_to_json(:added)
+                cols = get_query.columns
+                query = added.reduce query do |q, a|
+                    u = cols.map{|c|a[c].to_s.as(:"")}
+                    q.union(model.db.select(*u), all: true)
+                end
+            end
+
             query
         end
     end
