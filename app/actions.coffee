@@ -473,7 +473,6 @@ angular.module('Engine2')
                     @panel_shown()
 
             @["panel_menu_#{@default_action_name}"] = -> @panel_menu_default_action()
-            # @scope().$on "return_pressed", (e) => @panel_menu_default_action()
 
         post_invoke: (args) ->
             super()
