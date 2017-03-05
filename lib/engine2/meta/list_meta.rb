@@ -257,7 +257,7 @@ module Engine2
                 cols = get_query.columns
                 query = added.reduce query do |q, a|
                     u = cols.map{|c|a[c].to_s.as(:"")}
-                    q.union(model.db.select(*u), all: true)
+                    q.union(model.db.select(*u), all: true, alias: model.table_name)
                 end
             end
 
