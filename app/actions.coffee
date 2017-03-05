@@ -793,6 +793,7 @@ angular.module('Engine2')
             super(args).then =>
                 unless @errors
                     @parent().parent().links.added.push @parent().record
+                    @parent().parent().sync_record()
 
     star_to_many_field_link_list: class StarToManyFieldLinkList extends ListAction
         initialize: ->
