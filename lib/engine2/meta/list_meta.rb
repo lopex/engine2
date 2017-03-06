@@ -256,8 +256,7 @@ module Engine2
                 added = handler.param_to_json(:added)
                 cols = get_query.columns
                 query = added.reduce query do |q, a|
-                    u = cols.map{|c|a[c].to_s.as(:"")}
-                    q.union(model.db.select(*u), all: true, alias: model.table_name)
+                    q.union(model.db.select(*cols.map{|c|a[c]}), all: true, alias: model.table_name)
                 end
             end
 
