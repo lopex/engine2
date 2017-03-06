@@ -788,6 +788,10 @@ angular.module('Engine2')
         sync_record: ->
             @parent().record[@scope().$parent.f] = @links
 
+    star_to_many_field_view: class StarToManyFieldView extends ViewAction
+        invoke: (args) ->
+            super(args)
+
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
         invoke: (args) ->
             super(args).then =>

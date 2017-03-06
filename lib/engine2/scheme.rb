@@ -179,13 +179,13 @@ module Engine2
 
         define_scheme :star_to_many_field do |assoc, field|
             define_action :"#{field}!", StarToManyFieldMeta, assoc: assoc do
-                run_scheme :view
+                run_scheme :star_to_many_field_view
                 define_action :confirm_unlink, ConfirmMeta do
                     self.*.message LOCS[:unlink_question]
                     define_action :unlink, StarToManyFieldUnlinkMeta
                 end
                 define_action :link_list, StarToManyFieldLinkListMeta do
-                    run_scheme :view
+                    run_scheme :star_to_many_field_view
                 end
             end
         end
@@ -200,6 +200,10 @@ module Engine2
             define_action :modify, ModifyMeta do
                 define_action :approve, StarToManyFieldUpdateMeta
             end
+        end
+
+        define_scheme :star_to_many_field_view do
+            define_action :view, StarToManyFieldViewMeta
         end
 
         define_scheme :array do |name, model|
