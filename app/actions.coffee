@@ -790,6 +790,9 @@ angular.module('Engine2')
 
     star_to_many_field_view: class StarToManyFieldView extends ViewAction
         invoke: (args) ->
+            entry = @parent().current_entry()
+            unless @meta.invokable = _(@parent().meta.primary_fields).every((e) -> entry[e]?)
+                @record = entry
             super(args)
 
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
