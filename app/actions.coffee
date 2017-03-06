@@ -795,11 +795,19 @@ angular.module('Engine2')
                 @record = entry
             super(args)
 
+    star_to_many_field_modify: class StarToManyFieldModifyAction extends ModifyAction
+        invoke: (args) ->
+            entry = @parent().current_entry()
+            unless @meta.invokable = _(@parent().meta.primary_fields).every((e) -> entry[e]?)
+                @record = entry
+            super(args)
+
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
         invoke: (args) ->
             super(args).then =>
                 unless @errors
-                    @parent().parent().links.added.push @parent().record
+                    unless @parent() instanceof StarToManyFieldModifyAction
+                        @parent().parent().links.added.push @parent().record
                     @parent().parent().sync_record()
 
     star_to_many_field_link_list: class StarToManyFieldLinkList extends ListAction

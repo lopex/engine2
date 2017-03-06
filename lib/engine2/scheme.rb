@@ -197,7 +197,7 @@ module Engine2
         end
 
         define_scheme :star_to_many_field_modify do
-            define_action :modify, ModifyMeta do
+            define_action :modify, StarToManyFieldModifyMeta do
                 define_action :approve, StarToManyFieldUpdateMeta
             end
         end

@@ -789,27 +789,34 @@ module Engine2
 
         def self.included meta
             meta.http_method :post
+            class << meta
+                attr_accessor :validate_only
+            end
         end
 
         def validate_and_approve handler, record, json
-            record.skip_save_refresh = true
-            record.raise_on_save_failure = false
-            model = assets[:model]
-            assoc = assets[:assoc]
-            mtm_insert = record.new? && assoc && assoc[:type] == :many_to_many
+            if self.class.validate_only then
+                super
+            else
+                record.skip_save_refresh = true
+                record.raise_on_save_failure = false
+                model = assets[:model]
+                assoc = assets[:assoc]
+                mtm_insert = record.new? && assoc && assoc[:type] == :many_to_many
 
-            parent_id = json[:parent_id]
-            save = lambda do|c|
-                if super(handler, record, json)
-                    result = record.save(transaction: false, validate: false)
-                    if result && mtm_insert
-                        handler.permit parent_id
-                        model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
+                parent_id = json[:parent_id]
+                save = lambda do|c|
+                    if super
+                        result = record.save(transaction: false, validate: false)
+                        if result && mtm_insert
+                            handler.permit parent_id
+                            model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
+                        end
+                        result
                     end
-                    result
                 end
+                (model.validation_in_transaction || mtm_insert) ? model.db.transaction(&save) : save.(nil)
             end
-            (model.validation_in_transaction || mtm_insert) ? model.db.transaction(&save) : save.(nil)
         end
     end
 
@@ -828,7 +835,7 @@ module Engine2
         def allocate_record handler, json
             record = super(handler, json)
             model = assets[:model]
-            handler.permit record.has_primary_key? unless model.natural_key
+            handler.permit record.has_primary_key? unless model.natural_key or self.class.validate_only
             record
         end
     end

@@ -16,20 +16,13 @@ module Engine2
         meta_type :approve
     end
 
-    class StarToManyFieldSaveMeta < Meta
-        include MetaApproveSupport
-        # def validate_and_approve handler, record, json
-        #     # {}
-        # end
-    end
-
-    class StarToManyFieldInsertMeta < StarToManyFieldSaveMeta
-        include MetaInsertSupport
+    class StarToManyFieldInsertMeta < InsertMeta
+        self.validate_only = true
         meta_type :star_to_many_field_approve
     end
 
-    class StarToManyFieldUpdateMeta < StarToManyFieldSaveMeta
-        include MetaUpdateSupport
+    class StarToManyFieldUpdateMeta < UpdateMeta
+        self.validate_only = true
         meta_type :star_to_many_field_approve
     end
 
