@@ -806,7 +806,11 @@ angular.module('Engine2')
         invoke: (args) ->
             super(args).then =>
                 unless @errors
-                    unless @parent() instanceof StarToManyFieldModifyAction
+                    if @parent() instanceof StarToManyFieldModifyAction
+
+                    else
+                        _(@parent().meta.primary_fields).each (k) =>
+                            @parent().record[k] = Math.random().toString(36).substring(7)
                         @parent().parent().links.added.push @parent().record
                     @parent().parent().sync_record()
 
