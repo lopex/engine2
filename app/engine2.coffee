@@ -11,12 +11,17 @@ require 'angular-load'
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad']) # 'draggabilly'
-.config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider) ->
+.config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     loaderOn = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'visible')
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $httpProvider.defaults.transformRequest.push (data, headersGetter) ->
         loaderOn()
         data
+
+    $provide.decorator '$httpBackend', ($delegate) ->
+        (method, url, post, callback, headers, timeout, withCredentials, responseType) ->
+            url = url.replace(';', '%3B') unless method == 'POST'
+            $delegate(method, url, post, callback, headers, timeout, withCredentials, responseType)
     # $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
     # $httpProvider.defaults.cache = false;
     $httpProvider.defaults.headers.get ||= {} # if !$httpProvider.defaults.headers.get
