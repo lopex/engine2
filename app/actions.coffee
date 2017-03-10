@@ -785,21 +785,27 @@ angular.module('Engine2')
             @query.added = [@links.added]
             super()
 
+        current_entry_is: (mode) ->
+            key = E2.id_for(@current_entry(), @meta)
+            _.find(@links[mode], (e) => E2.id_for(e, @meta) == key)
+
         sync_record: ->
             @parent().record[@scope().$parent.f] = @links
 
     star_to_many_field_view: class StarToManyFieldView extends ViewAction
         invoke: (args) ->
-            entry = @parent().current_entry()
-            unless @meta.invokable = _(@parent().meta.primary_fields).every((e) -> entry[e]?)
+            if entry = @parent().current_entry_is('added')
+                @meta.invokable = false
                 @record = entry
             super(args)
 
     star_to_many_field_modify: class StarToManyFieldModifyAction extends ModifyAction
         invoke: (args) ->
-            entry = @parent().current_entry()
-            unless @meta.invokable = _(@parent().meta.primary_fields).every((e) -> entry[e]?)
+            if entry = @parent().current_entry_is('added')
+                @meta.invokable = false
                 @record = entry
+            else
+
             super(args)
 
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
@@ -807,7 +813,6 @@ angular.module('Engine2')
             super(args).then =>
                 unless @errors
                     if @parent() instanceof StarToManyFieldModifyAction
-
                     else
                         _(@parent().meta.primary_fields).each (k) =>
                             @parent().record[k] = Math.random().toString(36).substring(7)
