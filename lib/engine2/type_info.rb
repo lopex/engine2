@@ -294,11 +294,12 @@ module Engine2
             end
         end
 
-        def star_to_many_field assoc_name
+        def star_to_many_field assoc_name, scheme = :star_to_many_field_link
             assoc = @model.one_to_many_associations[assoc_name] || @model.many_to_many_associations[assoc_name]
             raise E2Error.new("'*_to_many' association '#{assoc_name}' not found for model '#{@model}'") unless assoc
             define_field assoc_name, :string do |info|
                 info[:type] = :star_to_many_field
+                info[:scheme] = scheme
                 info[:keys] = assoc[:keys]
                 info[:assoc_name] = assoc_name
                 info[:transaction] = true # ?
