@@ -813,6 +813,9 @@ angular.module('Engine2')
             super(args).then =>
                 unless @errors
                     if @parent() instanceof StarToManyFieldModifyAction
+                        key = E2.id_for(@parent().record, @parent().meta)
+                        index = _(@parent().parent().links.added).findIndex((e) => E2.id_for(e, @parent().meta) == key)
+                        @parent().parent().links.added[index] = @parent().record
                     else
                         _(@parent().meta.primary_fields).each (k) =>
                             @parent().record[k] = Math.random().toString(36).substring(7)
