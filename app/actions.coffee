@@ -776,13 +776,14 @@ angular.module('Engine2')
             super()
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
             links = @parent().record[@scope().$parent.f]
-            @links = links ? (linked: [], unlinked: [], added: [])
+            @links = links ? (linked: [], unlinked: [], added: [], deleted: [])
             @invoke()
 
         invoke: ->
             @query.unlinked = [@links.unlinked]
             @query.linked = [@links.linked]
             @query.added = [@links.added]
+            @query.deleted = [@links.deleted]
             super()
 
         current_entry_is: (mode) ->
@@ -821,6 +822,14 @@ angular.module('Engine2')
                             @parent().record[k] = Math.random().toString(36).substring(7)
                         @parent().parent().links.added.push @parent().record
                     @parent().parent().sync_record()
+
+    star_to_many_field_delete: class StarToManyFieldDelete extends Action
+        invoke: (args) ->
+            if entry = @parent().parent().current_entry_is('added')
+                key = E2.id_for(entry, @parent().parent().meta)
+                _.remove(@parent().parent().links.added, (e) => E2.id_for(e, @parent().parent().meta) == key)
+            else
+                @parent().parent().links.deleted.push args.id
 
     star_to_many_field_link_list: class StarToManyFieldLinkList extends ListAction
         initialize: ->

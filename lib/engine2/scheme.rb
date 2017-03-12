@@ -206,6 +206,14 @@ module Engine2
             define_action :view, StarToManyFieldViewMeta
         end
 
+        define_scheme :star_to_many_field_delete do
+            define_action :confirm_delete, ConfirmMeta do
+                self.*.message LOCS[:delete_question]
+                self.*.panel_title LOCS[:confirm_delete_title]
+                define_action :delete, StarToManyFieldDeleteMeta
+            end
+        end
+
         define_scheme :array do |name, model|
             define_action name, ArrayListMeta, model: model do
             end

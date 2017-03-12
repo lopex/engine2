@@ -47,6 +47,10 @@ module Engine2
         end
     end
 
+    class StarToManyFieldDeleteMeta < DeleteMeta
+        meta_type :star_to_many_field_delete
+    end
+
     class BulkDeleteMeta < DeleteMetaBase
         include MetaBulkDeleteSupport
 
