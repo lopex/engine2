@@ -5,6 +5,9 @@ module Engine2
         CRUD ||= {create: true, view: true, modify: true, delete: true}.freeze # bulk_delete: true
         VIEW ||= {view: true}.freeze
         LINK ||= {star_to_many_link: true, view: true, star_to_many_unlink: true}.freeze # star_to_many_bulk_unlink: true
+        STMF_CRUD ||= {star_to_many_field_create: true, star_to_many_field_view: true, star_to_many_field_modify: true, star_to_many_field_delete: true}
+        STMF_VIEW ||= {star_to_many_field_view: true}
+        STMF_LINK ||= {star_to_many_field_view: true, star_to_many_field_unlink: true, star_to_many_field_link_list: true}
 
         attr_reader :builtin, :user
         def initialize
@@ -195,13 +198,14 @@ module Engine2
         end
 
         #
-        # *_to_many_field link
+        # *_to_many_field
         #
-        define_scheme :star_to_many_field_link do |assoc, field|
+        define_scheme :star_to_many_field do |assoc, field|
+            schemes = assoc[:model].type_info.fetch(field)[:schemes]
             define_action :"#{field}!", StarToManyFieldMeta, assoc: assoc do
-                run_scheme :star_to_many_field_view
-                run_scheme :star_to_many_field_unlink
-                run_scheme :star_to_many_field_link_list
+                schemes.each{|k, v| run_scheme(k) if v}
+
+                define_action_bundle :form, :star_to_many_field_create, :star_to_many_field_modify if schemes[:star_to_many_field_create] && schemes[:star_to_many_field_modify]
             end
         end
 
@@ -222,18 +226,6 @@ module Engine2
                 self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_delete_title]
                 define_action :delete, StarToManyFieldDeleteMeta
-            end
-        end
-
-        #
-        # *_to_many_field crud
-        #
-        define_scheme :star_to_many_field_crud do |assoc, field|
-            define_action :"#{field}!", StarToManyFieldMeta, assoc: assoc do
-                run_scheme :star_to_many_field_create
-                run_scheme :star_to_many_field_view
-                run_scheme :star_to_many_field_modify
-                run_scheme :star_to_many_field_delete
             end
         end
 
