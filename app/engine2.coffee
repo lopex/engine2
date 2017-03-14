@@ -145,11 +145,21 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                     processor.arg_fun(action, arg)
                     action.scope().$eval(click)
             else
-                action[fun_name] ?= (arg) ->
-                    processor.arg_fun(action, arg)
-                    args = processor.arg_ret(action)
-                    _.merge(args, $parse(m.arguments)(action.scope())) if m.arguments?
-                    action.invoke_action(m.name, args)
+                if ofun = action[fun_name]
+                    action["#{fun_name}_super"] = (args) ->
+                        _.merge(args, $parse(m.arguments)(action.scope())) if m.arguments?
+                        action.invoke_action(m.name, args)
+
+                    action[fun_name] = (args) ->
+                        processor.arg_fun(action, args)
+                        args = processor.arg_ret(action)
+                        ofun.bind(action)(args)
+                else
+                    action[fun_name] = (arg) ->
+                        processor.arg_fun(action, arg)
+                        args = processor.arg_ret(action)
+                        _.merge(args, $parse(m.arguments)(action.scope())) if m.arguments?
+                        action.invoke_action(m.name, args)
 
             if action.find_action_info(m.name, false)?
                 show = if m.show then " && " + m.show else ""
