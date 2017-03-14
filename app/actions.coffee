@@ -747,8 +747,9 @@ angular.module('Engine2')
             @query.parent_id = @parent().current_id()
 
         # link_list: implicit
-        item_menu_confirm_unlink: (index) ->
-            @invoke_action('confirm_unlink', id: E2.id_for(@entries[index], @meta), parent_id: @query.parent_id)
+        item_menu_confirm_unlink: (args) ->
+            args.parent_id = @query.parent_id
+            @item_menu_confirm_unlink_super(args)
 
     star_to_many_bulk_unlink: class StarToManyBulkUnlinkAction extends Action
         invoke: ->
