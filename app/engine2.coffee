@@ -71,6 +71,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 .factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, e2HttpInterceptor, $route, $dateFormatter, $parse) ->
     globals: {}
 
+    uuid: (length) ->
+        Math.random().toString(36).substring(length)
+
     compact: (o) ->
         _.each o, (v, k) =>
             if (v == null || (_.isString(v) && !v)) || (!_.isDate(v) && _.isObject(v) && @compact(v) && _.isEmpty(v))

@@ -817,7 +817,7 @@ angular.module('Engine2')
                         @parent().parent().changes.added[index] = @parent().record
                     else
                         _(@parent().meta.primary_fields).each (k) =>
-                            @parent().record[k] = Math.random().toString(36).substring(7)
+                            @parent().record[k] = E2.uuid(5)
                         @parent().parent().changes.added.push @parent().record
                     @parent().parent().sync_record()
 
