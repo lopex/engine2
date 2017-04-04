@@ -144,7 +144,6 @@ class Sequel::Database
     end
 end
 
-Sequel.quote_identifiers = false
 Sequel.extension :core_extensions
 Sequel::Inflections.clear
 Sequel.alias_columns_in_joins = true

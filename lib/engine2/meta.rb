@@ -360,8 +360,7 @@ module Engine2
 
     module MetaQuerySupport
         def query q, &blk
-            @query = q.naked
-            @query.row_proc = blk if blk
+            @query = blk ? q.naked.with_row_proc(blk) : q.naked
         end
 
         def post_run
