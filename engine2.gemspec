@@ -17,13 +17,12 @@ Gem::Specification.new do |spec|
     spec.require_paths = ["lib"]
 
     spec.add_dependency "sequel", '~> 4'
-    spec.add_dependency "rack-contrib", '~> 1.4'
     if defined? JRUBY_VERSION
         spec.add_dependency 'jdbc-sqlite3', '~> 3.8'
     else
         spec.add_dependency 'sqlite3', '~> 1.3'
     end
-    spec.add_dependency "sinatra", '~> 1.4'
+    spec.add_dependency "sinatra", '~> 2.0'
     spec.add_dependency 'slim', '~> 3.0'
 
     spec.add_development_dependency "bundler", "~> 1.11"
