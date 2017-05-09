@@ -33,10 +33,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 .factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->
     loaderToggle = (toggle) -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", toggle)
     loaderOn = -> loaderToggle('visible')
-    loaderOff = -> loaderToggle('hidden')
+    timeout = null
+    loaderOff = ->
+        clearTimeout timeout if timeout
+        loaderToggle('hidden')
 
     request: (request) ->
-        loaderOn()
+        clearTimeout timeout if timeout
+        timeout = setTimeout(loaderOn, 1500)
         request
 
     response: (response) ->
