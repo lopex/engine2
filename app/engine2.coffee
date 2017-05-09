@@ -11,20 +11,15 @@ require 'angular-load'
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad']) # 'draggabilly'
-.config ($httpProvider, $routeProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
-    loaderOn = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'visible')
+.config ($httpProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     $httpProvider.interceptors.push 'e2HttpInterceptor'
-    $httpProvider.defaults.transformRequest.push (data, headersGetter) ->
-        loaderOn()
-        data
-
     $provide.decorator '$httpBackend', ($delegate) ->
         (method, url, post, callback, headers, timeout, withCredentials, responseType) ->
             url = url.replace(';', '%3B') unless method == 'POST'
             $delegate(method, url, post, callback, headers, timeout, withCredentials, responseType)
     # $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
     # $httpProvider.defaults.cache = false;
-    $httpProvider.defaults.headers.get ||= {} # if !$httpProvider.defaults.headers.get
+    $httpProvider.defaults.headers.get ?= {} # if !$httpProvider.defaults.headers.get
     $httpProvider.defaults.headers.get['If-Modified-Since'] = '0'
     # localStorageServiceProvider.setStorageType('sessionStorage')
     localStorageServiceProvider.setPrefix('E2')
@@ -36,7 +31,14 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     $locationProvider.html5Mode(false)
 
 .factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->
-    loaderOff = -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", 'hidden')
+    loaderToggle = (toggle) -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", toggle)
+    loaderOn = -> loaderToggle('visible')
+    loaderOff = -> loaderToggle('hidden')
+
+    request: (request) ->
+        loaderOn()
+        request
+
     response: (response) ->
         loaderOff()
         response
@@ -68,7 +70,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         _.each(o.class, (v, k) -> out.push "#{k}: #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
-.factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, e2HttpInterceptor, $route, $dateFormatter, $parse) ->
+.factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, $route, $dateFormatter, $parse) ->
     globals: {}
 
     uuid: (length) ->
