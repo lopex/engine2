@@ -3,7 +3,7 @@
   "description": "engine2",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower install --allow-root",
     "dev": "brunch w",
     "build": "brunch build --production"
   },
