@@ -35,12 +35,17 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     loaderOn = -> loaderToggle('visible')
     timeout = null
     loaderOff = ->
-        clearTimeout timeout if timeout
-        loaderToggle('hidden')
+        if timeout
+            clearTimeout timeout
+            timeout = null
+            loaderToggle('hidden')
 
     request: (request) ->
-        clearTimeout timeout if timeout
-        timeout = setTimeout(loaderOn, 1500)
+        if timeout
+            clearTimeout timeout
+            timeout = null
+        else
+            timeout = setTimeout(loaderOn, 200)
         request
 
     response: (response) ->
