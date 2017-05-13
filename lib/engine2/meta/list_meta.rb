@@ -238,10 +238,12 @@ module Engine2
             if handler.params[:negate]
                 query = unlinked.map{|ln| pks.zip(split_keys(ln))}.inject(query){|q, c| q.or c}
                 # query = query.or *unlinked.map{|unl| Hash[model.primary_keys.zip(split_keys(unl))]}.inject{|q, c| q | c}
-                query = query.where *linked.map{|ln| pks.zip(split_keys(ln)).sql_negate}
+                cond = linked.map{|ln| pks.zip(split_keys(ln)).sql_negate}
+                query = query.where *cond unless cond.empty?
 
             else
-                query = query.where *unlinked.map{|unl| pks.zip(split_keys(unl)).sql_negate}
+                cond = unlinked.map{|unl| pks.zip(split_keys(unl)).sql_negate}
+                query = query.where *cond unless cond.empty?
                 # query = query.or *linked.map{|ln| model.primary_keys.zip(split_keys(ln))}
                 # query = query.or *linked.map{|ln| Hash[model.primary_keys.zip(split_keys(ln))]}.inject{|q, c| q | c}
                 case assets[:assoc][:type]
