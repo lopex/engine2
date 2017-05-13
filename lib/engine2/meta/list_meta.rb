@@ -229,7 +229,7 @@ module Engine2
 
         def list_context query, handler
             changes = handler.param_to_json(:changes)
-            unlinked = changes[:unlinked]
+            unlinked = changes[:unlinked].to_a + changes[:deleted].to_a + changes[:modified].to_a
             linked = changes[:linked]
             query = super(query, handler)
             model = assets[:model]
@@ -255,11 +255,10 @@ module Engine2
                 end unless linked.empty?
             end
 
-            if added = changes[:added]
-                cols = get_query.columns
-                query = added.reduce query do |q, a|
-                    q.union(model.db.select(*cols.map{|c|a[c]}), all: true, alias: model.table_name)
-                end
+            added = changes[:added].to_a + changes[:modified].to_a
+            cols = get_query.columns
+            query = added.reduce query do |q, a|
+                q.union(model.db.select(*cols.map{|c|a[c]}), all: true, alias: model.table_name)
             end
 
             query

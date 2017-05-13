@@ -800,10 +800,11 @@ angular.module('Engine2')
 
     star_to_many_field_modify: class StarToManyFieldModifyAction extends ModifyAction
         invoke: (args) ->
-            if entry = @parent().current_entry_is('added')
+            if entry = @parent().current_entry_is('added') ? @parent().current_entry_is('modified')
                 @meta.invokable = false
                 @record = entry
             else
+                # else
 
             super(args)
 
