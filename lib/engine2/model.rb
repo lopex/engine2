@@ -336,6 +336,17 @@ module Engine2
                 other_model = assoc.associated_class
                 unlinked = value[:unlinked]
                 linked = value[:linked]
+                added = value[:added]
+                modified = value[:modified]
+
+                added.each do |add|
+                    other_model.primary_keys.each{|k|add.delete k}
+                    rec = other_model.new(add)
+                    rec.skip_save_refresh = true
+                    rec.save(validate: false)
+                    (linked ||= []) << Sequel.join_keys(other_model.primary_keys.map{|k|rec[k]})
+                end if added
+
                 parent_key = record.primary_key_values
                 case assoc[:type]
                 when :one_to_many

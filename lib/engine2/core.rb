@@ -125,6 +125,10 @@ class << Sequel
     def split_keys id
         id.split(Engine2::SETTINGS[:key_separator])
     end
+
+    def join_keys keys
+        keys.join(Engine2::SETTINGS[:key_separator])
+    end
 end
 
 class Sequel::Database
