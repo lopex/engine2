@@ -793,7 +793,7 @@ angular.module('Engine2')
 
     star_to_many_field_view: class StarToManyFieldView extends ViewAction
         invoke: (args) ->
-            if entry = @parent().current_entry_is('added')
+            if entry = @parent().current_entry_is('added') ? @parent().current_entry_is('modified')
                 @meta.invokable = false
                 @record = entry
             super(args)
@@ -811,16 +811,24 @@ angular.module('Engine2')
         invoke: (args) ->
             super(args).then =>
                 unless @errors
-                    parent = @parent().parent()
+                    pparent = @parent().parent()
                     if @parent() instanceof StarToManyFieldModifyAction
+                        if pparent.current_entry_is('added')
+                            changed = pparent.changes.added
+                        else if pparent.current_entry_is('modified')
+                            changed = pparent.changes.modified
+                        else
+                            changed = pparent.changes.modified
+                            changed.push @parent().record
+
                         key = E2.id_for(@parent().record, @parent().meta)
-                        index = _(parent.changes.added).findIndex((e) => E2.id_for(e, @parent().meta) == key)
-                        parent.changes.added[index] = @parent().record
-                    else
-                        _(@parent().meta.primary_fields).each (k) =>
-                            @parent().record[k] = E2.uuid(5)
-                        parent.changes.added.push @parent().record
-                    parent.sync_record()
+                        index = _(changed).findIndex((e) => E2.id_for(e, @parent().meta) == key)
+                        changed[index] = @parent().record
+
+                    else # CreateAction
+                        _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
+                        pparent.changes.added.push @parent().record
+                    pparent.sync_record()
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
         invoke: (args) ->
