@@ -777,7 +777,7 @@ angular.module('Engine2')
             super()
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
             changes = @parent().record[@scope().$parent.f]
-            @changes = changes ? (linked: [], unlinked: [], added: [], deleted: [])
+            @changes = changes ? (linked: [], unlinked: [], added: [], modified: [], deleted: [])
             @invoke()
 
         invoke: ->
@@ -804,7 +804,6 @@ angular.module('Engine2')
                 @meta.invokable = false
                 @record = entry
             else
-                # else
 
             super(args)
 
@@ -812,15 +811,16 @@ angular.module('Engine2')
         invoke: (args) ->
             super(args).then =>
                 unless @errors
+                    parent = @parent().parent()
                     if @parent() instanceof StarToManyFieldModifyAction
                         key = E2.id_for(@parent().record, @parent().meta)
-                        index = _(@parent().parent().changes.added).findIndex((e) => E2.id_for(e, @parent().meta) == key)
-                        @parent().parent().changes.added[index] = @parent().record
+                        index = _(parent.changes.added).findIndex((e) => E2.id_for(e, @parent().meta) == key)
+                        parent.changes.added[index] = @parent().record
                     else
                         _(@parent().meta.primary_fields).each (k) =>
                             @parent().record[k] = E2.uuid(5)
-                        @parent().parent().changes.added.push @parent().record
-                    @parent().parent().sync_record()
+                        parent.changes.added.push @parent().record
+                    parent.sync_record()
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
         invoke: (args) ->

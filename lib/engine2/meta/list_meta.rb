@@ -229,10 +229,11 @@ module Engine2
 
         def list_context query, handler
             changes = handler.param_to_json(:changes)
-            unlinked = changes[:unlinked].to_a + changes[:deleted].to_a + changes[:modified].to_a
+            model = assets[:model]
+            unlinked = changes[:unlinked].to_a + changes[:deleted].to_a + changes[:modified].to_a.map{|m|Sequel.join_keys(model.primary_keys.map{|k|m[k]})}
             linked = changes[:linked]
             query = super(query, handler)
-            model = assets[:model]
+
             pks = model.primary_keys_qualified
 
             if handler.params[:negate]
