@@ -338,23 +338,34 @@ module Engine2
                 linked = value[:linked]
                 added = value[:added]
                 modified = value[:modified]
+                deleted = value[:deleted]
 
                 added.each do |add|
                     other_model.primary_keys.each{|k|add.delete k}
-                    rec = other_model.new(add)
+                    rec = other_model.call(add)
+                    rec.instance_variable_set(:"@new", true)
                     rec.skip_save_refresh = true
                     rec.save(validate: false)
                     (linked ||= []) << Sequel.join_keys(other_model.primary_keys.map{|k|rec[k]})
                 end if added
+
+                modified.each do |mod|
+                    rec = other_model.call(mod)
+                    rec.skip_save_refresh = true
+                    rec.save(validate: false)
+                end
 
                 parent_key = record.primary_key_values
                 case assoc[:type]
                 when :one_to_many
                     StarToManyUnlinkMetaBase.one_to_many_unlink_db(other_model, assoc, unlinked) if unlinked
                     StarToManyLinkMeta.one_to_many_link_db(other_model, assoc, parent_key, linked) if linked
+                    DeleteMetaBase.invoke_delete_db(other_model, deleted)
                 when :many_to_many
+                    unlinked.concat(deleted)
                     StarToManyUnlinkMetaBase.many_to_many_unlink_db(other_model, assoc, parent_key, unlinked) if unlinked
                     StarToManyLinkMeta.many_to_many_link_db(other_model, assoc, parent_key, linked) if linked
+                    DeleteMetaBase.invoke_delete_db(other_model, deleted)
                 else unsupported_association
                 end
             end
