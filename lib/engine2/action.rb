@@ -112,6 +112,7 @@ module Engine2
                 if Handler::development?
                     act[:meta_class] = meta.class
                     act[:acces_block] = a.access_block if a.access_block
+                    act[:model] = meta.assets[:model]
                 end
 
                 h[name] = act
