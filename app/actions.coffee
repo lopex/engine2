@@ -804,7 +804,6 @@ angular.module('Engine2')
                 @meta.invokable = false
                 @record = entry
             else
-
             super(args)
 
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
@@ -816,8 +815,7 @@ angular.module('Engine2')
                         if entry = pparent.current_entry_is('added') ? pparent.current_entry_is('modified')
                             _.assign(entry, @parent().record)
                         else
-                            changed = pparent.changes.modified
-                            changed.push @parent().record
+                            pparent.changes.modified.push @parent().record
                     else # CreateAction
                         _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
                         pparent.changes.added.push @parent().record
