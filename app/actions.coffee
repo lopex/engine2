@@ -508,7 +508,7 @@ angular.module('Engine2')
                         @alert = @errors if (!field || !@meta.info[field] || @meta.info[field].hidden) # ?
                     $timeout => @scope().$broadcast("focus_field", field)
                     #e.scope.$eval(meta.execute) if meta.execute # ?
-                    dfd.reject(@errors)
+                    dfd.resolve()
                 else
                     @panel_close()
                     dfd.resolve(@record) # $q.when(true) ?

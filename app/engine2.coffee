@@ -26,7 +26,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     $compileProvider.debugInfoEnabled(false)
     $logProvider.debugEnabled(true)
     $httpProvider.useApplyAsync(true)
-    $qProvider.errorOnUnhandledRejections(false)
+    # $qProvider.errorOnUnhandledRejections(false)
     $locationProvider.hashPrefix('')
     $locationProvider.html5Mode(false)
 
