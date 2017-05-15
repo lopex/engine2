@@ -13,23 +13,26 @@ module Engine2
             end
         end
 
+        def self.raise_destroy_failed name
+            raise Sequel::DestroyFailed.new("#{LOCS[:delete_restricted]}: #{name}" )
+        end
+
         def self.invoke_delete_db model, ids
             model.db.transaction do
                 ids.each do |id|
                     keys = Sequel::split_keys(id)
-                    restrict = model.association_reflections.select do |name, rel|
+                    model.association_reflections.each do |name, rel|
                         case rel[:type]
                         when :one_to_many
-                            !model.db[name].where(Hash[rel[:keys].zip(keys)]).empty?
+                            raise_destroy_failed(name) unless model.db[name].where(Hash[rel[:keys].zip(keys)]).empty?
                         when :many_to_many
-                            !model.db[rel[:join_table]].where(Hash[rel[:left_keys].zip(keys)]).empty?
+                            raise_destroy_failed(name) unless model.db[rel[:join_table]].where(Hash[rel[:left_keys].zip(keys)]).empty?
                         when :many_to_one
                         when :one_to_one
                         else
                             unsupported_association rel[:type]
                         end
                     end
-                    raise Sequel::DestroyFailed.new("Blokujące relacje: #{restrict.map{|name, rel| name}.join(', ')}" ) unless restrict.empty?
 
                     rec = model.call(Hash[model.primary_keys.zip(keys)])
                     rec.destroy(transaction: false)
