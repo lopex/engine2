@@ -21,16 +21,17 @@ module Engine2
             model.db.transaction do
                 ids.each do |id|
                     keys = Sequel::split_keys(id)
-                    model.association_reflections.each do |name, rel|
-                        case rel[:type]
-                        when :one_to_many
-                            raise_destroy_failed(name) unless model.db[name].where(Hash[rel[:keys].zip(keys)]).empty?
-                        when :many_to_many
-                            raise_destroy_failed(name) unless model.db[rel[:join_table]].where(Hash[rel[:left_keys].zip(keys)]).empty?
-                        when :many_to_one
+                    model.association_reflections.each do |name, assoc|
+                        other_model = assoc.associated_class
+                        case assoc[:type]
                         when :one_to_one
+                        when :one_to_many
+                            raise_destroy_failed(name) unless model.db[name].where(Hash[assoc[:keys].zip(keys)]).empty?
+                        when :many_to_many
+                            raise_destroy_failed(name) unless model.db[assoc[:join_table]].where(Hash[assoc[:left_keys].zip(keys)]).empty?
+                        when :many_to_one
                         else
-                            unsupported_association rel[:type]
+                            unsupported_association assoc[:type]
                         end
                     end
 
