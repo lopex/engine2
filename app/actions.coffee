@@ -813,18 +813,11 @@ angular.module('Engine2')
                 unless @errors
                     pparent = @parent().parent()
                     if @parent() instanceof StarToManyFieldModifyAction
-                        if pparent.current_entry_is('added')
-                            changed = pparent.changes.added
-                        else if pparent.current_entry_is('modified')
-                            changed = pparent.changes.modified
+                        if entry = pparent.current_entry_is('added') ? pparent.current_entry_is('modified')
+                            _.assign(entry, @parent().record)
                         else
                             changed = pparent.changes.modified
                             changed.push @parent().record
-
-                        key = E2.id_for(@parent().record, @parent().meta)
-                        index = _(changed).findIndex((e) => E2.id_for(e, @parent().meta) == key)
-                        changed[index] = @parent().record
-
                     else # CreateAction
                         _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
                         pparent.changes.added.push @parent().record
@@ -832,11 +825,15 @@ angular.module('Engine2')
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
         invoke: (args) ->
-            if entry = @parent().parent().current_entry_is('added')
-                key = E2.id_for(entry, @parent().parent().meta)
-                _.remove(@parent().parent().changes.added, (e) => E2.id_for(e, @parent().parent().meta) == key)
+            pparent = @parent().parent()
+            if entry = pparent.current_entry_is('added')
+                _.remove(pparent.changes.added, entry)
+            else if entry = pparent.current_entry_is('modified')
+                _.remove(pparent.changes.modified, entry)
+                pparent.changes.deleted.push args.id
             else
-                @parent().parent().changes.deleted.push args.id
+                pparent.changes.deleted.push args.id
+                pparent.sync_record()
 
     star_to_many_field_link_list: class StarToManyFieldLinkList extends ListAction
         initialize: ->
