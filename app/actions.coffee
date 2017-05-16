@@ -560,7 +560,7 @@ angular.module('Engine2')
 
     form: class FormAction extends FormBaseAction
         panel_menu_default_action: ->
-            super().then => @parent().invoke()
+            super().then => @parent().invoke() unless @errors
 
     create: class CreateAction extends FormAction
         invoke: (args) ->
