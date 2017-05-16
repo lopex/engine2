@@ -775,24 +775,6 @@ module Engine2
                     record.errors.add(name, result) if result
                 end
             end if @validations
-
-            model = assets[:model]
-            model.association_reflections.each do |name, assoc|
-                hash = record[name]
-                if hash.is_a?(Hash)
-                    (hash[:added].to_a + hash[:modified].to_a).each do |arec|
-                        meta = action.parent[:"#{name}!"].create.approve.*
-                        rec = meta.allocate_record(handler, record: arec)
-                        meta.validate_and_approve(handler, rec, arec)
-                        unless rec.errors.empty?
-                            rec.errors.each do |k, v|
-                                (record.errors[name] ||= []).concat(v)
-                            end
-                        end
-                    end
-                    record.values.delete name unless record.errors.empty?
-                end
-            end
         end
 
         def post_run
@@ -811,9 +793,9 @@ module Engine2
             end
         end
 
-        def validate_and_approve handler, record, json
-            if self.class.validate_only then
-                super
+        def validate_and_approve handler, record, json, validate_only = self.class.validate_only
+            if validate_only then
+                super(handler, record, json)
             else
                 record.skip_save_refresh = true
                 record.raise_on_save_failure = false
@@ -823,16 +805,40 @@ module Engine2
 
                 parent_id = json[:parent_id]
                 save = lambda do|c|
-                    if super
+                    if super(handler, record, json)
                         result = record.save(transaction: false, validate: false)
                         if result && mtm_insert
                             handler.permit parent_id
                             model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
                         end
+
+                        model.association_reflections.each do |name, assoc|
+                            hash = record[name]
+                            if hash.is_a?(Hash)
+                                validate_and_approve_association(handler, record,:"#{name}!", :create, hash[:added].to_a)
+                                validate_and_approve_association(handler, record, :"#{name}!", :modify, hash[:modified].to_a)
+                                record.values.delete name unless record.errors.empty?
+                            end
+                        end
+
                         result
                     end
                 end
                 (model.validation_in_transaction || mtm_insert) ? model.db.transaction(&save) : save.(nil)
+            end
+        end
+
+        def validate_and_approve_association handler, record, name, action_name, records
+            meta = action.parent[name][action_name].approve.*
+            records.each do |arec|
+                rec = meta.allocate_record(handler, record: arec)
+                meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
+                meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
+                unless rec.errors.empty?
+                    rec.errors.each do |k, v|
+                        (record.errors[name] ||= []).concat(v)
+                    end
+                end
             end
         end
     end

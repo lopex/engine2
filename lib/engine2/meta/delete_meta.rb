@@ -36,11 +36,10 @@ module Engine2
                         end
 
                         if assoc[:cascade]
-                            ds.delete if ds
+                            ds.delete
                         else
                             raise_destroy_failed(name) unless ds.empty?
-                        end
-
+                        end if ds
                     end
 
                     rec = model.call(Hash[model.primary_keys.zip(keys)])
