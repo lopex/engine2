@@ -775,6 +775,24 @@ module Engine2
                     record.errors.add(name, result) if result
                 end
             end if @validations
+
+            model = assets[:model]
+            model.association_reflections.each do |name, assoc|
+                hash = record[name]
+                if hash.is_a?(Hash)
+                    (hash[:added].to_a + hash[:modified].to_a).each do |arec|
+                        meta = action.parent[:"#{name}!"].create.approve.*
+                        rec = meta.allocate_record(handler, record: arec)
+                        meta.validate_and_approve(handler, rec, arec)
+                        unless rec.errors.empty?
+                            rec.errors.each do |k, v|
+                                (record.errors[name] ||= []).concat(v)
+                            end
+                        end
+                    end
+                    record.values.delete name unless record.errors.empty?
+                end
+            end
         end
 
         def post_run
