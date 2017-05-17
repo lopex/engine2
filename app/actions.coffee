@@ -803,7 +803,6 @@ angular.module('Engine2')
             if entry = @parent().current_entry_is('added') ? @parent().current_entry_is('modified')
                 @meta.invokable = false
                 @record = entry
-            else
             super(args)
 
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
