@@ -815,12 +815,13 @@ module Engine2
                         model.association_reflections.each do |name, assoc|
                             hash = record[name]
                             if hash.is_a?(Hash)
-                                validate_and_approve_association(handler, record,:"#{name}!", :create, hash[:added].to_a)
-                                validate_and_approve_association(handler, record, :"#{name}!", :modify, hash[:modified].to_a)
-                                record.values.delete name unless record.errors.empty?
+                                validate_and_approve_association(handler, record, name, :create, hash[:added].to_a)
+                                validate_and_approve_association(handler, record, name, :modify, hash[:modified].to_a)
+
+                                record.values.delete name # unless record.errors.empty?
+                                raise raise Sequel::Rollback unless record.errors.empty?
                             end
                         end
-
                         result
                     end
                 end
@@ -828,15 +829,15 @@ module Engine2
             end
         end
 
-        def validate_and_approve_association handler, record, name, action_name, records
-            meta = action.parent[name][action_name].approve.*
+        def validate_and_approve_association handler, record, assoc_name, action_name, records
+            meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
             records.each do |arec|
                 rec = meta.allocate_record(handler, record: arec)
                 meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
                 meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
                 unless rec.errors.empty?
                     rec.errors.each do |k, v|
-                        (record.errors[name] ||= []).concat(v)
+                        (record.errors[assoc_name] ||= []).concat(v)
                     end
                 end
             end
