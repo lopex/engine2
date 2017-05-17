@@ -817,8 +817,6 @@ module Engine2
                             if hash.is_a?(Hash)
                                 validate_and_approve_association(handler, record, name, :create, hash[:added].to_a)
                                 validate_and_approve_association(handler, record, name, :modify, hash[:modified].to_a)
-
-                                record.values.delete name # unless record.errors.empty?
                                 raise raise Sequel::Rollback unless record.errors.empty?
                             end
                         end
