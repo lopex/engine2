@@ -3,9 +3,9 @@
 module Engine2
     class DeleteMetaBase < Meta
 
-        def invoke_delete_db handler, ids
+        def invoke_delete_db handler, ids, from_assoc = nil
             begin
-                self.class.invoke_delete_db assets[:model], ids
+                self.class.invoke_delete_db assets[:model], ids, from_assoc
             rescue Sequel::NoExistingObject
                 handler.halt_not_found LOCS[:no_entry]
             rescue Sequel::DestroyFailed => failure
@@ -17,7 +17,7 @@ module Engine2
             raise Sequel::DestroyFailed.new("#{LOCS[:delete_restricted]}: #{name}" )
         end
 
-        def self.invoke_delete_db model, ids
+        def self.invoke_delete_db model, ids, from_assoc = nil
             model.db.transaction do
                 ids.each do |id|
                     keys = Sequel::split_keys(id)
@@ -35,7 +35,7 @@ module Engine2
                             unsupported_association assoc[:type]
                         end
 
-                        if assoc[:cascade]
+                        if assoc[:cascade] || from_assoc == assoc.associated_class.table_name
                             ds.delete
                         else
                             raise_destroy_failed(name) unless ds.empty?

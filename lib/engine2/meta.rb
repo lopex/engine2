@@ -817,6 +817,7 @@ module Engine2
                             if hash.is_a?(Hash)
                                 validate_and_approve_association(handler, record, name, :create, hash[:added].to_a)
                                 validate_and_approve_association(handler, record, name, :modify, hash[:modified].to_a)
+                                delete_association(handler, name, hash[:deleted].to_a, model.table_name)
                                 raise raise Sequel::Rollback unless record.errors.empty?
                             end
                         end
@@ -828,16 +829,25 @@ module Engine2
         end
 
         def validate_and_approve_association handler, record, assoc_name, action_name, records
-            meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
-            records.each do |arec|
-                rec = meta.allocate_record(handler, record: arec)
-                meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
-                meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
-                unless rec.errors.empty?
-                    rec.errors.each do |k, v|
-                        (record.errors[assoc_name] ||= []).concat(v)
+            unless records.empty?
+                meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
+                records.each do |arec|
+                    rec = meta.allocate_record(handler, record: arec)
+                    meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
+                    meta.validate_and_approve(handler, rec, {parent_id: Sequel.join_keys(record.primary_key_values)}, false)
+                    unless rec.errors.empty?
+                        rec.errors.each do |k, v|
+                            (record.errors[assoc_name] ||= []).concat(v)
+                        end
                     end
                 end
+            end
+        end
+
+        def delete_association handler, assoc_name, ids, from_assoc
+            unless ids.empty?
+                meta = action.parent[:"#{assoc_name}!"].confirm_delete.delete.*
+                meta.invoke_delete_db(handler, ids, from_assoc)
             end
         end
     end

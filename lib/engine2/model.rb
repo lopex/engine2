@@ -336,19 +336,19 @@ module Engine2
                 other_model = assoc.associated_class
                 unlinked = value[:unlinked]
                 linked = value[:linked]
-                deleted = value[:deleted]
+                # deleted = value[:deleted]
 
                 parent_key = record.primary_key_values
                 case assoc[:type]
                 when :one_to_many
                     StarToManyUnlinkMetaBase.one_to_many_unlink_db(other_model, assoc, unlinked) if unlinked
                     StarToManyLinkMeta.one_to_many_link_db(other_model, assoc, parent_key, linked) if linked
-                    DeleteMetaBase.invoke_delete_db(other_model, deleted)
+                    # DeleteMetaBase.invoke_delete_db(other_model, deleted)
                 when :many_to_many
-                    unlinked.concat(deleted)
+                    # unlinked.concat(deleted)
                     StarToManyUnlinkMetaBase.many_to_many_unlink_db(other_model, assoc, parent_key, unlinked) if unlinked
                     StarToManyLinkMeta.many_to_many_link_db(other_model, assoc, parent_key, linked) if linked
-                    DeleteMetaBase.invoke_delete_db(other_model, deleted)
+                    # DeleteMetaBase.invoke_delete_db(other_model, deleted)
                 else unsupported_association
                 end
             end
