@@ -777,7 +777,7 @@ angular.module('Engine2')
             super()
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
             changes = @parent().record[@scope().$parent.f]
-            @changes = changes ? (linked: [], unlinked: [], added: [], modified: [], deleted: [])
+            @changes = changes ? (link: [], unlink: [], create: [], modify: [], delete: [])
             @invoke()
 
         invoke: ->
@@ -793,14 +793,14 @@ angular.module('Engine2')
 
     star_to_many_field_view: class StarToManyFieldView extends ViewAction
         invoke: (args) ->
-            if entry = @parent().current_entry_is('added') ? @parent().current_entry_is('modified')
+            if entry = @parent().current_entry_is('create') ? @parent().current_entry_is('modify')
                 @meta.invokable = false
                 @record = entry
             super(args)
 
     star_to_many_field_modify: class StarToManyFieldModifyAction extends ModifyAction
         invoke: (args) ->
-            if entry = @parent().current_entry_is('added') ? @parent().current_entry_is('modified')
+            if entry = @parent().current_entry_is('create') ? @parent().current_entry_is('modify')
                 @meta.invokable = false
                 @record = entry
             super(args)
@@ -811,25 +811,25 @@ angular.module('Engine2')
                 unless @errors
                     pparent = @parent().parent()
                     if @parent() instanceof StarToManyFieldModifyAction
-                        if entry = pparent.current_entry_is('added') ? pparent.current_entry_is('modified')
+                        if entry = pparent.current_entry_is('create') ? pparent.current_entry_is('modify')
                             _.assign(entry, @parent().record)
                         else
-                            pparent.changes.modified.push @parent().record
+                            pparent.changes.modify.push @parent().record
                     else # CreateAction
                         _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
-                        pparent.changes.added.push @parent().record
+                        pparent.changes.create.push @parent().record
                     pparent.sync_record()
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
         invoke: (args) ->
             pparent = @parent().parent()
-            if entry = pparent.current_entry_is('added')
-                _.remove(pparent.changes.added, entry)
-            else if entry = pparent.current_entry_is('modified')
-                _.remove(pparent.changes.modified, entry)
-                pparent.changes.deleted.push args.id
+            if entry = pparent.current_entry_is('create')
+                _.remove(pparent.changes.create, entry)
+            else if entry = pparent.current_entry_is('modify')
+                _.remove(pparent.changes.modify, entry)
+                pparent.changes.delete.push args.id
             else
-                pparent.changes.deleted.push args.id
+                pparent.changes.delete.push args.id
                 pparent.sync_record()
 
     star_to_many_field_link_list: class StarToManyFieldLinkList extends ListAction
@@ -847,7 +847,7 @@ angular.module('Engine2')
             if @selected_size() > 0
                 _.each @selection, (v, k) =>
                     id = k
-                    if _.includes(@parent().changes.unlinked, id) then _.pull(@parent().changes.unlinked, id) else @parent().changes.linked.push id
+                    if _.includes(@parent().changes.unlink, id) then _.pull(@parent().changes.unlink, id) else @parent().changes.link.push id
                 @parent().invoke()
                 @parent().sync_record()
                 @panel_close()
@@ -856,7 +856,7 @@ angular.module('Engine2')
         invoke: (args) ->
             id = args.id
             pparent = @parent().parent()
-            if _.includes(pparent.changes.linked, id) then _.pull(pparent.changes.linked, id) else pparent.changes.unlinked.push id
+            if _.includes(pparent.changes.link, id) then _.pull(pparent.changes.link, id) else pparent.changes.unlink.push id
             pparent.sync_record()
 
     file_store: class FileStoreAction extends Action

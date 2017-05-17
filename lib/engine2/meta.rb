@@ -815,12 +815,12 @@ module Engine2
                         model.association_reflections.each do |name, assoc|
                             hash = record[name]
                             if hash.is_a?(Hash)
-                                validate_and_approve_association(handler, record, name, :create, hash[:added].to_a)
-                                validate_and_approve_association(handler, record, name, :modify, hash[:modified].to_a)
+                                validate_and_approve_association(handler, record, name, :create, hash[:create].to_a)
+                                validate_and_approve_association(handler, record, name, :modify, hash[:modify].to_a)
                                 a_meta = action.parent[:"#{name}!"]
-                                a_meta.confirm_delete.delete.*.invoke_delete_db(handler, hash[:deleted].to_a, model.table_name) unless hash[:deleted].to_a.empty?
-                                a_meta.link.*.invoke_link_db(handler, record.primary_key_values, hash[:linked].to_a) unless hash[:linked].to_a.empty?
-                                a_meta.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlinked].to_a) unless hash[:unlinked].to_a.empty?
+                                a_meta.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
+                                a_meta.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
+                                a_meta.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
                                 raise raise Sequel::Rollback unless record.errors.empty?
                             end
                         end

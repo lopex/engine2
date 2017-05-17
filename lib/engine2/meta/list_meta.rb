@@ -230,8 +230,8 @@ module Engine2
         def list_context query, handler
             changes = handler.param_to_json(:changes)
             model = assets[:model]
-            unlinked = changes[:unlinked].to_a + changes[:deleted].to_a + changes[:modified].to_a.map{|m|Sequel::join_keys(model.primary_keys.map{|k|m[k]})}
-            linked = changes[:linked]
+            unlinked = changes[:unlink].to_a + changes[:delete].to_a + changes[:modify].to_a.map{|m|Sequel::join_keys(model.primary_keys.map{|k|m[k]})}
+            linked = changes[:link]
             query = super(query, handler)
 
             pks = model.primary_keys_qualified
@@ -256,7 +256,7 @@ module Engine2
                 end unless linked.empty?
             end
 
-            added = changes[:added].to_a + changes[:modified].to_a
+            added = changes[:create].to_a + changes[:modify].to_a
             cols = get_query.columns
             query = added.reduce query do |q, a|
                 q.union(model.db.select(*cols.map{|c|a[c]}), all: true, alias: model.table_name)
