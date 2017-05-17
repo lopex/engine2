@@ -12,8 +12,4 @@ module Engine2
     class ModifyMeta < FormMeta
         include MetaModifySupport
     end
-
-    class StarToManyFieldModifyMeta < ModifyMeta
-        meta_type :star_to_many_field_modify
-    end
 end

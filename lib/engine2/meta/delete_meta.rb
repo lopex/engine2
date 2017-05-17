@@ -6,7 +6,7 @@ module Engine2
             model = assets[:model]
             model.db.transaction do
                 ids.each do |id|
-                    keys = Sequel::split_keys(id)
+                    keys = split_keys(id)
 
                     model.association_reflections.each do |name, assoc|
                         ds = case assoc[:type]
@@ -49,10 +49,6 @@ module Engine2
             handler.permit id = handler.params[:id]
             invoke_delete_db(handler, [id])
         end
-    end
-
-    class StarToManyFieldDeleteMeta < DeleteMeta
-        meta_type :star_to_many_field_delete
     end
 
     class BulkDeleteMeta < DeleteMetaBase

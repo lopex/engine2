@@ -7,7 +7,7 @@ module Engine2
         LINK ||= {star_to_many_link: true, view: true, star_to_many_unlink: true}.freeze # star_to_many_bulk_unlink: true
         STMF_CRUD ||= {star_to_many_field_create: true, star_to_many_field_view: true, star_to_many_field_modify: true, star_to_many_field_delete: true}
         STMF_VIEW ||= {star_to_many_field_view: true}
-        STMF_LINK ||= {star_to_many_field_view: true, star_to_many_field_unlink: true, star_to_many_field_link_list: true}
+        STMF_LINK ||= {star_to_many_field_view: true, star_to_many_field_link: true ,star_to_many_field_unlink: true, star_to_many_field_link_list: true}
 
         attr_reader :builtin, :user
         def initialize
@@ -181,13 +181,21 @@ module Engine2
         end
 
         define_scheme :star_to_many_field_view do
-            define_action :view, StarToManyFieldViewMeta
+            define_action :view, ViewMeta do
+                meta{@meta_type = :star_to_many_field_view}
+            end
+        end
+
+        define_scheme :star_to_many_field_link do
+            define_action :link, StarToManyLinkMeta
         end
 
         define_scheme :star_to_many_field_unlink do
             define_action :confirm_unlink, ConfirmMeta do
                 self.*.message LOCS[:unlink_question]
-                define_action :unlink, StarToManyFieldUnlinkMeta
+                define_action :unlink, StarToManyUnlinkMeta do
+                    meta{@meta_type = :star_to_many_field_unlink}
+                end
             end
         end
 
@@ -216,7 +224,8 @@ module Engine2
         end
 
         define_scheme :star_to_many_field_modify do
-            define_action :modify, StarToManyFieldModifyMeta do
+            define_action :modify, ModifyMeta do
+                meta{@meta_type = :star_to_many_field_modify}
                 define_action :approve, StarToManyFieldUpdateMeta
             end
         end
@@ -225,7 +234,9 @@ module Engine2
             define_action :confirm_delete, ConfirmMeta do
                 self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_delete_title]
-                define_action :delete, StarToManyFieldDeleteMeta
+                define_action :delete, DeleteMeta do
+                    meta{@meta_type = :star_to_many_field_delete}
+                end
             end
         end
 

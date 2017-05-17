@@ -329,26 +329,6 @@ module Engine2
     )
 
     (AfterSaveProcessors ||= {}).merge!(
-        star_to_many_field: lambda{|record, field, info|
-            value = record.values[field]
-            if value && value.is_a?(Hash)
-                assoc = record.model.association_reflections[info[:assoc_name]]
-                other_model = assoc.associated_class
-                unlinked = value[:unlinked]
-                linked = value[:linked]
-
-                parent_key = record.primary_key_values
-                case assoc[:type]
-                when :one_to_many
-                    StarToManyUnlinkMetaBase.one_to_many_unlink_db(other_model, assoc, unlinked) if unlinked
-                    StarToManyLinkMeta.one_to_many_link_db(other_model, assoc, parent_key, linked) if linked
-                when :many_to_many
-                    StarToManyUnlinkMetaBase.many_to_many_unlink_db(other_model, assoc, parent_key, unlinked) if unlinked
-                    StarToManyLinkMeta.many_to_many_link_db(other_model, assoc, parent_key, linked) if linked
-                else unsupported_association
-                end
-            end
-        },
         file_store: lambda{|m, v, info|
             value = m.values[v]
             files = E2Files.db[:files]

@@ -174,6 +174,7 @@ module Engine2
                 end
             end
 
+            thefts = 0
             each_action do |action|
                 meta = action.*
                 model = meta.assets[:model]
@@ -183,9 +184,10 @@ module Engine2
                         source_action = source_actions.select{|sa| sa.meta_proc && sa.*.class >= meta.class}
                         # source_action = source_actions.select{|sa| sa.meta_proc && meta.class <= sa.*.class}
                         unless source_action.empty?
-                            # raise E2Error.new("Multiple meta candidates for #{action.inspect} found in '#{source_action.inspect}'") if source_action.size > 1
+                            raise E2Error.new("Multiple meta candidates for #{action.inspect} found in '#{source_action.inspect}'") if source_action.size > 1
                             # puts "#{action.inspect} => #{source_action.inspect}\n"
                             meta.instance_eval(&source_action.first.meta_proc)
+                            thefts += 1
                         end
                     end
                 end
@@ -200,7 +202,7 @@ module Engine2
                 true
             end
 
-            ::Kernel::puts "ACTIONS: #{Action.count}, Time: #{::Time.now - time}"
+            ::Kernel::puts "ACTIONS: #{Action.count}, Time: #{::Time.now - time}, Thefts: #{thefts}"
         end
 
         def p *args
