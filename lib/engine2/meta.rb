@@ -823,7 +823,7 @@ module Engine2
                                 validate_and_approve_association(handler, record, name, :create, hash)
                                 validate_and_approve_association(handler, record, name, :modify, hash)
                                 a_meta = action.parent[:"#{name}!"]
-                                raise raise Sequel::Rollback unless record.errors.empty?
+                                raise Sequel::Rollback unless record.errors.empty?
                                 a_meta.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
                                 a_meta.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
                                 a_meta.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
