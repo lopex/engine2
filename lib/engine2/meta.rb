@@ -815,8 +815,8 @@ module Engine2
                         model.association_reflections.each do |name, assoc|
                             hash = record[name]
                             if hash.is_a?(Hash)
-                                validate_and_approve_association(handler, record, name, :create, hash[:create].to_a)
-                                validate_and_approve_association(handler, record, name, :modify, hash[:modify].to_a)
+                                validate_and_approve_association(handler, record, name, :create, hash)
+                                validate_and_approve_association(handler, record, name, :modify, hash)
                                 a_meta = action.parent[:"#{name}!"]
                                 a_meta.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
                                 a_meta.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
@@ -831,7 +831,8 @@ module Engine2
             end
         end
 
-        def validate_and_approve_association handler, record, assoc_name, action_name, records
+        def validate_and_approve_association handler, record, assoc_name, action_name, hash
+            records = hash[action_name].to_a
             unless records.empty?
                 meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
                 records.each do |arec|
