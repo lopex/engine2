@@ -807,8 +807,8 @@ module Engine2
                 save = lambda do|c|
                     if super(handler, record, json)
                         if new_assoc == :one_to_many
-                            assoc[:keys].zip(split_keys(parent_id)).each{|k, v|record[k] = v}
                             handler.permit parent_id
+                            assoc[:keys].zip(split_keys(parent_id)).each{|k, v|record[k] = v}
                         end
 
                         result = record.save(transaction: false, validate: false)
