@@ -801,13 +801,18 @@ module Engine2
                 record.raise_on_save_failure = false
                 model = assets[:model]
                 assoc = assets[:assoc]
-                mtm_insert = record.new? && assoc && assoc[:type] == :many_to_many
+                new_assoc = record.new? && assoc && assoc[:type]
 
                 parent_id = json[:parent_id]
                 save = lambda do|c|
                     if super(handler, record, json)
+                        if new_assoc == :one_to_many
+                            assoc[:keys].zip(split_keys(parent_id)).each{|k, v|record[k] = v}
+                            handler.permit parent_id
+                        end
+
                         result = record.save(transaction: false, validate: false)
-                        if result && mtm_insert
+                        if result && new_assoc == :many_to_many
                             handler.permit parent_id
                             model.db[assoc[:join_table]].insert(assoc[:left_keys] + assoc[:right_keys], split_keys(parent_id) + record.primary_key_values)
                         end
@@ -827,7 +832,7 @@ module Engine2
                         result
                     end
                 end
-                (model.validation_in_transaction || mtm_insert) ? model.db.transaction(&save) : save.(nil)
+                (model.validation_in_transaction || new_assoc == :many_to_many) ? model.db.transaction(&save) : save.(nil)
             end
         end
 

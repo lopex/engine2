@@ -302,7 +302,7 @@ module Engine2
                 info[:schemes] = schemes
                 info[:keys] = assoc[:keys]
                 info[:assoc_name] = assoc_name
-                info[:transaction] = true # ?
+                info[:transaction] = true
             end
         end
 
