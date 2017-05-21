@@ -742,9 +742,8 @@ module Engine2
             end
         end
 
-        def allocate_record handler, json
+        def allocate_record handler, json_rec
             model = assets[:model]
-            json_rec = json[:record]
             handler.permit json_rec.is_a?(Hash)
             val_fields = (dynamic? ? static.validate_fields : @validate_fields) || model.type_info.keys
             handler.permit (json_rec.keys - val_fields).empty?
@@ -760,7 +759,7 @@ module Engine2
 
         def invoke handler
             json = handler.post_to_json
-            record = allocate_record(handler, json)
+            record = allocate_record(handler, json[:record])
             validate_and_approve(handler, record, json) ? static.record(handler, record) : {record!: record.to_hash, errors!: record.errors}
         end
 
@@ -841,7 +840,7 @@ module Engine2
             unless records.empty?
                 meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
                 records.each do |arec|
-                    rec = meta.allocate_record(handler, record: arec)
+                    rec = meta.allocate_record(handler, arec)
                     meta.validate_and_approve(handler, rec, {parent_id: Sequel::join_keys(record.primary_key_values)}, false)
                     rec.errors.each do |k, v|
                         (record.errors[assoc_name] ||= []).concat(v)
@@ -852,8 +851,8 @@ module Engine2
     end
 
     module MetaInsertSupport
-        def allocate_record handler, json
-            record = super(handler, json)
+        def allocate_record handler, json_rec
+            record = super(handler, json_rec)
             record.instance_variable_set(:"@new", true)
             model = assets[:model]
             model.primary_keys.each{|k|record.values.delete k} unless model.natural_key
@@ -863,8 +862,8 @@ module Engine2
     end
 
     module MetaUpdateSupport
-        def allocate_record handler, json
-            record = super(handler, json)
+        def allocate_record handler, json_rec
+            record = super(handler, json_rec)
             model = assets[:model]
             handler.permit record.has_primary_key? unless model.natural_key or self.class.validate_only
             record
