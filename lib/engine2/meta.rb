@@ -730,7 +730,7 @@ module Engine2
         def after_approve handler, record
         end
 
-        def validate_and_approve handler, record, json
+        def validate_and_approve handler, record, parent_id
             static.before_approve(handler, record)
             record.valid?
             validate_record(handler, record)
@@ -760,7 +760,7 @@ module Engine2
         def invoke handler
             json = handler.post_to_json
             record = allocate_record(handler, json[:record])
-            validate_and_approve(handler, record, json) ? static.record(handler, record) : {record!: record.to_hash, errors!: record.errors}
+            validate_and_approve(handler, record, json[:parent_id]) ? static.record(handler, record) : {record!: record.to_hash, errors!: record.errors}
         end
 
         def validate name, &blk
@@ -792,9 +792,9 @@ module Engine2
             end
         end
 
-        def validate_and_approve handler, record, json, validate_only = self.class.validate_only
+        def validate_and_approve handler, record, parent_id, validate_only = self.class.validate_only
             if validate_only then
-                super(handler, record, json)
+                super(handler, record, parent_id)
             else
                 record.skip_save_refresh = true
                 record.raise_on_save_failure = false
@@ -802,9 +802,8 @@ module Engine2
                 assoc = assets[:assoc]
                 new_assoc = record.new? && assoc && assoc[:type]
 
-                parent_id = json[:parent_id]
                 save = lambda do|c|
-                    if super(handler, record, json)
+                    if super(handler, record, parent_id)
                         if new_assoc == :one_to_many
                             handler.permit parent_id
                             assoc[:keys].zip(split_keys(parent_id)).each{|k, v|record[k] = v}
@@ -839,9 +838,10 @@ module Engine2
             records = hash[action_name].to_a
             unless records.empty?
                 meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
+                parent_id = Sequel::join_keys(record.primary_key_values)
                 records.each do |arec|
                     rec = meta.allocate_record(handler, arec)
-                    meta.validate_and_approve(handler, rec, {parent_id: Sequel::join_keys(record.primary_key_values)}, false)
+                    meta.validate_and_approve(handler, rec, parent_id, false)
                     rec.errors.each do |k, v|
                         (record.errors[assoc_name] ||= []).concat(v)
                     end unless rec.errors.empty?
