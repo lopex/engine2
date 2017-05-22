@@ -54,7 +54,12 @@ exports.config =
             fix = "$modal.$element = compileData.link(modalScope, function(clonedElement, scope) {});"
             find: fix.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
             replace: "#{fix}$modal.$backdrop = backdropElement;"
-          )
+        ),
+        files: [/vendor\.css$/]
+        match: (
+            find: "../fonts"
+            replace: "fonts"
+        )
       ]
 
     copycat:
