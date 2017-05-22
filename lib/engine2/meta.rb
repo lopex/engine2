@@ -273,7 +273,7 @@ module Engine2
             info = model.type_info[name]
             unless info
                 if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
-                    assoc = model.many_to_one_associations[$1.to_sym] || model.one_to_one_associations[$1.to_sym]
+                    assoc = model.many_to_one_associations[$1.to_sym] || model.many_to_many_associations[$1.to_sym]
                     raise E2Error.new("Association #{$1} not found for model #{model}") unless assoc
                     m = assoc.associated_class
                     info = m.type_info.fetch($2.to_sym)

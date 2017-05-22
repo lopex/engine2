@@ -337,7 +337,7 @@ module E2Model
                         if table == model_table_name
                             m = model
                         else
-                            a = model.many_to_one_associations[table] # || model.one_to_one_associations[table]
+                            a = model.many_to_one_associations[table] || model.many_to_many_associations[table]
                             raise Engine2::E2Error.new("Association #{table} not found for model #{model}") unless a
                             m = a.associated_class
                         end
@@ -356,7 +356,7 @@ module E2Model
                         fields << name
                     else
                         fields << :"#{table}__#{name}"
-                        joins[table] = model.many_to_one_associations[table]
+                        joins[table] = model.many_to_one_associations[table] || model.many_to_many_associations[table]
                     end
 
                     if f_info[:dummy]
@@ -383,8 +383,14 @@ module E2Model
 
             joins.reduce(self) do |joined, (table, assoc)|
                 m = assoc.associated_class
-                keys = assoc[:qualified_key]
-                joined.left_join(table, m.primary_keys.zip(keys.is_a?(Array) ? keys : [keys]))
+                case assoc[:type]
+                when :many_to_one
+                    keys = assoc[:qualified_key]
+                    joined.left_join(table, m.primary_keys.zip(keys.is_a?(Array) ? keys : [keys]))
+                when :many_to_many
+                    unsupported_association
+                else unsupported_association
+                end
             end
         end
 
