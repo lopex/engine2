@@ -120,7 +120,6 @@ module Engine2
 
         set :slim, pretty: true, sort_attrs: false
         set :views, ["views", "#{PATH}/views"]
-        set :public_folder, "#{PATH}/public"
         set :sessions, expire_after: 3600 # , :httponly => true, :secure => production?
 
         helpers do

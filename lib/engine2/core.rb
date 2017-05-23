@@ -502,6 +502,7 @@ module Engine2
 
         def bootstrap app, settings = {}
             @app = app
+            Handler.set :public_folder, "#{app}/public"
             SETTINGS.merge! settings
             SETTINGS[:name] ||= File::basename(app)
             bootstrap_e2db
