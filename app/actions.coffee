@@ -138,25 +138,8 @@ angular.module('Engine2')
                 @post_invoke(args)
                 @scope().$eval(@meta.execute) if @meta.execute
                 if @meta.repeat
-
-                    x = $timeout (=>
-                        @invoke(args).then  =>
-                            console.log "@@@"
-                            console.log @meta.repeat
-                            delete @meta.repeat
-
-                        ), @meta.repeat
-
-                    # x.then =>
-
-
-
-                    # unless @meta.destroy_repeat
-                    #     @scope().$on("$destroy", =>
-                    #         $timeout.cancel(x)
-                    #         delete @meta.repeat)
-                    #     @meta.destroy_repeat = true
-
+                    @scope().$on "$destroy", => @destroyed = true
+                    $timeout (=> @invoke(args)), @meta.repeat unless @destroyed
                 @
 
         save_state: () ->
