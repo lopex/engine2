@@ -140,6 +140,7 @@ angular.module('Engine2')
                 if @meta.repeat
                     @scope().$on "$destroy", => @destroyed = true
                     $timeout (=> @invoke(args)), @meta.repeat unless @destroyed
+                    delete @meta.repeat
                 @
 
         save_state: () ->
