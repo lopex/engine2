@@ -8,7 +8,7 @@ angular.module('Engine2')
             throw "Invalid action path: '#{action_attr}'" unless action_names
             action_names = action_names.split('/') if _.isString(action_names)
             create = (action) ->
-                action.create_action_path(action_names, $scope, $element).then (act) -> act.invoke() if $attrs.invoke
+                action.create_action_path(action_names, $scope, $element).then (act) -> act.invoke($parse($attrs.invoke)($scope)) if $attrs.invoke?
 
             sc = $scope
             if sc.action
