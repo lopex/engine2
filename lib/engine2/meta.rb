@@ -15,6 +15,12 @@ module Engine2
             def inherited cls
                 cls.http_method http_method
             end
+
+            def inherit
+                Class.new self do
+                    meta_type superclass.meta_type
+                end
+            end
         end
 
         http_method :get
