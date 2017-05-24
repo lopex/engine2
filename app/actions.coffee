@@ -864,10 +864,11 @@ angular.module('Engine2')
             super()
             @progress = 0
             id = E2.id_for(@parent().record, @parent().meta)
-            if id.length > 0
+            files = @parent().record[@scope().f]
+            if id.length > 0 && !files
                 @invoke(owner: id).then => @sync_record()
             else
-                @files = []
+                @files = files ? []
                 @sync_record()
 
         sync_record: ->
@@ -883,7 +884,7 @@ angular.module('Engine2')
                     @files.push mime: file.type, name: file.name, rackname: data.rackname, id: data.id
                     @message = "Wysłano, #{file.name}"
                     globals.action_pending = false
-            @sync_record()
+                    @sync_record()
 
         delete_file: (file) ->
             @scope().$broadcast 'confirm_delete',
