@@ -203,7 +203,7 @@ angular.module('Engine2')
 
         panel_scroll: (id) ->
             element = document.querySelector(id)
-            div.scrollTop = div.scrollHeight if div
+            element.scrollTop = div.scrollHeight if element
 
     root: class RootAction extends Action
         initialize: ->
