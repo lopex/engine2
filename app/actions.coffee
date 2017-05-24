@@ -201,6 +201,10 @@ angular.module('Engine2')
         panel_menu_cancel: ->
             @panel_close()
 
+        panel_scroll: (id) ->
+            element = document.querySelector(id)
+            div.scrollTop = div.scrollHeight if div
+
     root: class RootAction extends Action
         initialize: ->
             super()
