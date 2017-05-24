@@ -353,7 +353,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
-    dropdown_sub_tmpl = _.template("<li class='dropdown-submenu'><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
+    dropdown_sub_tmpl = _.template("<li class='dropdown-submenu' {{show}} {{hide}}><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
     dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a href='{{href}}' {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
 
     render = (menu, level) ->
@@ -366,6 +366,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         icon: m.menu.icon && E2Snippets.icon(m.menu.icon) || ''
                         aicon: m.menu.aicon && E2Snippets.aicon(m.menu.aicon) || ''
                         loc: m.menu.loc
+                        show: m.menu.show && "ng-show=\"#{m.menu.show}\"" || ''
+                        hide: m.menu.hide && "ng-hide=\"#{m.menu.hide}\"" || ''
                         sub: render(m.menu.entries)
                 else
                     dropdown_tmpl
