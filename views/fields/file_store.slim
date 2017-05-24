@@ -21,7 +21,7 @@ e2-action action="[f + '_file_store!']"
     div
       input [
         type="hidden"
-        ng-model="action.record[f]"
+        ng-model="action.parent().record[f]"
       ]
 
       .progress.progress-striped
