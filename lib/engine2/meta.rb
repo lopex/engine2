@@ -783,8 +783,8 @@ module Engine2
         end
 
         def pre_run
-            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
             super
+            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
         end
 
         def post_run
