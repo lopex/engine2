@@ -563,8 +563,6 @@ angular.module('Engine2')
                 @panel_close()
 
     form: class FormAction extends FormBaseAction
-        panel_menu_default_action: ->
-            super().then => @parent().invoke() unless @errors
 
     create: class CreateAction extends FormAction
         invoke: (args) ->
@@ -586,10 +584,7 @@ angular.module('Engine2')
     confirm: class ConfirmAction extends Action
         panel_menu_approve: ->
             @initial_arguments ?= @arguments
-            @invoke_action(@default_action_name, _.pick(@, @initial_arguments)).then (act) =>
-                unless @errors
-                    @parent().invoke()
-                    @panel_close()
+            @invoke_action(@default_action_name, _.pick(@, @initial_arguments))
 
     decode_action: class DecodeAction extends Action
         initialize: ->
@@ -810,19 +805,19 @@ angular.module('Engine2')
             super(args)
 
     star_to_many_field_approve: class StarToManyFieldApprove extends Action
-        invoke: (args) ->
-            super(args).then =>
-                unless @errors
-                    pparent = @parent().parent()
-                    if @parent() instanceof StarToManyFieldModifyAction
-                        if entry = pparent.current_entry_is('create') ? pparent.current_entry_is('modify')
-                            _.assign(entry, @parent().record)
-                        else
-                            pparent.changes.modify.push @parent().record
-                    else # CreateAction
-                        _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
-                        pparent.changes.create.push @parent().record
-                    pparent.sync_record()
+        post_invoke: (args) ->
+            super(args)
+            unless @errors
+                pparent = @parent().parent()
+                if @parent() instanceof StarToManyFieldModifyAction
+                    if entry = pparent.current_entry_is('create') ? pparent.current_entry_is('modify')
+                        _.assign(entry, @parent().record)
+                    else
+                        pparent.changes.modify.push @parent().record
+                else # CreateAction
+                    _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
+                    pparent.changes.create.push @parent().record
+                pparent.sync_record()
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
         invoke: (args) ->
@@ -835,6 +830,8 @@ angular.module('Engine2')
             else
                 pparent.changes.delete.push args.id
                 pparent.sync_record()
+            @meta.invokable = false
+            super(args)
 
     star_to_many_field_link_list: class StarToManyFieldLinkList extends ListAction
         initialize: ->
@@ -862,6 +859,8 @@ angular.module('Engine2')
             pparent = @parent().parent()
             if _.includes(pparent.changes.link, id) then _.pull(pparent.changes.link, id) else pparent.changes.unlink.push id
             pparent.sync_record()
+            @meta.invokable = false
+            super(args)
 
     file_store: class FileStoreAction extends Action
         initialize: ->

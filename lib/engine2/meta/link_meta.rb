@@ -42,6 +42,11 @@ module Engine2
         include MetaModelSupport
         http_method :delete
 
+        def pre_run
+            super
+            execute '[action.parent().invoke(), action.panel_close()]'
+        end
+
         def invoke_unlink_db handler, parent, ids
             model = assets[:model]
             assoc = assets[:assoc]

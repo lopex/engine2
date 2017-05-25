@@ -782,6 +782,11 @@ module Engine2
             end if @validations
         end
 
+        def pre_run
+            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
+            super
+        end
+
         def post_run
             super
             validate_fields *action.parent.*.get[:fields] unless validate_fields
@@ -1091,6 +1096,7 @@ module Engine2
 
         def pre_run
             super
+            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
             action.parent.parent.*.menu(:item_menu).option :confirm_delete, icon: "trash", show: "action.selected_size() == 0", button_loc: false
         end
     end
@@ -1105,6 +1111,7 @@ module Engine2
 
         def pre_run
             super
+            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
             action.parent.parent.*.select_toggle_menu
             action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_delete, icon: "trash", show: "action.selected_size() > 0"
         end
