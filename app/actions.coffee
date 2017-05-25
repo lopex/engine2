@@ -775,8 +775,7 @@ angular.module('Engine2')
         initialize: ->
             super()
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
-            changes = @parent().record[@scope().$parent.f]
-            @changes = changes ? (link: [], unlink: [], create: [], modify: [], delete: [])
+            @changes = (@parent().record[@scope().$parent.f] ?= (link: [], unlink: [], create: [], modify: [], delete: []))
             @invoke()
 
         invoke: ->
@@ -786,9 +785,6 @@ angular.module('Engine2')
         current_entry_is: (mode) ->
             key = E2.id_for(@current_entry(), @meta)
             _.find(@changes[mode], (e) => E2.id_for(e, @meta) == key)
-
-        sync_record: ->
-            @parent().record[@scope().$parent.f] = @changes
 
     star_to_many_field_view: class StarToManyFieldView extends ViewAction
         invoke: (args) ->
@@ -817,7 +813,6 @@ angular.module('Engine2')
                 else # CreateAction
                     _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
                     pparent.changes.create.push @parent().record
-                pparent.sync_record()
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
         invoke: (args) ->
@@ -829,7 +824,6 @@ angular.module('Engine2')
                 pparent.changes.delete.push args.id
             else
                 pparent.changes.delete.push args.id
-                pparent.sync_record()
             @meta.invokable = false
             super(args)
 
@@ -850,7 +844,6 @@ angular.module('Engine2')
                     id = k
                     if _.includes(@parent().changes.unlink, id) then _.pull(@parent().changes.unlink, id) else @parent().changes.link.push id
                 @parent().invoke()
-                @parent().sync_record()
                 @panel_close()
 
     star_to_many_field_unlink: class StarToManyFieldUnlink extends Action
@@ -858,7 +851,6 @@ angular.module('Engine2')
             id = args.id
             pparent = @parent().parent()
             if _.includes(pparent.changes.link, id) then _.pull(pparent.changes.link, id) else pparent.changes.unlink.push id
-            pparent.sync_record()
             @meta.invokable = false
             super(args)
 
