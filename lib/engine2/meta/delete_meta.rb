@@ -12,7 +12,7 @@ module Engine2
                         ds = case assoc[:type]
                         when :one_to_one
                         when :one_to_many
-                            model.db[name].where(Hash[assoc[:keys].zip(keys)])
+                            model.db[assoc.associated_class.table_name].where(Hash[assoc[:keys].zip(keys)])
                         when :many_to_many
                             model.db[assoc[:join_table]].where(Hash[assoc[:left_keys].zip(keys)])
                         when :many_to_one
