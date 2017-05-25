@@ -6,6 +6,11 @@ module Engine2
         http_method :post
         meta_type :star_to_many_link
 
+        def pre_run
+            super
+            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
+        end
+
         def invoke handler
             json = handler.post_to_json
             parent = json[:parent_id]

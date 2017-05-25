@@ -766,10 +766,7 @@ angular.module('Engine2')
         panel_menu_link: ->
             selection = _.keys(@selection)
             if selection.length > 0
-                @invoke_action('link', parent_id: @query.parent_id, ids: selection).then (act) =>
-                    unless @errors
-                        @parent().invoke()
-                        @panel_close()
+                @invoke_action('link', parent_id: @query.parent_id, ids: selection)
 
     star_to_many_field: class StarToManyField extends ListAction
         initialize: ->
