@@ -513,7 +513,6 @@ angular.module('Engine2')
                     #e.scope.$eval(meta.execute) if meta.execute # ?
                     dfd.resolve()
                 else
-                    @panel_close()
                     dfd.resolve(@record) # $q.when(true) ?
                 dfd.promise
 
