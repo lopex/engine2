@@ -856,14 +856,9 @@ angular.module('Engine2')
             @progress = 0
             id = E2.id_for(@parent().record, @parent().meta)
             files = @parent().record[@scope().f]
-            if id.length > 0 && !files
-                @invoke(owner: id).then => @sync_record()
-            else
-                @files = files ? []
-                @sync_record()
-
-        sync_record: ->
-            @parent().record[@scope().f] = @files
+            @invoke(owner: id).then =>
+                @files = files if files?
+                @parent().record[@scope().f] = @files
 
         select: (files) ->
             _.each files, (file) =>
@@ -872,16 +867,14 @@ angular.module('Engine2')
                     globals.action_pending = false
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>
-                    @files.push mime: file.type, name: file.name, rackname: data.rackname, id: data.id
+                    @files.push mime: file.type, name: file.name, rackname: data.rackname, id: data.id, new: true
                     @message = "Wysłano, #{file.name}"
                     globals.action_pending = false
-                    @sync_record()
 
         delete_file: (file) ->
             @scope().$broadcast 'confirm_delete',
                 confirm: =>
-                    @sync_record()
-                    file.deleted = true
+                    if file.new then _.pull(@files, file) else file.deleted = true
                     @scope().$broadcast 'confirm_delete_close'
 
         show_file: (file) ->
