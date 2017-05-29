@@ -388,7 +388,7 @@ module E2Model
                     keys = assoc[:qualified_key]
                     joined.left_join(table, m.primary_keys.zip(keys.is_a?(Array) ? keys : [keys]))
                 when :many_to_many
-                    unsupported_association
+                    joined.left_join(assoc[:join_table], assoc[:left_keys].zip(model.primary_keys)).left_join(m.table_name, m.primary_keys.zip(assoc[:right_keys]))
                 else unsupported_association
                 end
             end
