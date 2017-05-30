@@ -449,6 +449,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             out = $compile(angular.element(out))(scope)
             if attrs.index && !scope.$index?
                 scope.$index = attrs.index | 0
+                scope.$entry = scope.action.entries[scope.$index]
             # scope.data = attrs.data
             elem.after(out) # elem.append(out) # elem.replaceWith(out)
 
