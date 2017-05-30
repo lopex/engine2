@@ -10,7 +10,7 @@ require 'angular-load'
 
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad']) # 'draggabilly'
+angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket']) # 'draggabilly'
 .config ($httpProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->

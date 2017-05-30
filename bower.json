@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "angular-strap": "^2.3.10",
-    "angular": "^1.5.8"
+    "angular": "^1.5.8",
+    "angular-websocket": "^2.0.0"
   },
   "overrides": {
     "angular": {

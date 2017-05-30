@@ -7,6 +7,7 @@ require 'sinatra'
 require 'json'
 require 'slim'
 require 'engine2/version'
+require 'faye/websocket'
 
 %w[
     core.rb

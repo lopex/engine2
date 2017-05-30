@@ -22,7 +22,7 @@ angular.module('Engine2')
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
-.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad) ->
+.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad, $websocket) ->
     globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
