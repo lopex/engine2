@@ -356,7 +356,7 @@ module E2Model
                         fields << name
                     else
                         fields << :"#{table}__#{name}"
-                        joins[table] = model.many_to_one_associations[table] || model.many_to_many_associations[table]
+                        joins[table] ||= model.many_to_one_associations[table] || model.many_to_many_associations[table]
                     end
 
                     if f_info[:dummy]
