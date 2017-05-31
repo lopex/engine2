@@ -224,6 +224,7 @@ angular.module('Engine2')
             super()
             @tree = actions: [name: 'api', number: 0, access: true]
             @invoke_action('models')
+            @invoke_action('environment')
 
         open: (stack, node, collapsed, expand) ->
             tree = @tree

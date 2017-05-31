@@ -47,6 +47,10 @@ module Engine2
                             }
                         }
                     end
+
+                    define_action_invoke :environment do |handler|
+                        {environment: handler.env}
+                    end
                 end
             end
         end
