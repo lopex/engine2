@@ -158,6 +158,10 @@ module Engine2
         end
     end
 
+    module MetaWebSocketSupport
+
+    end
+
     class InlineMeta < Meta
         meta_type :inline
     end
