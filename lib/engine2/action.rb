@@ -92,7 +92,7 @@ module Engine2
         end
 
         def actions_info handler
-            info = actions.inject({}) do |h, (name, a)|
+            info = actions.reduce({}) do |h, (name, a)|
                 meta = a.*
                 act = {
                     meta_type: meta.meta_type,
@@ -120,7 +120,7 @@ module Engine2
         end
 
         def access_info handler
-            @actions.inject({}) do |h, (name, a)|
+            @actions.reduce({}) do |h, (name, a)|
                 h[name] = a.check_access!(handler)
                 h
             end

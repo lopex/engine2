@@ -48,7 +48,7 @@ module Engine2
                             if keys.length == 1
                                 query.where(name => value)
                             else
-                                query.where(keys.map{|k| hash[k]}.transpose.map{|vals| Hash[keys.zip(vals)]}.inject{|q, c| q | c})
+                                query.where(keys.map{|k| hash[k]}.transpose.map{|vals| Hash[keys.zip(vals)]}.reduce{|q, c| q | c})
                             end
                         when :list_select
                             query.where(name => value) # decode in sql query ?
@@ -237,8 +237,8 @@ module Engine2
             pks = model.primary_keys_qualified
 
             if handler.params[:negate]
-                query = unlinked.map{|ln| pks.zip(split_keys(ln))}.inject(query){|q, c| q.or c}
-                # query = query.or *unlinked.map{|unl| Hash[model.primary_keys.zip(split_keys(unl))]}.inject{|q, c| q | c}
+                query = unlinked.map{|ln| pks.zip(split_keys(ln))}.reduce(query){|q, c| q.or c}
+                # query = query.or *unlinked.map{|unl| Hash[model.primary_keys.zip(split_keys(unl))]}.reduce{|q, c| q | c}
                 cond = linked.map{|ln| pks.zip(split_keys(ln)).sql_negate}
                 query = query.where *cond unless cond.empty?
 
@@ -246,12 +246,12 @@ module Engine2
                 cond = unlinked.map{|unl| pks.zip(split_keys(unl)).sql_negate}
                 query = query.where *cond unless cond.empty?
                 # query = query.or *linked.map{|ln| model.primary_keys.zip(split_keys(ln))}
-                # query = query.or *linked.map{|ln| Hash[model.primary_keys.zip(split_keys(ln))]}.inject{|q, c| q | c}
+                # query = query.or *linked.map{|ln| Hash[model.primary_keys.zip(split_keys(ln))]}.reduce{|q, c| q | c}
                 case assets[:assoc][:type]
                 when :one_to_many
-                    query = linked.map{|ln| pks.zip(split_keys(ln))}.inject(query){|q, c| q.or c}
+                    query = linked.map{|ln| pks.zip(split_keys(ln))}.reduce(query){|q, c| q.or c}
                 when :many_to_many
-                    query = linked.map{|ln| pks.zip(split_keys(ln))}.inject(query){|q, c| q.or c}.distinct
+                    query = linked.map{|ln| pks.zip(split_keys(ln))}.reduce(query){|q, c| q.or c}.distinct
                 else unsupported_association
                 end unless linked.empty?
             end

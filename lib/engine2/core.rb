@@ -15,7 +15,7 @@ end
 
 class Object
     def instance_variables_hash
-        instance_variables.inject({}) do |h, i|
+        instance_variables.reduce({}) do |h, i|
             h[i] = instance_variable_get(i)
             h
         end

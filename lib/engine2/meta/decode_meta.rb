@@ -72,7 +72,7 @@ module Engine2
 
         def invoke handler
             if query = handler.params[:query]
-                condition = (@meta[:decode_fields] || @meta[:fields]).map{|f|f.like("%#{query}%")}.inject{|q, f| q | f}
+                condition = (@meta[:decode_fields] || @meta[:fields]).map{|f|f.like("%#{query}%")}.reduce{|q, f| q | f}
                 {entries: get_query.where(condition).limit(@meta[:limit]).all}
             else
                 handler.permit id = handler.params[:id]
@@ -91,7 +91,7 @@ module Engine2
         end
 
         def invoke_decode handler, ids
-            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys.zip(keys)]}.inject{|q, c| q | c}).all
+            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys.zip(keys)]}.reduce{|q, c| q | c}).all
             # handler.halt_not_found(LOCS[:no_entry]) if records.empty?
             records
         end
