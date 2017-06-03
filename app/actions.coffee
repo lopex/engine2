@@ -212,7 +212,7 @@ angular.module('Engine2')
             @meta  = {}
 
         invoke: (args) ->
-            throw "Root action invoked"
+            console.warn "Root action invoked"
 
     default_action: class DefaultAction extends Action
         initialize: ->
