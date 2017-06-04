@@ -78,7 +78,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     make_ng_class: (o) ->
         out = []
         _.each ng_class_names, (e) -> out.push(if e == 'enabled' then "'disabled': !(#{o[e]})" else "'#{e}': #{o[e]}") if o[e]?
-        _.each(o.class, (v, k) -> out.push "#{k}: #{v}") if o.class?
+        _.each(o.class, (v, k) -> out.push "'#{k}': #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
 .factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, $route, $dateFormatter, $parse) ->
