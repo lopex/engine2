@@ -22,7 +22,7 @@ angular.module('Engine2')
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
-.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad, $websocket) ->
+.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad, $websocket, PushJS) ->
     globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
@@ -204,6 +204,9 @@ angular.module('Engine2')
         panel_scroll: (id) ->
             element = document.querySelector(id)
             element.scrollTop = element.scrollHeight if element
+
+        show_notification: (name, body, icon, timeoutx, on_close) ->
+            PushJS.create name, body: body, icon: icon, timeout: timeoutx, onClick: on_close
 
     root: class RootAction extends Action
         initialize: ->
