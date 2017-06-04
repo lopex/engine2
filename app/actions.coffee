@@ -208,6 +208,12 @@ angular.module('Engine2')
         show_notification: (name, body, icon, timeoutx, on_close) ->
             PushJS.create name, body: body, icon: icon, timeout: timeoutx, onClick: on_close
 
+        websocket_connect: ->
+            l = $location
+            ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}/#{@action_info().action_resource}"
+            @web_socket = -> ws
+            @scope().$on "$destroy", -> ws.close()
+
     root: class RootAction extends Action
         initialize: ->
             super()
