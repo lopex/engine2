@@ -159,7 +159,24 @@ module Engine2
     end
 
     module MetaWebSocketSupport
+        def pre_run
+            @meta[:websocket] = true
+            super
+        end
 
+        def invoke! handler
+            if Faye::WebSocket.websocket?(handler.env)
+                ws = Faye::WebSocket.new(handler.env)
+                ws.on(:message){|data|ws_message(data, ws)}
+                ws.rack_response
+            else
+                super
+            end
+        end
+    end
+
+    class WebSocketMeta < Meta
+        include MetaWebSocketSupport
     end
 
     class InlineMeta < Meta
