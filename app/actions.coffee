@@ -55,7 +55,7 @@ angular.module('Engine2')
 
         initialize: ->
             @process_static_meta()
-            console.log "CREATE #{@action_info().action_resource}"
+            console.info "CREATE #{@action_info().action_resource}"
 
         process_static_meta: ->
             if @meta.menus
