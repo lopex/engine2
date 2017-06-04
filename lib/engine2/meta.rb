@@ -164,6 +164,11 @@ module Engine2
             super
         end
 
+        def post_run
+            super
+            @invokable = true
+        end
+
         def invoke! handler
             if Faye::WebSocket.websocket?(handler.env)
                 ws = Faye::WebSocket.new(handler.env)
