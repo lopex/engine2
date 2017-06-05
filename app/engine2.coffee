@@ -104,6 +104,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 
     merge: (dst, src) ->
         for k, v of src
+            throw "Attempted to override function '#{k}'" if _.isFunction(dst[k])
             if _.isObject(v) && !_.isArray(v)
                 if k.slice(-1) == '!'
                     dst[k.slice(0, -1)] = v
