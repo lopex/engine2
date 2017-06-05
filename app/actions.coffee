@@ -51,6 +51,12 @@ angular.module('Engine2')
                     @meta.panel.modal_action = false
                     @meta.panel.footer = true unless @meta.panel.footer == false
 
+            if ws_meta = @meta.websocket
+                @websocket_connect()
+                ws = @web_socket()
+                _.each ws_meta.methods, (method) =>
+                    ws["on#{_.capitalize(method)}"] (msg) => @["ws_#{method}"](msg, ws)
+
             @initialize()
 
         initialize: ->

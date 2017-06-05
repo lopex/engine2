@@ -162,13 +162,19 @@ module Engine2
         WS_METHODS ||= Faye::WebSocket::API::TYPES.keys
         WS_METHODS.each do |method|
             define_method :"ws_#{method}" do |&blk|
-                (@ws_methods ||= {})[method] = blk
+                @ws_methods[method] = blk
             end
+        end
+
+        def pre_run
+            super
+            @ws_methods = {}
+            @meta[:websocket] = {}
         end
 
         def post_run
             super
-            @meta[:ws_methods] = @ws_methods.keys if @ws_methods
+            @meta[:websocket][:methods] = @ws_methods.keys
             @invokable = true
         end
 
