@@ -159,20 +159,25 @@ module Engine2
     end
 
     module MetaWebSocketSupport
-        def pre_run
-            @meta[:websocket] = true
-            super
+        WS_METHODS ||= Faye::WebSocket::API::TYPES.keys
+        WS_METHODS.each do |method|
+            define_method :"ws_#{method}" do |&blk|
+                (@ws_methods ||= {})[method] = blk
+            end
         end
 
         def post_run
             super
+            @meta[:ws_methods] = @ws_methods.keys if @ws_methods
             @invokable = true
         end
 
         def invoke! handler
             if Faye::WebSocket.websocket?(handler.env)
                 ws = Faye::WebSocket.new(handler.env)
-                ws.on(:message){|data|ws_message(data, ws)}
+                @ws_methods.each do |k, v|
+                    ws.on(k){|m|v.(m, ws)}
+                end
                 ws.rack_response
             else
                 super
