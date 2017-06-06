@@ -55,7 +55,9 @@ angular.module('Engine2')
                 @websocket_connect()
                 ws = @web_socket()
                 _.each ws_meta.methods, (method) =>
-                    ws["on#{_.capitalize(method)}"] (msg) => @["ws_#{method}"](msg, ws)
+                    ws["on#{_.capitalize(method)}"] (msg) =>
+                        data = if method == 'message' then JSON.parse(msg.data) else msg.data
+                        @["ws_#{method}"](data, ws, msg)
 
             @initialize()
 

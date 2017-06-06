@@ -119,6 +119,17 @@ class Symbol
     end
 end
 
+module Faye
+    class WebSocket
+        module API
+            def send! msg
+                msg = msg.to_json if msg.is_a? Hash
+                send msg
+            end
+        end
+    end
+end
+
 class << Sequel
     attr_accessor :alias_columns_in_joins
 

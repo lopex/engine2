@@ -159,7 +159,7 @@ module Engine2
     end
 
     module MetaWebSocketSupport
-        WS_METHODS ||= Faye::WebSocket::API::TYPES.keys
+        WS_METHODS ||= Faye::WebSocket::API::TYPES.keys.map(&:to_sym)
         WS_METHODS.each do |method|
             define_method :"ws_#{method}" do |&blk|
                 @ws_methods[method] = blk
@@ -181,8 +181,11 @@ module Engine2
         def invoke! handler
             if Faye::WebSocket.websocket?(handler.env)
                 ws = Faye::WebSocket.new(handler.env)
-                @ws_methods.each do |k, v|
-                    ws.on(k){|m|v.(m, ws)}
+                @ws_methods.each do |meth, v|
+                    ws.on(meth) do |msg|
+                        (data = meth == :message ? JSON.parse(msg.data, symbolize_names: true) : msg.data) rescue puts $!
+                        v.(data, ws, msg)
+                    end
                 end
                 ws.rack_response
             else
