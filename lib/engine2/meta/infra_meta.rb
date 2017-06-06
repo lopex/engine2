@@ -16,6 +16,7 @@ module Engine2
     end
 
     SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
+        run_scheme :login!, user_info_model
         define_action :infra!, InfraMeta do
             run_scheme :login!, user_info_model
             run_scheme :logout!
