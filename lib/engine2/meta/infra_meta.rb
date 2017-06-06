@@ -23,9 +23,13 @@ module Engine2
 
             define_action :inspect_modal, InspectModalMeta do
                 access! &:logged_in?
-                define_action :inspect do
+                define_action :inspect, WebSocketMeta.inherit do
                     self.* do
                         @meta_type = :inspect
+
+                        ws_message do |body, ws|
+                            ws.send! body
+                        end
                     end
 
                     define_action_invoke :models do |handler|

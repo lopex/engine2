@@ -88,3 +88,13 @@ e2-action action="'inspect'"
       .panel.panel-default
         .panel-body
           pre ng-bind="action.environment | json"
+
+    div title="Diagnostics" bs-pane=""
+      .panel.panel-default
+        .panel-body
+          a.btn.btn-default ng-click="action.show_notification('Name', 'Body', undefined, 2000)"
+            | Push
+          br
+          a.btn.btn-default> ng-click="action.web_socket().send({msg: 'Hello!'})"
+            | Websocket
+          | {{action.msg}}

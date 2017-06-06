@@ -273,6 +273,10 @@ angular.module('Engine2')
         has_assoc: (model) ->
             _.size(model.assoc) > 0
 
+        ws_message: (body, ws) ->
+            @msg = body.msg
+
+
     menu: class MenuAction extends Action
         process_static_meta: ->
 
