@@ -27,8 +27,8 @@ module Engine2
                     self.* do
                         @meta_type = :inspect
 
-                        ws_message do |body, ws|
-                            ws.send! body
+                        ws_message do |msg, ws|
+                            ws.send! msg
                         end
                     end
 

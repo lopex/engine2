@@ -181,10 +181,10 @@ module Engine2
         def invoke! handler
             if Faye::WebSocket.websocket?(handler.env)
                 ws = Faye::WebSocket.new(handler.env)
-                @ws_methods.each do |meth, v|
-                    ws.on(meth) do |msg|
-                        (data = meth == :message ? JSON.parse(msg.data, symbolize_names: true) : msg.data) rescue puts $!
-                        v.(data, ws, msg)
+                @ws_methods.each do |method, blk|
+                    ws.on(method) do |evt|
+                        (msg = method == :message ? JSON.parse(evt.data, symbolize_names: true) : evt.data) rescue puts $!
+                        blk.(msg, ws, evt)
                     end
                 end
                 ws.rack_response

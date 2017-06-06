@@ -55,9 +55,9 @@ angular.module('Engine2')
                 @websocket_connect()
                 ws = @web_socket()
                 _.each ws_meta.methods, (method) =>
-                    ws["on#{_.capitalize(method)}"] (msg) =>
-                        data = if method == 'message' then JSON.parse(msg.data) else msg.data
-                        @["ws_#{method}"](data, ws, msg)
+                    ws["on#{_.capitalize(method)}"] (evt) =>
+                        msg = if method == 'message' then JSON.parse(evt.data) else evt.data
+                        @["ws_#{method}"](msg, ws, evt)
 
             @initialize()
 
@@ -273,8 +273,8 @@ angular.module('Engine2')
         has_assoc: (model) ->
             _.size(model.assoc) > 0
 
-        ws_message: (body, ws) ->
-            @msg = body.msg
+        ws_message: (msg, ws) ->
+            @msg = msg.msg
 
 
     menu: class MenuAction extends Action
