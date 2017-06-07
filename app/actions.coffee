@@ -51,26 +51,7 @@ angular.module('Engine2')
                     @meta.panel.modal_action = false
                     @meta.panel.footer = true unless @meta.panel.footer == false
 
-            if ws_meta = @meta.websocket
-                @websocket_connect()
-                ws = @web_socket()
-                _.each ws_meta.methods, (method) =>
-                    ws["on#{_.capitalize(method)}"] (evt) =>
-                        is_message = method == 'message'
-                        if is_message
-                            msg = JSON.parse(evt.data)
-                            if msg.error
-                                $e2Modal.error("WebSocket [#{evt.origin}]", msg.error)
-                            else
-                                E2.merge(@, msg)
-                                @process_meta()
-                        else
-                            msg = evt
-                        @["ws_#{method}"](msg, ws, evt)
-                        @scope().$eval(@meta.execute) if @meta.execute && is_message
-
-                @ws_message ?= ->
-
+            @websocket_connect() if @meta.websocket
             @initialize()
 
         initialize: ->
@@ -226,6 +207,22 @@ angular.module('Engine2')
         websocket_connect: ->
             l = $location
             ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}/#{@action_info().action_resource}"
+            _.each @meta.websocket.methods, (method) =>
+                ws["on#{_.capitalize(method)}"] (evt) =>
+                    is_message = method == 'message'
+                    if is_message
+                        msg = JSON.parse(evt.data)
+                        if msg.error
+                            $e2Modal.error("WebSocket [#{evt.origin}]", msg.error)
+                        else
+                            E2.merge(@, msg)
+                            @process_meta()
+                    else
+                        msg = evt
+                    @["ws_#{method}"](msg, ws, evt)
+                    @scope().$eval(@meta.execute) if @meta.execute && is_message
+
+            @ws_message ?= ->
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
 
