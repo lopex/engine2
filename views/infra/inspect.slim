@@ -95,6 +95,11 @@ e2-action action="'inspect'"
           a.btn.btn-default ng-click="action.show_notification('Name', 'Body', undefined, 2000)"
             | Push
           br
-          a.btn.btn-default> ng-click="action.web_socket().send({msg: 'Hello!'})"
+          a.btn.btn-default> ng-click="action.web_socket().send({number: action.number})"
             | Websocket
-          | {{action.msg}}
+          | {{action.number}}
+          hr
+          | Event
+          pre ng-bind="action.event | json"
+          | Socket
+          pre ng-bind="action.web_socket() | json"

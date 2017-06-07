@@ -28,7 +28,7 @@ module Engine2
                         @meta_type = :inspect
 
                         ws_message do |msg, ws|
-                            ws.send! msg
+                            ws.send! number: msg[:number].to_i + 1
                         end
                     end
 
