@@ -59,8 +59,11 @@ angular.module('Engine2')
                         is_message = method == 'message'
                         if is_message
                             msg = JSON.parse(evt.data)
-                            E2.merge(@, msg)
-                            @process_meta()
+                            if msg.error
+                                $e2Modal.error("WebSocket [#{evt.origin}]", msg.error)
+                            else
+                                E2.merge(@, msg)
+                                @process_meta()
                         else
                             msg = evt
                         @["ws_#{method}"](msg, ws, evt)
