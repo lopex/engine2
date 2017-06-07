@@ -56,8 +56,15 @@ angular.module('Engine2')
                 ws = @web_socket()
                 _.each ws_meta.methods, (method) =>
                     ws["on#{_.capitalize(method)}"] (evt) =>
-                        msg = if method == 'message' then JSON.parse(evt.data) else evt
+                        if method == 'message'
+                            msg = JSON.parse(evt.data)
+                            E2.merge(@, msg)
+                            @process_meta()
+                        else
+                            msg = evt
                         @["ws_#{method}"](msg, ws, evt)
+
+                @ws_message ?= ->
 
             @initialize()
 
