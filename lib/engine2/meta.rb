@@ -169,7 +169,11 @@ module Engine2
         def pre_run
             super
             @ws_methods = {}
-            @meta[:websocket] = {}
+            @meta[:websocket] = {options: {}}
+        end
+
+        def ws_options opts
+           @meta[:websocket][:options].merge! opts
         end
 
         def post_run

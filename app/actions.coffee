@@ -206,8 +206,9 @@ angular.module('Engine2')
 
         websocket_connect: ->
             l = $location
-            ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}/#{@action_info().action_resource}"
-            _.each @meta.websocket.methods, (method) =>
+            ws_meta = @meta.websocket
+            ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}/#{@action_info().action_resource}", undefined, ws_meta.options
+            _.each ws_meta.methods, (method) =>
                 ws["on#{_.capitalize(method)}"] (evt) =>
                     is_message = method == 'message'
                     if is_message
