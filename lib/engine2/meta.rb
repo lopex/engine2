@@ -183,8 +183,12 @@ module Engine2
                 ws = Faye::WebSocket.new(handler.env)
                 @ws_methods.each do |method, blk|
                     ws.on(method) do |evt|
-                        (msg = method == :message ? JSON.parse(evt.data, symbolize_names: true) : evt.data) rescue puts $!
-                        blk.(msg, ws, evt)
+                        (msg = method == :message ? JSON.parse(evt.data, symbolize_names: true) : evt)
+                        begin
+                            blk.(msg, ws, evt)
+                        rescue Exception => e
+                            ws.send! error: e
+                        end
                     end
                 end
                 ws.rack_response
