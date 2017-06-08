@@ -214,7 +214,7 @@ angular.module('Engine2')
                     if is_message
                         msg = JSON.parse(evt.data)
                         if msg.error
-                            $e2Modal.error("WebSocket [#{evt.origin}]", msg.error)
+                            $e2Modal.error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception)
                         else
                             E2.merge(@, msg)
                             @process_meta()
