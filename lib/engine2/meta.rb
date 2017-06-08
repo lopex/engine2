@@ -191,7 +191,7 @@ module Engine2
                             (msg = method == :message ? JSON.parse(evt.data, symbolize_names: true) : evt)
                             blk.(msg, ws, evt)
                         rescue Exception => e
-                            ws.send! error: e
+                            ws.send! error: {exception: e, method: method}
                         end
                     end
                 end
