@@ -63,6 +63,9 @@ module Engine2
                 else
                     nil
                 end
+            },
+            boolean: lambda{|query, name, value, type_info, hash|
+                query.where(name => value)
             }
         )
 
