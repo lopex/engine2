@@ -226,8 +226,6 @@ angular.module('Engine2')
 
                     ws["on#{_.capitalize(method)}"](ws_method)
 
-
-            @ws_message ?= ->
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
 
