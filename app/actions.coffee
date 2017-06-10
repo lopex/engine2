@@ -212,7 +212,6 @@ angular.module('Engine2')
                 ws_method_impl = @["ws_#{method}"]
                 ws_method_exec = ws_meta.execute?[method]
                 if ws_method_impl || ws_method_exec
-                    console.log method
                     ws_method = (evt) =>
                         is_message = method == 'message'
                         if is_message
