@@ -176,9 +176,12 @@ module Engine2
            @meta[:websocket][:options].merge! opts
         end
 
+        def ws_execute execute
+            (@meta[:websocket][:execute] ||= {}).merge! execute
+        end
+
         def post_run
             super
-            @meta[:websocket][:methods] = @ws_methods.keys
             @invokable = true
         end
 
@@ -213,7 +216,7 @@ module Engine2
     class RootMeta < Meta
         def initialize *args
             super
-            @meta.merge! environment: Handler::environment, application: Engine2::SETTINGS[:name], key_separator: Engine2::SETTINGS[:key_separator]
+            @meta.merge! environment: Handler::environment, application: Engine2::SETTINGS[:name], key_separator: Engine2::SETTINGS[:key_separator], ws_methods: MetaWebSocketSupport::WS_METHODS
         end
     end
 
