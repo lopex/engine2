@@ -42,7 +42,7 @@ module Engine2
         end
 
         def post_run
-            query select(*assets[:model].primary_keys) unless @query
+            decode(*assets[:model].primary_keys) unless @query
             @meta[:separator] = '/' unless @meta[:separator]
             super
             @meta[:primary_fields] = assets[:model].primary_keys
