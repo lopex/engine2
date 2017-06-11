@@ -147,6 +147,7 @@ module Engine2
                     @meta[:invokable] = false
                 end
             end
+            @meta[:dynamic_meta] = true if @request_meta_proc
             post_process
         end
 

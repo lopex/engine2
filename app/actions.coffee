@@ -707,7 +707,7 @@ angular.module('Engine2')
             else
                 decode_descriptions = (recs) => @decode = recs.map((fields) => @decode_description(fields)).join(' | ')
                 recs = recs.map (r) => if _.isArray(r) then E2.from_id(r, @meta) else r
-                if _(recs).every((r) => _(@meta.fields).every((f) -> r[f]?)) then decode_descriptions(recs) else
+                if _(recs).every((r) => _(@meta.fields).every((f) -> r[f]?)) && !@meta.dynamic_meta then decode_descriptions(recs) else
                     @invoke(ids: [recs.map((r) => @meta.primary_fields.map (k) -> r[k])]).then => decode_descriptions(@entries)
 
         open: ->
