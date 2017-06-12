@@ -639,7 +639,7 @@ angular.module('Engine2')
             @parentp().search_field_change?(@decode_field)
 
         decode_description: (entry) ->
-            @meta.decode_fields.map((f) => E2.render_field(entry, f, @meta)).join(@meta.separator)
+            @meta.fields.map((f) => E2.render_field(entry, f, @meta)).join(@meta.separator)
 
         parentp: ->
             @parent().parent()

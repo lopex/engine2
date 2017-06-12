@@ -438,8 +438,10 @@ module Engine2
             get_query[assets[:model].primary_keys_hash_qualified(split_keys(id))]
         end
 
-        def select *args, &blk
-            assets[:model].select(*args, &blk).ensure_primary_key.setup! (@meta[:fields] = [])
+        def select *args, use_pk: true, &blk
+            ds = assets[:model].select(*args, &blk)
+            ds = ds.ensure_primary_key if use_pk
+            ds.setup!(@meta[:fields] = [])
         end
     end
 
