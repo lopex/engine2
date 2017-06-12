@@ -5,8 +5,7 @@ module Engine2
         include MetaAPISupport, MetaModelSupport, MetaQuerySupport
 
         def decode *fields, &blk
-            query select(*fields), &blk
-            @meta[:decode_fields] = fields
+            query select(*fields, use_pk: false), &blk
         end
 
         def separator sep
@@ -53,6 +52,10 @@ module Engine2
     class DecodeListMeta < DecodeMeta
         meta_type :decode_list
 
+        def decode *fields, &blk
+            query select(*fields), &blk
+        end
+
         def invoke handler
             {entries: get_query.limit(200).all}
         end
@@ -72,7 +75,7 @@ module Engine2
 
         def invoke handler
             if query = handler.params[:query]
-                condition = (@meta[:decode_fields] || @meta[:fields]).map{|f|f.like("%#{query}%")}.reduce{|q, f| q | f}
+                condition = @meta[:fields].map{|f|f.like("%#{query}%")}.reduce{|q, f| q | f}
                 {entries: get_query.where(condition).limit(@meta[:limit]).all}
             else
                 handler.permit id = handler.params[:id]
