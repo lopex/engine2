@@ -192,8 +192,11 @@ module Engine2
                 @ws_methods.each do |method, blk|
                     ws.on(method) do |evt|
                         begin
-                            (msg = method == :message ? JSON.parse(evt.data, symbolize_names: true) : evt)
-                            blk.(msg, ws, evt)
+                            if method == :message
+                                blk.(JSON.parse(evt.data, symbolize_names: true), ws, evt)
+                            else
+                                blk.(evt, ws, evt)
+                            end
                         rescue Exception => e
                             ws.send! error: {exception: e, method: method}
                         end
