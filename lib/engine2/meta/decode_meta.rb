@@ -72,7 +72,7 @@ module Engine2
 
         def invoke handler
             if query = handler.params[:query]
-                condition = (@meta[:decode_fields] || @meta[:fields]).map{|f|f.like("%#{query}%")}.reduce{|q, f| q | f}
+                condition = @meta[:decode_fields].map{|f|f.like("%#{query}%")}.reduce{|q, f| q | f}
                 {entries: get_query.where(condition).limit(@meta[:limit]).all}
             else
                 handler.permit id = handler.params[:id]
