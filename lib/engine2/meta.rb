@@ -1039,13 +1039,13 @@ module Engine2
 
         def invoke handler
             record = {}
-            if assoc = assets[:assoc]
-                case assoc[:type]
-                when :one_to_many
-                    parent = handler.params[:parent_id]
-                    assoc[:keys].zip(split_keys(parent)).each{|key, val| record[key] = val} if parent
-                end
-            end
+            # if assoc = assets[:assoc]
+            #     case assoc[:type]
+            #     when :one_to_many
+            #         parent = handler.params[:parent_id]
+            #         assoc[:keys].zip(split_keys(parent)).each{|key, val| record[key] = val} if parent
+            #     end
+            # end
             static.record(handler, record)
             {record: record, new: true}
         end
