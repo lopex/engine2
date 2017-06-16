@@ -61,6 +61,10 @@ tr.tr_hover {
   font-weight:normal;
 }
 
+textarea {
+  white-space: nowrap;
+}
+
 /*.modal-backdrop{
   position:fixed;
   top:0;
