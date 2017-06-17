@@ -25,7 +25,7 @@ end
 class Proc
     def to_json(*)
         loc = source_location
-        loc ? "\"#<Proc:#{loc.first[/\w+.rb/]}:#{loc.last}>\"" : '"?"'
+        loc ? "\"#<Proc:#{loc.first[/\w+.rb/]}:#{loc.last}>\"" : '"source unknown"'
     end
 
     def chain &blk
