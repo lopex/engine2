@@ -197,9 +197,10 @@ angular.module('Engine2')
         panel_menu_cancel: ->
             @panel_close()
 
-        panel_scroll: (id) ->
+        find_element: (id) ->
             element = document.querySelector(id)
-            element.scrollTop = element.scrollHeight if element
+            console.warn "Element #{id} not found" unless element
+            element
 
         show_notification: (name, body, icon, timeoutx, on_close) ->
             PushJS.create name, body: body, icon: icon, timeout: timeoutx, onClick: on_close
