@@ -358,7 +358,7 @@ module E2Model
 
             @opts[:select] = @opts[:select].map do |sel|
                 extract_select sel do |table, name, aliaz|
-                    if table
+                    info = if table
                         if table == model_table_name
                             m = model
                         else
@@ -366,10 +366,9 @@ module E2Model
                             raise Engine2::E2Error.new("Association #{table} not found for model #{model}") unless a
                             m = a.associated_class
                         end
-                        # raise Engine2::E2Error.new("Model not found for table #{table} in model #{model}") unless m
-                        info = m.type_info
+                        m.type_info
                     else
-                        info = type_info
+                        type_info
                     end
 
                     f_info = info[name]
