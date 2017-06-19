@@ -360,13 +360,12 @@ module E2Model
                 extract_select sel do |table, name, aliaz|
                     info = if table
                         if table == model_table_name
-                            m = model
+                            model
                         else
-                            a = model.many_to_one_associations[table] || model.many_to_many_associations[table]
-                            raise Engine2::E2Error.new("Association #{table} not found for model #{model}") unless a
-                            m = a.associated_class
-                        end
-                        m.type_info
+                            assoc = model.many_to_one_associations[table] || model.many_to_many_associations[table]
+                            raise Engine2::E2Error.new("Association #{table} not found for model #{model}") unless assoc
+                            assoc.associated_class
+                        end.type_info
                     else
                         type_info
                     end
