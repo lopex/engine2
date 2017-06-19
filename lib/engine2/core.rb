@@ -117,6 +117,10 @@ class Symbol
     def aicon
         "<i class='fa fa-#{self}'></i>"
     end
+
+    def q col
+        col.qualify self
+    end
 end
 
 module Faye
