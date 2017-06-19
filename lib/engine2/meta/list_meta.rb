@@ -92,7 +92,7 @@ module Engine2
                 if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
                     query = order_blk.(query, handler)
                 else
-                    order = order.qualify(model.table_name) if model.type_info[order]
+                    order = model.table_name.q(order) if model.type_info[order]
                     query = query.order(order)
                 end
 
@@ -122,7 +122,7 @@ module Engine2
                 query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
                     filter.(query, hash, handler)
                 elsif filter = DefaultFilters[type_info[:otype]]
-                    name = model.type_info[name] ? name.qualify(model.table_name) : Sequel.expr(name)
+                    name = model.type_info[name] ? model.table_name.q(name) : Sequel.expr(name)
                     filter.(query, name, value, type_info, hash)
                 else
                     raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
@@ -183,7 +183,7 @@ module Engine2
             case assoc[:type]
             when :one_to_many
                 keys = assoc[:keys]
-                condition = parent_keys.all?(&:empty?) ? false : Hash[keys.map{|k| k.qualify(model.table_name)}.zip(parent_keys)]
+                condition = parent_keys.all?(&:empty?) ? false : Hash[keys.map{|k| model.table_name.q(k)}.zip(parent_keys)]
                 if handler.params[:negate]
                     query = query.exclude(condition)
                     query = query.or(Hash[keys.zip([nil])]) if keys.all?{|k|model.db_schema[k][:allow_null] == true} # type_info[:required] ?
@@ -194,8 +194,8 @@ module Engine2
             when :many_to_many
                 q_pk = model.primary_keys_qualified
                 j_table = assoc[:join_table]
-                l_keys = assoc[:left_keys].map{|k| k.qualify(j_table)}
-                r_keys = assoc[:right_keys].map{|k| k.qualify(j_table)}
+                l_keys = assoc[:left_keys].map{|k| j_table.q(k)}
+                r_keys = assoc[:right_keys].map{|k| j_table.q(k)}
                 r_keys_vals = Hash[r_keys.zip(q_pk)]
                 l_keys_vals = parent_keys.all?(&:empty?) ? false : Hash[l_keys.zip(parent_keys)]
 

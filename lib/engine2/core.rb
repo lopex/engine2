@@ -305,7 +305,7 @@ module E2Model
 
         def primary_keys_qualified
             # cache it ?
-            primary_keys.map{|k|k.qualify(table_name)}
+            primary_keys.map{|k|table_name.q(k)}
         end
 
         def primary_keys_hash id
@@ -393,12 +393,12 @@ module E2Model
                     else
                         if table != model_table_name
                             if Sequel.alias_columns_in_joins
-                                name.qualify(table).as(:"#{table}__#{name}")
+                                table.q(name).as(:"#{table}__#{name}")
                             else
-                                name.qualify(table)
+                                table.q(name)
                             end
                         else
-                            name.qualify(table)
+                            table.q(name)
                         end
                     end
                 end
