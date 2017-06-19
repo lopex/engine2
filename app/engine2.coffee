@@ -31,7 +31,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     $locationProvider.html5Mode(false)
 
 .factory 'PushJS', -> require 'push.js'
-
+.factory 'MetaCache', ($cacheFactory) -> $cacheFactory('MetaCache')
 .factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->
     loaderToggle = (toggle) -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", toggle)
     loaderOn = -> loaderToggle('visible')

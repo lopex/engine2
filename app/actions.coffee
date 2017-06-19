@@ -22,7 +22,7 @@ angular.module('Engine2')
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
-.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad, $websocket, PushJS) ->
+.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad, $websocket, PushJS, MetaCache) ->
     globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
@@ -102,7 +102,7 @@ angular.module('Engine2')
             info = @find_action_info(name)
             info.action_resource = "#{@action_info().action_resource}/#{info.name}"
             get_meta = if !info.terminal || info.meta
-                $http.get("#{info.action_resource}/meta", cache: true).then (response) =>
+                $http.get("#{info.action_resource}/meta", cache: MetaCache).then (response) =>
                     if info.recheck_access
                         $http.get("#{info.action_resource}/meta", params: (access: true, parent_id: @current_id())).then (aresponse) ->
                             response.data.actions[k].access = v for k, v of aresponse.data
@@ -592,6 +592,7 @@ angular.module('Engine2')
             @invoke_action('logout').then =>
                 $rootScope.$broadcast "set_access", false, true, null
                 @panel_close()
+                MetaCache.removeAll()
 
     form: class FormAction extends FormBaseAction
 
