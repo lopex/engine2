@@ -13,6 +13,16 @@ class BigDecimal
     end
 end
 
+class Sequel::SQL::QualifiedIdentifier
+    def to_json(*)
+        "\"#{table}__#{column}\""
+    end
+
+    def to_sym
+        :"#{table}__#{column}"
+    end
+end
+
 class Object
     def instance_variables_hash
         instance_variables.reduce({}) do |h, i|
@@ -318,7 +328,7 @@ module E2Model
                 opts_select.each do |sel|
                     name = case sel
                         when Symbol
-                            sel.to_s =~ /\w+__(\w+)/ ? $1.to_sym : sel
+                            sel
                         when Sequel::SQL::QualifiedIdentifier
                             sel.column
                         when Sequel::SQL::AliasedExpression
@@ -332,11 +342,11 @@ module E2Model
                 if pk.length == sel_pk.length
                     self
                 else
-                    sels = (pk - sel_pk).map{|k| k.qualify(model.table_name)}
+                    sels = (pk - sel_pk).map{|k| model.table_name.q(k)}
                     select_more(*sels)
                 end
             else
-                select(*pk.map{|k| k.qualify(model.table_name)})
+                select(*pk.map{|k| model.table_name.q(k)})
             end
 
         end
@@ -370,7 +380,7 @@ module E2Model
                     if table == model_table_name
                         fields << name
                     else
-                        fields << :"#{table}__#{name}"
+                        fields << table.q(name)
                         joins[table] ||= model.many_to_one_associations[table] || model.many_to_many_associations[table]
                     end
 
@@ -412,11 +422,7 @@ module E2Model
         def extract_select sel, al = nil, &blk
             case sel
             when Symbol
-                if sel.to_s =~ /^(\w+)__(\w+?)(?:___(\w+))?$/
-                    yield $1.to_sym, $2.to_sym, $3 ? $3.to_sym : nil
-                else
-                    yield nil, sel, al
-                end
+                yield nil, sel, nil
             when Sequel::SQL::QualifiedIdentifier
                 yield sel.table, sel.column, al
             when Sequel::SQL::AliasedExpression, Sequel::SQL::Function

@@ -116,7 +116,7 @@ module Engine2
             sfields = lookup(:search_fields)
             handler.permit sfields
             hash.each_pair do |name, value|
-                handler.permit sfields.include?(name)
+                handler.permit name = sfields.find{|sf|sf.to_sym == name}
 
                 type_info = get_type_info(name)
                 query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))

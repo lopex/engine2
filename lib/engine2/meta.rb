@@ -229,8 +229,8 @@ module Engine2
             @meta[:reload_routes] = true
         end
 
-        def info
-            @meta[:info] ||= {}
+        def info field
+            (@meta[:info] ||= {})[field.to_sym] ||= {}
         end
 
         def config
@@ -240,7 +240,7 @@ module Engine2
         def info! *fields, options
             raise E2Error.new("No fields given to info") if fields.empty?
             fields.each do |field|
-                (info[field] ||= {}).merge! options # rmerge ?
+                info(field).merge! options # rmerge ?
             end
         end
 
@@ -250,8 +250,7 @@ module Engine2
 
         def decorate list
             list.each do |f|
-                m = (info[f] ||= {})
-                m[:loc] ||= LOCS[f]
+                info(f)[:loc] ||= LOCS[f.to_sym]
             end
         end
 
@@ -331,17 +330,18 @@ module Engine2
 
         def get_type_info name
             model = assets[:model]
-            info = model.type_info[name]
-            unless info
-                if name =~ /^(\w+)__(\w+?)$/ # (?:___\w+)?
-                    assoc = model.many_to_one_associations[$1.to_sym] || model.many_to_many_associations[$1.to_sym]
-                    raise E2Error.new("Association #{$1} not found for model #{model}") unless assoc
-                    m = assoc.associated_class
-                    info = m.type_info.fetch($2.to_sym)
-                else
-                    raise E2Error.new("Type info not found for '#{name}' in model '#{model}'")
-                end
+            info = case name
+            when Symbol
+                model.type_info[name]
+            when Sequel::SQL::QualifiedIdentifier
+                assoc = model.many_to_one_associations[name.table] || model.many_to_many_associations[name.table]
+                raise E2Error.new("Association #{name.table} not found for model #{model}") unless assoc
+                assoc.associated_class.type_info[name.column]
+            else
+                raise E2Error.new("Unknown type info key: #{name} in model #{model}")
             end
+
+            raise E2Error.new("Type info not found for '#{name}' in model '#{model}'") unless info
             info
         end
 
@@ -703,7 +703,7 @@ module Engine2
                     #     info[name][:render].merge!(find_renderer(type_info)){|key, v1, v2|v1}
                     # end
 
-                    info[name][:render] ||= begin # set before :fields
+                    info(name)[:render] ||= begin # set before :fields
                         renderer = DefaultSearchRenderers[type_info[:type]] || DefaultSearchRenderers[type_info[:otype]]
                         raise E2Error.new("No search renderer found for field '#{type_info[:name]}'") unless renderer
                         renderer.(self, type_info)
@@ -976,7 +976,7 @@ module Engine2
                     # type_info = model.type_info.fetch(name)
                     type_info = get_type_info(name)
 
-                    info[name][:render] ||= begin
+                    info(name)[:render] ||= begin
                         renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)
                         raise E2Error.new("No form renderer found for field '#{type_info[:name]}' of type '#{type_info[:type]}'") unless renderer
                         renderer.(self, type_info)
@@ -1176,21 +1176,21 @@ module Engine2
 
     (FormRendererPostProcessors ||= {}).merge!(
         boolean: lambda{|meta, field, info|
-            meta.info[field][:render].merge! true_value: info[:true_value], false_value: info[:false_value]
-            meta.info[field][:dont_strip] = info[:dont_strip] if info[:dont_strip]
+            meta.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
+            meta.info(field)[:dont_strip] = info[:dont_strip] if info[:dont_strip]
         },
         date: lambda{|meta, field, info|
-            meta.info[field][:render].merge! format: info[:format], model_format: info[:model_format]
+            meta.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
             if date_to = info[:other_date]
-                meta.info[field][:render].merge! other_date: date_to #, format: info[:format], model_format: info[:model_format]
+                meta.info(field)[:render].merge! other_date: date_to #, format: info[:format], model_format: info[:model_format]
                 meta.hide_fields date_to
             elsif time = info[:other_time]
-                meta.info[field][:render].merge! other_time: time
+                meta.info(field)[:render].merge! other_time: time
                 meta.hide_fields time
             end
         },
         time: lambda{|meta, field, info|
-            meta.info[field][:render].merge! format: info[:format], model_format: info[:model_format]
+            meta.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
         },
         decimal_date: lambda{|meta, field, info|
             FormRendererPostProcessors[:date].(meta, field, info)
@@ -1201,10 +1201,10 @@ module Engine2
             meta.info! field, type: :decimal_time
         },
         datetime: lambda{|meta, field, info|
-            meta.info[field][:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
+            meta.info(field)[:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
         },
         currency: lambda{|meta, field, info|
-            meta.info[field][:render].merge! symbol: info[:symbol]
+            meta.info(field)[:render].merge! symbol: info[:symbol]
         },
         # date_range: lambda{|meta, field, info|
         #     meta.info[field][:render].merge! other_date: info[:other_date], format: info[:format], model_format: info[:model_format]
@@ -1212,25 +1212,25 @@ module Engine2
         #     meta.info[field][:decimal_date] = true if info[:validations][:decimal_date]
         # },
         list_select: lambda{|meta, field, info|
-            meta.info[field][:render].merge! list: info[:list]
+            meta.info(field)[:render].merge! list: info[:list]
         },
         many_to_one: lambda{|meta, field, info|
-            field_info = meta.info[field]
+            field_info = meta.info(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = info[:keys]
             field_info[:type] = info[:otype]
 
             (info[:keys] - [field]).each do |of|
-                f_info = meta.info.fetch(of)
+                f_info = meta.info(of)
                 f_info[:hidden] = true
                 f_info[:type] = meta.assets[:model].type_info[of].fetch(:otype)
             end
         },
         file_store: lambda{|meta, field, info|
-            meta.info[field][:render].merge! multiple: info[:multiple]
+            meta.info(field)[:render].merge! multiple: info[:multiple]
         },
         star_to_many_field: lambda{|meta, field, info|
-            field_info = meta.info[field]
+            field_info = meta.info(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
         }
     )
@@ -1238,13 +1238,13 @@ module Engine2
     (ListRendererPostProcessors ||= {}).merge!(
         boolean: lambda{|meta, field, info|
             meta.info! field, type: :boolean # move to meta ?
-            meta.info[field][:render] ||= {}
-            meta.info[field][:render].merge! true_value: info[:true_value], false_value: info[:false_value]
+            meta.info(field)[:render] ||= {}
+            meta.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
         },
         list_select: lambda{|meta, field, info|
             meta.info! field, type: :list_select
-            meta.info[field][:render] ||= {}
-            meta.info[field][:render].merge! list: info[:list]
+            meta.info(field)[:render] ||= {}
+            meta.info(field)[:render].merge! list: info[:list]
         },
         datetime: lambda{|meta, field, info|
             meta.info! field, type: :datetime
@@ -1267,25 +1267,25 @@ module Engine2
                 keys = info[:keys]
             else
                 meta.check_static_meta
-                model = model.many_to_one_associations[field[/^\w+?(?=__)/].to_sym].associated_class
-                keys = info[:keys].map{|k| :"#{model.table_name}__#{k}"}
+                model = model.many_to_one_associations[field.table].associated_class
+                keys = info[:keys].map{|k| model.table_name.q(k)}
             end
 
-            field_info = meta.info[field]
+            field_info = meta.info(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = keys
             field_info[:type] = info[:otype]
 
             (keys - [field]).each do |of|
-                f_info = meta.info[of]
+                f_info = meta.info(of)
                 raise E2Error.new("Missing searchable field: '#{of}' in model '#{meta.assets[:model]}'") unless f_info
                 f_info[:hidden_search] = true
                 f_info[:type] = model.type_info[of].fetch(:otype)
             end
         },
         date: lambda{|meta, field, info|
-            meta.info[field][:render] ||= {}
-            meta.info[field][:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
+            meta.info(field)[:render] ||= {}
+            meta.info(field)[:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
         },
         decimal_date: lambda{|meta, field, info|
             SearchRendererPostProcessors[:date].(meta, field, info)
