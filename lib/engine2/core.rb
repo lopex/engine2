@@ -387,10 +387,11 @@ module E2Model
                     #     # Sequel.char_length(name).as name
                     #     nil
                     else
+                        qname = table.q(name)
                         if table != model_table_name
-                            Sequel.alias_columns_in_joins ? table.q(name).as(:"#{table}__#{name}") : table.q(name)
+                            Sequel.alias_columns_in_joins ? qname.as(:"#{table}__#{name}") : qname
                         else
-                            table.q(name)
+                            qname
                         end
                     end
                 end
