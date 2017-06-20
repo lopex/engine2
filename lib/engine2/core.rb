@@ -370,11 +370,7 @@ module E2Model
                         type_info
                     end
 
-                    f_info = info[name]
-                    raise Engine2::E2Error.new("Column #{name} not found for table #{table || model_table_name}") unless f_info
-
                     table ||= model_table_name
-
                     if table == model_table_name
                         fields << name
                     else
@@ -382,6 +378,8 @@ module E2Model
                         joins[table] ||= model.many_to_one_associations[table] || model.many_to_many_associations[table]
                     end
 
+                    f_info = info[name]
+                    raise Engine2::E2Error.new("Column #{name} not found for table #{table || model_table_name}") unless f_info
                     if f_info[:dummy]
                         nil
                     # elsif f_info[:type] == :blob_store
