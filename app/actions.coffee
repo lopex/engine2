@@ -22,7 +22,7 @@ angular.module('Engine2')
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
-.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $route, $window, $rootScope, $location, angularLoad, $websocket, PushJS, MetaCache) ->
+.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $window, $rootScope, $location, angularLoad, $websocket, PushJS, MetaCache, $state, $stateRegistry, $urlRouter) ->
     globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
@@ -82,7 +82,7 @@ angular.module('Engine2')
             get_invoke.then (response) =>
                 E2.merge(@, response.data)
                 @process_meta()
-                (if @meta.reload_routes then $route.load_routes() else $q.when({})).then =>
+                (if @meta.reload_routes then $stateRegistry.load_routes() else $q.when({})).then =>
                     @arguments = _.keys(response.data)
                     unless @meta.panel # persistent action
                         prnt = @parent()
@@ -293,44 +293,38 @@ angular.module('Engine2')
 
         initialize: ->
             super()
-            $route.load_routes = =>
+            $stateRegistry.load_routes = (init) =>
                 @invoke().then =>
-                    _.each _.keys($route.routes), (k) -> delete $route.routes[k]
                     menu = @meta.menus.menu
-                    $route.routes[null] = reloadOnSearch: true, redirectTo: '/' + (menu.properties.default ? menu.entries[0].name)
+                    _.each $stateRegistry.get(), (s) -> $stateRegistry.deregister(s.name) unless _.isEmpty(s.name)
+                    otherwise = menu.properties.default ? menu.entries[0].name
+                    $urlRouter.otherwise(otherwise)
                     @register(menu.entries)
-                    $route.reload() # $location.path('')
+                    $state.go(if init then $location.path().slice(1) else otherwise)
                     @scope().routes = menu.entries
                     out = if _.size(menu.entries) == 0 then angular.element("<div></div>") else $compile(@traverse(menu.entries))(@scope())
                     @element().replaceWith(out)
                     @element = -> out
-            $route.load_routes()
+
+            $stateRegistry.load_routes(true)
 
         register: (routes) ->
             _.each routes, (route) =>
                 if route.menu then @register(route.menu.entries) else
-                    name = '/' + route.name
-                    route.href = '#' + route.name
+                    route.href = route.name
                     if route.bootstrap?
                         action = if route.bootstrap == true then '' else route.bootstrap + '/'
                         $templateCache.put(route.name + '_route_template!', "<div e2-action='' action=\"'#{action}#{route.name}'\" invoke='true'></div>")
 
-                    $route.routes[name] =
-                        reloadOnSearch: true
+                    $stateRegistry.register
+                        name: route.name
                         templateUrl: if route.bootstrap? then route.name + '_route_template!' else route.name
-                        originalPath: name
-                        regexp: new RegExp("^#{name}$")
-                        keys: []
-
-                    $route.routes[name + '/'] =
-                        redirectTo: name
-                        originalPath: name + '/'
-                        regexp: new RegExp("^#{name}/$")
-                        keys: []
+                        url: '/' + route.name
+                        # reloadOnSearch: true
 
         traverse: (routes) ->
-            menu_tmpl = _.template("<li {{show}} {{hide}}><a href='{{href}}'>{{icon}}{{aicon}} {{loc}}</a></li>")
-            menu_sub_tmpl = _.template("<li {{show}} {{hide}} e2-dropdown='{{dropdown}}' data-animation='{{animation}}'><a href='javascript://'>{{icon}}{{aicon}} {{loc}}<span class='caret'></span></a></li>")
+            menu_tmpl = _.template("<li {{show}} {{hide}}><a {{href}} ui-sref-active='active'>{{icon}}{{aicon}} {{loc}}</a></li>")
+            menu_sub_tmpl = _.template("<li {{show}} {{hide}} e2-dropdown='{{dropdown}}' href-attr='ui-sref' data-animation='{{animation}}'><a href='javascript://'>{{icon}}{{aicon}} {{loc}}<span class='caret'></span></a></li>")
             animation = @meta.menus.menu.properties.animation
             out = routes.map (route, i) ->
                 if route.menu
@@ -344,7 +338,7 @@ angular.module('Engine2')
                         aicon: route.menu.aicon && E2.aicon(route.menu.aicon) || ""
                 else
                     menu_tmpl
-                        href: route.href
+                        href: "ui-sref='#{route.name}'"
                         loc: route.loc
                         show: route.show && "ng-show=\"#{route.show}\"" || ''
                         hide: route.hide && "ng-hide=\"#{route.hide}\"" || ''
@@ -580,7 +574,7 @@ angular.module('Engine2')
                 @find_action_info('logout_form').access = login
                 @find_action_info('inspect_modal').access = login
                 @find_action_info('login_form').access = !login
-                $route.load_routes() if load_routes
+                $stateRegistry.load_routes() if load_routes
 
     login_form: class LoginFormAction extends FormBaseAction
         panel_menu_default_action: ->

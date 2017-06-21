@@ -1,16 +1,16 @@
 'use strict'
-require 'angular-route'
 require 'angular-sanitize'
 require 'angular-animate'
 require 'angular-cookies'
 require 'angular-local-storage'
 require 'angular-ui-tree'
+require '@uirouter/angularjs'
 require 'ng-file-upload'
 require 'angular-load'
 
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket']) # 'draggabilly'
+angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router']) # 'draggabilly'
 .config ($httpProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->
@@ -27,8 +27,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
     $logProvider.debugEnabled(true)
     $httpProvider.useApplyAsync(true)
     # $qProvider.errorOnUnhandledRejections(false)
-    $locationProvider.hashPrefix('')
-    $locationProvider.html5Mode(false)
+    # $locationProvider.hashPrefix('')
+    # $locationProvider.html5Mode(false)
 
 .factory 'PushJS', -> require 'push.js'
 .factory 'MetaCache', ($cacheFactory) -> $cacheFactory('MetaCache')
@@ -81,7 +81,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
         _.each(o.class, (v, k) -> out.push "'#{k}': #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
-.factory 'E2', ($templateCache, $http, E2Snippets, $e2Modal, $q, $injector, $route, $dateFormatter, $parse) ->
+.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse) ->
     globals: {}
 
     uuid: (length) ->
@@ -355,9 +355,9 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
     dropdown_sub_tmpl = _.template("<li class='dropdown-submenu' {{show}} {{hide}}><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
-    dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a href='{{href}}' {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
+    dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a {{href}} {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
 
-    render = (menu, level) ->
+    render = (menu, href) ->
         out = menu.map (m) ->
             switch
                 when m.divider
@@ -375,7 +375,7 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
                         clazz: E2Snippets.make_ng_class(m)
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
-                        href: m.href || ''
+                        href: m.href && "#{href}=\"#{m.href}\"" || ''
                         click: m.click && "ng-click=\"#{m.click}\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
@@ -392,7 +392,8 @@ angular.module('Engine2', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ngCookies', 'm
             # event.preventDefault()
             # event.stopPropagation()
             menu = $parse(attrs.e2Dropdown)(scope)
-            dropdown = $dropdown(elem, (scope: scope, template: render(menu, 0), animation: attrs.animation || 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
+            href = attrs.hrefAttr ? 'href'
+            dropdown = $dropdown(elem, (scope: scope, template: render(menu, href), animation: attrs.animation || 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
             dropdown.$promise.then ->
                 event_hide = scope.$on "#{event_num}.tooltip.hide", (e) ->
                     e.stopPropagation()
