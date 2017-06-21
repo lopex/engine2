@@ -300,11 +300,11 @@ angular.module('Engine2')
                     otherwise = menu.properties.default ? menu.entries[0].name
                     $urlRouter.otherwise(otherwise)
                     @register(menu.entries)
-                    $state.go(if init then $location.path().slice(1) else otherwise)
                     @scope().routes = menu.entries
                     out = if _.size(menu.entries) == 0 then angular.element("<div></div>") else $compile(@traverse(menu.entries))(@scope())
                     @element().replaceWith(out)
                     @element = -> out
+                    $state.go(if init then $location.path().slice(1) else otherwise)
 
             $stateRegistry.load_routes(true)
 
