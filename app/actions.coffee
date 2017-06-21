@@ -310,17 +310,18 @@ angular.module('Engine2')
 
         register: (routes) ->
             _.each routes, (route) =>
-                if route.menu then @register(route.menu.entries) else
-                    route.href = route.name
-                    if route.bootstrap?
-                        action = if route.bootstrap == true then '' else route.bootstrap + '/'
-                        $templateCache.put(route.name + '_route_template!', "<div e2-action='' action=\"'#{action}#{route.name}'\" invoke='true'></div>")
+                unless route.divider
+                    if route.menu then @register(route.menu.entries) else
+                        route.href = route.name
+                        if route.bootstrap?
+                            action = if route.bootstrap == true then '' else route.bootstrap + '/'
+                            $templateCache.put(route.name + '_route_template!', "<div e2-action='' action=\"'#{action}#{route.name}'\" invoke='true'></div>")
 
-                    $stateRegistry.register
-                        name: route.name
-                        templateUrl: if route.bootstrap? then route.name + '_route_template!' else route.name
-                        url: '/' + route.name
-                        # reloadOnSearch: true
+                        $stateRegistry.register
+                            name: route.name
+                            templateUrl: if route.bootstrap? then route.name + '_route_template!' else route.name
+                            url: '/' + route.name
+                            # reloadOnSearch: true
 
         traverse: (routes) ->
             menu_tmpl = _.template("<li {{show}} {{hide}} ui-sref-active='active'><a {{href}}>{{icon}}{{aicon}} {{loc}}</a></li>")
