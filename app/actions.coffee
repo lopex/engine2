@@ -71,32 +71,6 @@ angular.module('Engine2')
                     $e2Modal.error("#{err.status}: #{err.data.message}", err.data.cause || err.data.message)
             $q.reject(err)
 
-        perform_invoke: (params) ->
-            info = @action_info()
-            get_invoke = if @meta.invokable == false then $q.when(data: (response: {})) else
-                (params ?= {}).initial = true if @meta.panel && !@action_invoked && info.method == 'get'
-                $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
-
-            globals.action_pending = if @meta.panel then @ else @parent()
-
-            get_invoke.then (response) =>
-                E2.merge(@, response.data)
-                @process_meta()
-                @arguments = _.keys(response.data)
-                unless @meta.panel # persistent action
-                    prnt = @parent()
-                    throw "Attempted parent merge for root action: #{info.name}" unless prnt
-                    E2.merge(prnt, response.data)
-
-                globals.action_pending = false
-                if @meta.panel && !@action_invoked
-                    @action_invoked = true
-                    @panel_render()
-            ,
-            (err) =>
-                globals.action_pending = false
-                @handle_error(err, info, @element())
-
         create_action: (name, sc, el) ->
             info = @find_action_info(name)
             info.action_resource = "#{@action_info().action_resource}/#{info.name}"
@@ -126,17 +100,43 @@ angular.module('Engine2')
         pre_invoke: ->
         post_invoke: ->
 
-        invoke: (args) ->
-            @pre_invoke(args)
-            _.merge(args ?= {}, @meta.arguments) if @meta.arguments
-            @perform_invoke(args).then =>
-                @post_invoke(args)
+        invoke: (params) ->
+            globals.action_pending = if @meta.panel then @ else @parent()
+            @pre_invoke(params)
+            _.merge(params ?= {}, @meta.arguments) if @meta.arguments
+
+            info = @action_info()
+            get_invoke = if @meta.invokable == false then $q.when(data: (response: {})) else
+                params.initial = true if @meta.panel && !@action_invoked && info.method == 'get'
+                $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
+
+            get_invoke.then (response) =>
+                E2.merge(@, response.data)
+                @process_meta()
+                @arguments = _.keys(response.data)
+
+                if @meta.panel # persistent action
+                    if !@action_invoked
+                        @action_invoked = true
+                        promise = @panel_render()
+                else
+                    prnt = @parent()
+                    throw "Attempted parent merge for root action: #{info.name}" unless prnt
+                    E2.merge(prnt, response.data)
+
+                @post_invoke(params)
                 @scope().$eval(@meta.execute) if @meta.execute
                 if @meta.repeat
                     @scope().$on "$destroy", => @destroyed = true
-                    $timeout (=> @invoke(args)), @meta.repeat unless @destroyed
+                    $timeout (=> @invoke(params)), @meta.repeat unless @destroyed
                     delete @meta.repeat
-                @
+
+                globals.action_pending = false
+                promise
+            ,
+            (err) =>
+                globals.action_pending = false
+                @handle_error(err, info, @element())
 
         save_state: () ->
             _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
