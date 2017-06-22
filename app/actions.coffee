@@ -82,17 +82,16 @@ angular.module('Engine2')
             get_invoke.then (response) =>
                 E2.merge(@, response.data)
                 @process_meta()
-                (if @meta.reload_routes then $stateRegistry.load_routes() else $q.when({})).then =>
-                    @arguments = _.keys(response.data)
-                    unless @meta.panel # persistent action
-                        prnt = @parent()
-                        throw "Attempted parent merge for root action: #{info.name}" unless prnt
-                        E2.merge(prnt, response.data)
+                @arguments = _.keys(response.data)
+                unless @meta.panel # persistent action
+                    prnt = @parent()
+                    throw "Attempted parent merge for root action: #{info.name}" unless prnt
+                    E2.merge(prnt, response.data)
 
-                    globals.action_pending = false
-                    if @meta.panel && !@action_invoked
-                        @action_invoked = true
-                        @panel_render()
+                globals.action_pending = false
+                if @meta.panel && !@action_invoked
+                    @action_invoked = true
+                    @panel_render()
             ,
             (err) =>
                 globals.action_pending = false

@@ -225,10 +225,6 @@ module Engine2
     end
 
     module MetaAPISupport
-        def reload_routes!
-            @meta[:reload_routes] = true
-        end
-
         def info field
             (@meta[:info] ||= {})[field.to_sym] ||= {}
         end
