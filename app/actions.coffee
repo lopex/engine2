@@ -101,9 +101,10 @@ angular.module('Engine2')
         post_invoke: ->
 
         invoke: (params) ->
+            params ?= {}
             globals.action_pending = if @meta.panel then @ else @parent()
             @pre_invoke(params)
-            _.merge(params ?= {}, @meta.arguments) if @meta.arguments
+            _.merge(params, @meta.arguments) if @meta.arguments
 
             info = @action_info()
             get_invoke = if @meta.invokable == false then $q.when(data: (response: {})) else
