@@ -304,7 +304,7 @@ angular.module('Engine2')
                     @element().replaceWith(out)
                     @element = -> out
                     loc = $location.path().slice(1)
-                    $state.go(if init && !_.isEmpty($location.path() && !$stateRegistry.get(loc)?) then loc else otherwise)
+                    $state.go(if init && !_.isEmpty($location.path()) && $stateRegistry.get(loc)? then loc else otherwise)
 
             $stateRegistry.load_routes(true)
 
