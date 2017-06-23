@@ -382,10 +382,6 @@ module E2Model
                     raise Engine2::E2Error.new("Column #{name} not found for table #{table || model_table_name}") unless f_info
                     if f_info[:dummy]
                         nil
-                    # elsif f_info[:type] == :blob_store
-                    #     # (~{name => nil}).as :name
-                    #     # Sequel.char_length(name).as name
-                    #     nil
                     else
                         qname = table.q(name)
                         if table != model_table_name
