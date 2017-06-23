@@ -318,7 +318,6 @@ module E2Model
     end
 
     module DatasetMethods
-
         def ensure_primary_key
             pk = model.primary_keys
             raise Engine2::E2Error.new("No primary key defined for model #{model}") unless pk && pk.all?
@@ -349,6 +348,22 @@ module E2Model
                 select(*pk.map{|k| model.table_name.q(k)})
             end
 
+        end
+
+        def extract_select sel, al = nil, &blk
+            case sel
+            when Symbol
+                yield nil, sel, nil
+            when Sequel::SQL::QualifiedIdentifier
+                yield sel.table, sel.column, al
+            when Sequel::SQL::AliasedExpression, Sequel::SQL::Function
+                sel
+                # extract_select sel.expression, sel.aliaz, &blk
+                # expr = sel.expression
+                # yield  expr.table, expr.column
+            else
+                raise Engine2::E2Error.new("Unknown selection #{sel}")
+            end
         end
 
         def setup! fields
@@ -405,22 +420,6 @@ module E2Model
                     joined.left_join(assoc[:join_table], assoc[:left_keys].zip(model.primary_keys)).left_join(m.table_name, m.primary_keys.zip(assoc[:right_keys]))
                 else unsupported_association
                 end
-            end
-        end
-
-        def extract_select sel, al = nil, &blk
-            case sel
-            when Symbol
-                yield nil, sel, nil
-            when Sequel::SQL::QualifiedIdentifier
-                yield sel.table, sel.column, al
-            when Sequel::SQL::AliasedExpression, Sequel::SQL::Function
-                sel
-                # extract_select sel.expression, sel.aliaz, &blk
-                # expr = sel.expression
-                # yield  expr.table, expr.column
-            else
-                raise Engine2::E2Error.new("Unknown selection #{sel}")
             end
         end
 
