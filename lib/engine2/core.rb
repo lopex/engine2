@@ -159,17 +159,17 @@ end
 class Sequel::Database
     attr_accessor :models, :default_schema
 
-    def cache_file
-        "#{Engine2::app}/#{opts[:orig_opts][:name]}.dump"
+    def cache_file settings
+        "#{settings[:db_loc]}/#{opts[:orig_opts][:name]}.dump"
     end
 
-    def load_schema_cache_from_file
+    def load_schema_cache_from_file settings
         self.models = {}
-        load_schema_cache? cache_file if adapter_scheme
+        load_schema_cache? cache_file(settings) if adapter_scheme
     end
 
-    def dump_schema_cache_to_file
-        dump_schema_cache? cache_file if adapter_scheme
+    def dump_schema_cache_to_file settings
+        dump_schema_cache? cache_file(settings) if adapter_scheme
     end
 end
 
@@ -474,14 +474,15 @@ module Engine2
             @model_boot_blk = blk
         end
 
-        def bootstrap_e2db
-            e2_db_file = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{@app}/engine2.db" : "sqlite://#{@app}/engine2.db"
-            const_set :E2DB, connect(e2_db_file, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2)
+        def bootstrap_e2db settings
+            e2_db_loc = "#{settings[:db_loc]}/engine2.db"
+            e2_db_url = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{e2_db_loc}" : "sqlite://#{e2_db_loc}"
+            const_set :E2DB, connect(e2_db_url, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2)
             const_set :DUMMYDB, Sequel::Database.new(uri: 'dummy')
             def DUMMYDB.synchronize *args;end
         end
 
-        def reload
+        def reload settings
             @core_loaded = true
             t = Time.now
             Action.count = 0
@@ -493,13 +494,13 @@ module Engine2
 
             load "#{app}/boot.rb"
 
-            Sequel::DATABASES.each &:load_schema_cache_from_file
+            Sequel::DATABASES.each{|db|db.load_schema_cache_from_file(settings)}
             @model_boot_blk.() if @model_boot_blk
             load 'engine2/models/Files.rb'
             load 'engine2/models/UserInfo.rb'
             Dir["#{app}/models/*"].each{|m| load m}
             puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
-            Sequel::DATABASES.each &:dump_schema_cache_to_file
+            Sequel::DATABASES.each{|db|db.dump_schema_cache_to_file(settings)}
 
             send(:remove_const, :ROOT) if defined? ROOT
             const_set(:ROOT, Action.new(nil, :api, RootMeta, {}))
@@ -514,10 +515,11 @@ module Engine2
             Handler.set :public_folder, "#{app}/public"
             SETTINGS.merge! settings
             SETTINGS[:name] ||= File::basename(app)
-            bootstrap_e2db
+            SETTINGS[:db_loc] ||= 'var/db/'
+            bootstrap_e2db settings
 
             require 'engine2/pre_bootstrap'
-            reload
+            reload settings
             require 'engine2/post_bootstrap'
         end
     end
