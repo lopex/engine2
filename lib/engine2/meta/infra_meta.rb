@@ -231,6 +231,12 @@ module Engine2
             user = handler.user
             {user: user ? user.to_hash : nil}
         end
+
+        def login_meta show_login_otion = 'false', &blk
+            action.login_form.* &blk
+            menu(:menu).modify_option :login_form, show: show_login_otion
+            action.parent.login_form.* &blk
+        end
     end
 
     class InspectModalMeta < Meta
