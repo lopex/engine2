@@ -94,11 +94,11 @@ e2-action action="'inspect'"
         .panel-body
           a.btn.btn-default ng-click="action.show_notification('Name', 'Body', undefined, 2000)"
             | Push
-          br
+          hr
           a.btn.btn-default> ng-click="action.web_socket().send({number: action.number})"
             | Websocket
           | {{action.number}}
-          hr
+          br
           | Event
           pre ng-bind="action.event | json"
           | Socket
