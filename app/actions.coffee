@@ -116,10 +116,10 @@ angular.module('Engine2')
                 @process_meta()
                 @arguments = _.keys(response.data)
 
-                if @meta.panel # persistent action
+                promise = if @meta.panel # persistent action
                     if !@action_invoked
                         @action_invoked = true
-                        promise = @panel_render()
+                        @panel_render()
                 else
                     prnt = @parent()
                     throw "Attempted parent merge for root action: #{info.name}" unless prnt
@@ -157,7 +157,7 @@ angular.module('Engine2')
                         @panel_shown?()
 
                 else
-                    $e2Modal.show(@)
+                    $e2Modal.show(@).then => @
             else
                 @panel_scope?().$destroy()
                 act = @
