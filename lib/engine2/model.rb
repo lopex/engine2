@@ -286,7 +286,7 @@ module Engine2
             with_errors = with.map{|w|record.errors[w]}
             if with_errors.compact.empty?
                 all_fields = [field] + with
-                query = record.model.dataset.where(*all_fields.map{|f|{f => record[f]}})
+                query = all_fields.reduce(record.model.dataset){|ds, f|ds.where f => record[f]}
                 query = query.exclude(record.model.primary_keys_hash(record.primary_key_values)) unless record.new?
                 unless query.empty?
                     msg = LOCS[:required_unique_value]
