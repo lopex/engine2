@@ -200,7 +200,7 @@ module Engine2
                 l_keys_vals = parent_keys.all?(&:empty?) ? false : Hash[l_keys.zip(parent_keys)]
 
                 if handler.params[:negate]
-                    query.exclude(model.db[j_table].select(nil).where(r_keys_vals, l_keys_vals).exists)
+                    query.exclude(model.db[j_table].select(nil).where(r_keys_vals & l_keys_vals).exists)
                 else
                     # query.qualify.join(j_table, [r_keys_vals, l_keys_vals])
                     if joins = query.opts[:join] and joins.find{|j|j.table == j_table}
