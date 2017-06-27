@@ -112,9 +112,9 @@ angular.module('Engine2')
                 $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
 
             get_invoke.then (response) =>
+                @arguments = _.keys(response.data)
                 E2.merge(@, response.data)
                 @process_meta()
-                @arguments = _.keys(response.data)
 
                 promise = if @meta.panel # persistent action
                     if !@action_invoked
