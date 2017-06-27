@@ -244,21 +244,15 @@ module Engine2
             pks = model.primary_keys_qualified
 
             if handler.params[:negate]
-                query = unlinked.map{|ln| pks.zip(split_keys(ln))}.reduce(query){|q, c| q.or c}
-                # query = query.or *unlinked.map{|unl| Hash[model.primary_keys.zip(split_keys(unl))]}.reduce{|q, c| q | c}
-                cond = linked.map{|ln| pks.zip(split_keys(ln)).sql_negate}
-                query = query.where *cond unless cond.empty?
-
+                query = unlinked.reduce(query){|q, unl|q.or pks.zip(split_keys(unl))}
+                query = linked.reduce(query){|q, ln|q.where(pks.zip(split_keys(ln)).sql_negate)}
             else
-                cond = unlinked.map{|unl| pks.zip(split_keys(unl)).sql_negate}
-                query = query.where *cond unless cond.empty?
-                # query = query.or *linked.map{|ln| model.primary_keys.zip(split_keys(ln))}
-                # query = query.or *linked.map{|ln| Hash[model.primary_keys.zip(split_keys(ln))]}.reduce{|q, c| q | c}
-                case assets[:assoc][:type]
+                query = unlinked.reduce(query){|q, unl|q.where(pks.zip(split_keys(unl)).sql_negate)}
+                query = case assets[:assoc][:type]
                 when :one_to_many
-                    query = linked.map{|ln| pks.zip(split_keys(ln))}.reduce(query){|q, c| q.or c}
+                    linked.reduce(query){|q, ln|q.or pks.zip(split_keys(ln))}
                 when :many_to_many
-                    query = linked.map{|ln| pks.zip(split_keys(ln))}.reduce(query){|q, c| q.or c}.distinct
+                    linked.reduce(query){|q, ln|q.or pks.zip(split_keys(ln))}.distinct
                 else unsupported_association
                 end unless linked.empty?
             end
