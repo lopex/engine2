@@ -121,11 +121,12 @@ end
 
 class Symbol
     def icon
-        "<span class='glyphicon glyphicon-#{self}'></span>"
-    end
-
-    def aicon
-        "<i class='fa fa-#{self}'></i>"
+        s = self
+        if s[0, 3] == 'fa_'
+            "<i class='fa fa-#{s[3 .. -1]}'></i>"
+        else
+            "<span class='glyphicon glyphicon-#{s}'></span>"
+        end
     end
 
     def q col

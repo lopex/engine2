@@ -68,11 +68,14 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         $q.reject(response)
 
 .factory 'E2Snippets', ->
-    icon = (name) -> "<span class='glyphicon glyphicon-#{name}'></span>"
-    aicon = (name) -> "<i class='fa fa-#{name}'></i>"
+    icon = (name) ->
+        if name.slice(0, 3) == 'fa_'
+            "<i class='fa fa-#{name.slice(3)}'></i>"
+        else
+            "<span class='glyphicon glyphicon-#{name}'></span>"
+
     ng_class_names = ['active', 'enabled', 'disabled']
     icon: icon
-    aicon: aicon
     boolean_true_value:     icon('check')
     boolean_false_value:    icon('unchecked')
     make_ng_class: (o) ->
@@ -121,7 +124,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     from_id: (id, meta) -> _.zipObject(meta.primary_fields, id) # _.zip(meta.primary_fields, id).reduce(((rec, [k, v]) -> rec[k] = v; rec), {})
 
     icon: E2Snippets.icon
-    aicon: E2Snippets.aicon
 
     fetch_template: (template) ->
         $q.when($templateCache.get(template) || $http.get(template)).then (res) ->
@@ -354,8 +356,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
 
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
-    dropdown_sub_tmpl = _.template("<li class='dropdown-submenu' {{show}} {{hide}}><a href=''> {{icon}}{{aicon}} {{loc}}</a>{{sub}}</li>")
-    dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a {{href}} {{click}}> {{icon}}{{aicon}} {{loc}}</a></li>")
+    dropdown_sub_tmpl = _.template("<li class='dropdown-submenu' {{show}} {{hide}}><a href=''> {{icon}} {{loc}}</a>{{sub}}</li>")
+    dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}}> <a {{href}} {{click}}> {{icon}} {{loc}}</a></li>")
 
     render = (menu, href) ->
         out = menu.map (m) ->
@@ -365,7 +367,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 when m.menu
                     dropdown_sub_tmpl
                         icon: m.menu.icon && E2Snippets.icon(m.menu.icon) || ''
-                        aicon: m.menu.aicon && E2Snippets.aicon(m.menu.aicon) || ''
                         loc: m.menu.loc
                         show: m.menu.show && "ng-show=\"#{m.menu.show}\"" || ''
                         hide: m.menu.hide && "ng-hide=\"#{m.menu.hide}\"" || ''
@@ -378,7 +379,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                         href: m.href && "#{href}=\"#{m.href}\"" || ''
                         click: m.click && "ng-click=\"#{m.click}\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
-                        aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: m.loc
         "<ul class='dropdown-menu'>#{out.join('')}</ul>"
 
@@ -409,8 +409,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         elem.on "mousedown", hook
 
 .directive 'e2ButtonSet', ($parse, $compile, E2Snippets) ->
-    button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}}{{aicon}} {{loc}}</div>")
-    button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-dropdown='{{dropdown}}' data-animation='{{animation}}'>{{icon}}{{aicon}}<span class='caret'></span></div>")
+    button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}} {{loc}}</div>")
+    button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-dropdown='{{dropdown}}' data-animation='{{animation}}'>{{icon}}<span class='caret'></span></div>")
     scope: true # because $index
     link: (scope, elem, attrs) ->
         menu = $parse(attrs.e2ButtonSet)(scope)
@@ -427,7 +427,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                         dropdown: "#{attrs.e2ButtonSet}.entries[#{i}].menu.entries"
                         animation: animation
                         icon: m.menu.icon && "#{E2Snippets.icon(m.menu.icon)}&nbsp;" || ''
-                        aicon: m.menu.aicon && "#{E2Snippets.aicon(m.menu.aicon)}&nbsp;" || ''
                 else if m.divider
                 else
                     out += button_set_tmpl
@@ -436,7 +435,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
-                        aicon: m.aicon && E2Snippets.aicon(m.aicon) || ''
                         loc: !(m.button_loc == false) && m.loc || ''
                         title: (m.button_loc == false) && "title=\"#{m.loc}\"" || ''
 
@@ -445,7 +443,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                     dropdown: "#{attrs.e2ButtonSet}.entries.slice(#{brk})"
                     animation: animation
                     icon: ''
-                    aicon: ''
 
             out = "<div class='btn-group #{group_class}'>#{out}</div>"
             out = $compile(angular.element(out))(scope)

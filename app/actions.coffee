@@ -325,8 +325,8 @@ angular.module('Engine2')
                             # reloadOnSearch: true
 
         traverse: (routes) ->
-            menu_tmpl = _.template("<li {{show}} {{hide}} ui-sref-active='active'><a {{href}}>{{icon}}{{aicon}} {{loc}}</a></li>")
-            menu_sub_tmpl = _.template("<li {{show}} {{hide}} e2-dropdown='{{dropdown}}' href-attr='ui-sref' data-animation='{{animation}}'><a href='javascript://'>{{icon}}{{aicon}} {{loc}}<span class='caret'></span></a></li>")
+            menu_tmpl = _.template("<li {{show}} {{hide}} ui-sref-active='active'><a {{href}}>{{icon}} {{loc}}</a></li>")
+            menu_sub_tmpl = _.template("<li {{show}} {{hide}} e2-dropdown='{{dropdown}}' href-attr='ui-sref' data-animation='{{animation}}'><a href='javascript://'>{{icon}} {{loc}}<span class='caret'></span></a></li>")
             animation = @meta.menus.menu.properties.animation
             out = routes.map (route, i) ->
                 if route.menu
@@ -337,7 +337,6 @@ angular.module('Engine2')
                         show: route.show && "ng-show=\"#{route.show}\"" || ''
                         hide: route.hide && "ng-hide=\"#{route.hide}\"" || ''
                         icon: route.menu.icon && E2.icon(route.menu.icon) || ""
-                        aicon: route.menu.aicon && E2.aicon(route.menu.aicon) || ""
                 else
                     menu_tmpl
                         href: "ui-sref='#{route.name}'"
@@ -345,7 +344,6 @@ angular.module('Engine2')
                         show: route.show && "ng-show=\"#{route.show}\"" || ''
                         hide: route.hide && "ng-hide=\"#{route.hide}\"" || ''
                         icon: route.icon && E2.icon(route.icon) || ''
-                        aicon: route.aicon && E2.aicon(route.aicon) || ''
             out.join('')
 
     list: class ListAction extends Action
