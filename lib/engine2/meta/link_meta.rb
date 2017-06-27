@@ -73,7 +73,7 @@ module Engine2
                     p_pk = Hash[assoc[:left_keys].zip(parent)]
                     ds = model.db[assoc[:join_table]]
                     ids.each do |id|
-                        ds.where(p_pk, Hash[assoc[:right_keys].zip(split_keys(id))]).delete
+                        ds.where(p_pk & Hash[assoc[:right_keys].zip(split_keys(id))]).delete
                     end
                 end
             else unsupported_association
