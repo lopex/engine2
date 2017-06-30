@@ -15,7 +15,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->
         (method, url, post, callback, headers, timeout, withCredentials, responseType) ->
-            url = url.replace(';', '%3B') unless method == 'POST'
+            url = url.replace(/;/g, '%3B') unless method == 'POST'
             $delegate(method, url, post, callback, headers, timeout, withCredentials, responseType)
     # $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
     # $httpProvider.defaults.cache = false;
