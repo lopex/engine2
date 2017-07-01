@@ -4,7 +4,7 @@ module Engine2
 
     class ActionNode < BasicObject
         ACCESS_FORBIDDEN ||= ->h{false}
-        attr_reader :parent, :name, :number, :actions, :recheck_access
+        attr_reader :parent, :name, :number, :nodes, :recheck_access
         attr_reader :meta_proc, :access_block
 
         class << self
@@ -17,7 +17,7 @@ module Engine2
             @parent = parent
             @name = name
             @meta = meta_class.new(self, assets)
-            @actions = {}
+            @nodes = {}
         end
 
         def * &blk
@@ -28,7 +28,7 @@ module Engine2
         alias :meta :*
 
         def access! &blk
-            ::Kernel.raise E2Error.new("Access for action #{name} already defined") if @access_block
+            ::Kernel.raise E2Error.new("Access for node #{name} already defined") if @access_block
             @access_block = blk
         end
 
@@ -46,37 +46,37 @@ module Engine2
             result
         end
 
-        def define_action name, meta_class = InlineMeta.inherit, assets = {}, &blk
-            ::Kernel.raise E2Error.new("ActionNode #{name} already defined") if @actions[name]
-            action = @actions[name] = ActionNode.new(self, name, meta_class, assets)
-            action.*.pre_run
+        def define_node name, meta_class = InlineMeta.inherit, assets = {}, &blk
+            ::Kernel.raise E2Error.new("ActionNode #{name} already defined") if @nodes[name]
+            node = @nodes[name] = ActionNode.new(self, name, meta_class, assets)
+            node.*.pre_run
             define_singleton_method! name do |&ablk| # forbidden list
-                action.instance_eval(&ablk) if ablk
-                action
+                node.instance_eval(&ablk) if ablk
+                node
             end
-            action.instance_eval(&blk) if blk
-            action.*.action_defined
-            action
+            node.instance_eval(&blk) if blk
+            node.*.node_defined
+            node
         end
 
-        def define_action_meta name, meta_class = InlineMeta.inherit, assets = {}, &blk
-            define_action name, meta_class, assets do
+        def define_node_meta name, meta_class = InlineMeta.inherit, assets = {}, &blk
+            define_node name, meta_class, assets do
                 self.* &blk
             end
         end
 
-        def define_action_invoke name, meta_class = InlineMeta.inherit, assets = {}, &blk
-            define_action name, meta_class, assets do
+        def define_node_invoke name, meta_class = InlineMeta.inherit, assets = {}, &blk
+            define_node name, meta_class, assets do
                 self.*.define_invoke &blk
             end
         end
 
-        def define_action_bundle name, *actions
+        def define_node_bundle name, *nodes
             define_singleton_method!(name) do |&blk|
                 if blk
-                    actions.each{|a|__send__(a, &blk)} # if @actions[action] ?
+                    nodes.each{|a|__send__(a, &blk)} # if @nodes[node] ?
                 else
-                    ActionNodeBundle.new(self, actions)
+                    ActionNodeBundle.new(self, nodes)
                 end
             end
         end
@@ -88,17 +88,17 @@ module Engine2
         end
 
         def [] name
-            @actions[name]
+            @nodes[name]
         end
 
-        def actions_info handler
-            info = actions.reduce({}) do |h, (name, a)|
+        def nodes_info handler
+            info = nodes.reduce({}) do |h, (name, a)|
                 meta = a.*
                 act = {
                     meta_type: meta.meta_type,
                     method: meta.http_method,
                     number: a.number,
-                    terminal: a.actions.empty?,
+                    terminal: a.nodes.empty?,
                     meta: !meta.get.empty?
                 }
 
@@ -115,12 +115,12 @@ module Engine2
                 h
             end
 
-            info.first[1][:default] = true unless actions.empty?
+            info.first[1][:default] = true unless nodes.empty?
             info
         end
 
         def access_info handler
-            @actions.reduce({}) do |h, (name, a)|
+            @nodes.reduce({}) do |h, (name, a)|
                 h[name] = a.check_access!(handler)
                 h
             end
@@ -130,17 +130,17 @@ module Engine2
             @recheck_access = true
         end
 
-        def each_action &blk
+        def each_node &blk
             # no self
-            @actions.each_pair do |n, a|
-                a.each_action(&blk) if yield a
+            @nodes.each_pair do |n, a|
+                a.each_node(&blk) if yield a
             end
         end
 
         def to_a_rec root = true, result = [], &blk # optimize
             if root && (yield self)
                 result << self
-                @actions.each_pair do |n, a|
+                @nodes.each_pair do |n, a|
                     if yield a
                         result << a
                         a.to_a_rec(false, result, &blk)
@@ -154,16 +154,16 @@ module Engine2
             "ActionNode: #{@name}, meta: #{@meta.class}, meta_type: #{@meta.meta_type}"
         end
 
-        def setup_action_tree
+        def setup_node_tree
             time = ::Time.now
 
-            model_actions = {}
-            each_action do |action|
-                if model = action.*.assets[:model]
+            model_nodes = {}
+            each_node do |node|
+                if model = node.*.assets[:model]
                     model_name = model.name.to_sym
                     model.synchronize_type_info
-                    model_actions[model_name] = action.to_a_rec{|a| !a.*.assets[:assoc]}
-                    action.run_scheme(model_name) if SCHEMES[model_name, false]
+                    model_nodes[model_name] = node.to_a_rec{|a| !a.*.assets[:assoc]}
+                    node.run_scheme(model_name) if SCHEMES[model_name, false]
                     false
                 else
                     true
@@ -171,30 +171,30 @@ module Engine2
             end
 
             thefts = 0
-            each_action do |action|
-                meta = action.*
+            each_node do |node|
+                meta = node.*
                 model = meta.assets[:model]
                 assoc = meta.assets[:assoc]
                 if model && assoc
-                    if source_actions = model_actions[model.name.to_sym]
-                        source_action = source_actions.select{|sa| sa.meta_proc && sa.*.class >= meta.class}
-                        # source_action = source_actions.select{|sa| sa.meta_proc && meta.class <= sa.*.class}
-                        unless source_action.empty?
-                            raise E2Error.new("Multiple meta candidates for #{action.inspect} found in '#{source_action.inspect}'") if source_action.size > 1
-                            # puts "#{action.inspect} => #{source_action.inspect}\n"
-                            meta.instance_eval(&source_action.first.meta_proc)
+                    if source_nodes = model_nodes[model.name.to_sym]
+                        source_node = source_nodes.select{|sa| sa.meta_proc && sa.*.class >= meta.class}
+                        # source_node = source_nodes.select{|sa| sa.meta_proc && meta.class <= sa.*.class}
+                        unless source_node.empty?
+                            raise E2Error.new("Multiple meta candidates for #{node.inspect} found in '#{source_node.inspect}'") if source_node.size > 1
+                            # puts "#{node.inspect} => #{source_node.inspect}\n"
+                            meta.instance_eval(&source_node.first.meta_proc)
                             thefts += 1
                         end
                     end
                 end
 
-                meta.instance_eval(&action.meta_proc) if action.meta_proc
+                meta.instance_eval(&node.meta_proc) if node.meta_proc
                 true
             end
 
-            each_action do |action|
-                action.*.post_run
-                action.*.freeze_meta
+            each_node do |node|
+                node.*.post_run
+                node.*.freeze_meta
                 true
             end
 
@@ -208,13 +208,13 @@ module Engine2
 
 
     class ActionNodeBundle
-        def initialize action, action_names
-            @action = action
-            @action_names = action_names
+        def initialize node, node_names
+            @node = node
+            @node_names = node_names
         end
 
         def method_missing name, *args, &blk
-            @action_names.each{|an| @action[an].__send__(name, *args, &blk)}
+            @node_names.each{|an| @node[an].__send__(name, *args, &blk)}
         end
     end
 end

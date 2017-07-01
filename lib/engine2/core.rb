@@ -518,7 +518,7 @@ module Engine2
             const_set(:ROOT, ActionNode.new(nil, :api, RootMeta, {}))
 
             @boot_blk.(ROOT)
-            ROOT.setup_action_tree
+            ROOT.setup_node_tree
             puts "BOOTSTRAP #{Engine2::SETTINGS[:name]}, Time: #{Time.new - t}"
         end
 

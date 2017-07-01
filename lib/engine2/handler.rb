@@ -66,16 +66,16 @@ module Engine2
         def serve_api_resource verb, path
             path = path.split('/') # -1 ?
             is_meta = path.pop if path.last == 'meta'
-            action = ROOT
+            node = ROOT
             path.each do |pat|
-                action = action[pat.to_sym]
-                halt_not_found unless action
-                halt_unauthorized unless action.check_access!(self)
+                node = node[pat.to_sym]
+                halt_not_found unless node
+                halt_unauthorized unless node.check_access!(self)
             end
 
-            meta = action.*
+            meta = node.*
             response = if is_meta
-                params[:access] ? action.access_info(self) : {meta: meta.get, actions: action.actions_info(self)}
+                params[:access] ? node.access_info(self) : {meta: meta.get, actions: node.nodes_info(self)}
             else
                 if meta.http_method == verb && meta.invokable
                     begin

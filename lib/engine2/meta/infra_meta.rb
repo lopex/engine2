@@ -2,28 +2,28 @@
 
 module Engine2
     SCHEMES::define_scheme :login! do |user_info_model = UserInfo|
-        define_action :login_form, LoginFormMeta, model: user_info_model do
+        define_node :login_form, LoginFormMeta, model: user_info_model do
             access!{|h|!h.logged_in?}
-            define_action :login, LoginMeta
+            define_node :login, LoginMeta
         end
     end
 
     SCHEMES::define_scheme :logout! do
-        define_action :logout_form, LogoutFormMeta do
+        define_node :logout_form, LogoutFormMeta do
             access! &:logged_in?
-            define_action :logout, LogoutMeta
+            define_node :logout, LogoutMeta
         end
     end
 
     SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
         run_scheme :login!, user_info_model
-        define_action :infra!, InfraMeta do
+        define_node :infra!, InfraMeta do
             run_scheme :login!, user_info_model
             run_scheme :logout!
 
-            define_action :inspect_modal, InspectModalMeta do
+            define_node :inspect_modal, InspectModalMeta do
                 access! &:logged_in?
-                define_action :inspect, WebSocketMeta.inherit do
+                define_node :inspect, WebSocketMeta.inherit do
                     self.* do
                         @meta_type = :inspect
 
@@ -32,11 +32,11 @@ module Engine2
                         end
                     end
 
-                    define_action_invoke :models do |handler|
+                    define_node_invoke :models do |handler|
                         {models: Sequel::DATABASES.map{|db| {name: db.uri, models: db.models.keys} }}
                     end
 
-                    define_action_invoke :model_info do |handler|
+                    define_node_invoke :model_info do |handler|
                         db_name = handler.params[:db]
                         handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
                         handler.permit model = db.models[handler.params[:model].to_sym]
@@ -53,7 +53,7 @@ module Engine2
                         }
                     end
 
-                    define_action_invoke :environment do |handler|
+                    define_node_invoke :environment do |handler|
                         {environment: handler.env}
                     end
                 end
@@ -62,7 +62,7 @@ module Engine2
     end
 
     SCHEMES::define_scheme :menu! do
-        define_action :menu!, MenuMeta do
+        define_node :menu!, MenuMeta do
         end
     end
 
@@ -96,7 +96,7 @@ module Engine2
             handler.permit entry
             handler.attachment entry[:name]
             handler.content_type (entry[:mime].to_s.empty? ? "application/octet-stream" : entry[:mime])
-            info = action.parent.*.model.type_info[action.parent.*.field]
+            info = node.parent.*.model.type_info[node.parent.*.field]
             open("#{info[:store][:files]}/#{entry[:name]}_#{id}", 'rb'){|f|f.read}
         end
     end
@@ -110,7 +110,7 @@ module Engine2
             temp = file[:tempfile]
             temp.close
             rackname = File.basename(temp.path)
-            info = action.parent.*.model.type_info[action.parent.*.field]
+            info = node.parent.*.model.type_info[node.parent.*.field]
             File.rename(temp.path, "#{info[:store][:upload]}/#{rackname}")
             {rackname: rackname}
         end
@@ -135,8 +135,8 @@ module Engine2
         meta_type :download_blob
 
         def invoke handler
-            model = action.parent.*.model
-            inf = model.type_info[action.parent.*.field]
+            model = node.parent.*.model
+            inf = model.type_info[node.parent.*.field]
             handler.permit id = handler.params[:id]
 
             entry = model.naked.select(inf[:bytes_field], inf[:name_field], inf[:mime_field]).where(model.primary_keys_hash(split_keys(id))).first
@@ -153,7 +153,7 @@ module Engine2
             temp = file[:tempfile]
             temp.close
             rackname = File.basename(temp.path)
-            info = action.parent.*.model.type_info[action.parent.*.field]
+            info = node.parent.*.model.type_info[node.parent.*.field]
             File.rename(temp.path, "#{info[:store][:upload]}/#{rackname}")
             {rackname: rackname}
         end
@@ -185,8 +185,8 @@ module Engine2
         meta_type :download_blob
 
         def invoke handler
-            model = action.parent.*.model
-            inf = model.type_info[action.parent.*.field]
+            model = node.parent.*.model
+            inf = model.type_info[node.parent.*.field]
             assoc = model.association_reflections[inf[:assoc_name]]
             blob_model = assoc.associated_class
             handler.permit id = handler.params[:id]
@@ -233,9 +233,9 @@ module Engine2
         end
 
         def login_meta show_login_otion = 'false', &blk
-            action.login_form.* &blk
+            node.login_form.* &blk
             menu(:menu).modify_option :login_form, show: show_login_otion
-            action.parent.login_form.* &blk
+            node.parent.login_form.* &blk
         end
     end
 
@@ -265,9 +265,9 @@ module Engine2
             info! :name, loc: LOCS[:user_name]
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
             @meta[:fields] = [:name, :password]
-            parent_meta = action.parent.*
+            parent_meta = node.parent.*
             if parent_meta.is_a? MetaMenuSupport
-                parent_meta.menu(:menu).option :login_form, icon: :"log-in", disabled: 'action.action_pending()'
+                parent_meta.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.node_pending()"
             end
         end
 
@@ -303,7 +303,7 @@ module Engine2
             panel_title LOCS[:logout_title]
             panel_class 'modal-default'
             @meta[:message] = LOCS[:logout_message]
-            action.parent.*.menu(:menu).option :logout_form, icon: :"log-out" # , show: "action.logged_on"
+            node.parent.*.menu(:menu).option :logout_form, icon: :"log-out" # , show: "action.logged_on"
             menu :panel_menu do
                 option :logout, icon: "ok", loc: LOCS[:ok]
                 option :cancel, icon: "remove"

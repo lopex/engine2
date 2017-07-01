@@ -101,9 +101,9 @@ module Engine2
             if assoc = assets[:assoc]
                 decode = assoc[:model].type_info[assoc[:keys].first][:decode]
 
-                if decode[:search][:multiple] && action.parent.parent.*.is_a?(ListMeta)
-                    action.list.*.menu(:panel_menu).option :choose, icon: :ok #, disabled: "action.selected_size() == 0"
-                    action.list.*.menu(:panel_menu).option :cancel, icon: "remove"
+                if decode[:search][:multiple] && node.parent.parent.*.is_a?(ListMeta)
+                    node.list.*.menu(:panel_menu).option :choose, icon: :ok #, disabled: "action.selected_size() == 0"
+                    node.list.*.menu(:panel_menu).option :cancel, icon: "remove"
                 end
             end
         end

@@ -1,7 +1,7 @@
 # coding: utf-8
 module Engine2
     class Meta
-        attr_reader :action, :assets, :static, :invokable
+        attr_reader :node, :assets, :static, :invokable
 
         class << self
             def meta_type mt = nil
@@ -25,9 +25,9 @@ module Engine2
 
         http_method :get
 
-        def initialize action, assets, static = self
+        def initialize node, assets, static = self
             @meta = {}
-            @action = action
+            @node = node
             @assets = assets
             @static = static
         end
@@ -51,7 +51,7 @@ module Engine2
 
         def invoke! handler
             if rmp = @request_meta_proc
-                meta = self.class.new(action, assets, self)
+                meta = self.class.new(node, assets, self)
                 meta_result = meta.instance_exec(handler, *meta.request_meta_proc_params(handler), &rmp)
                 meta.post_process
                 response = @requestable ? (meta_result || {}) : meta.invoke(handler)
@@ -133,7 +133,7 @@ module Engine2
             @http_method = self.class.http_method
         end
 
-        def action_defined
+        def node_defined
         end
 
         def post_run
@@ -293,10 +293,10 @@ module Engine2
     module MetaModelSupport
         def pre_run
             if !(mdl = @assets[:model])
-                act = action
+                act = node
                 begin
                     act = act.parent
-                    raise E2Error.new("Model not found in tree for action: #{action.name}") unless act
+                    raise E2Error.new("Model not found in tree for node: #{node.name}") unless act
                     mdl = act.*.assets[:model]
                 end until mdl
 
@@ -343,7 +343,7 @@ module Engine2
 
         # def parent_model_name
         #     model = @assets[:model]
-        #     prnt = action.parent
+        #     prnt = node.parent
 
         #     while prnt && prnt.*.assets[:model] == model
         #         prnt = prnt.parent
@@ -352,7 +352,7 @@ module Engine2
         #     m ? m.name : nil
         # end
 
-        def action_defined
+        def node_defined
             super
             # p_model_name = parent_model_name
             model = @assets[:model]
@@ -363,7 +363,7 @@ module Engine2
                 model.many_to_one_associations.each do |assoc_name, assoc|
                     unless assoc[:propagate] == false # || p_model_name == assoc[:class_name]
                         dc = model.type_info[assoc[:keys].first][:decode]
-                        action.run_scheme :decode, model, assoc_name, dc[:search]
+                        node.run_scheme :decode, model, assoc_name, dc[:search]
                     end
                 end
             end
@@ -373,7 +373,7 @@ module Engine2
                 model.many_to_one_associations.each do |assoc_name, assoc|
                     unless assoc[:propagate] == false # || p_model_name == assoc[:class_name]
                         dc = model.type_info[assoc[:keys].first][:decode]
-                        action.run_scheme :decode, model, assoc_name, dc[:form]
+                        node.run_scheme :decode, model, assoc_name, dc[:form]
                     end
                 end
             end
@@ -386,7 +386,7 @@ module Engine2
                         menu(:item_menu).divider unless divider
                         divider ||= true
                         menu(:item_menu).option :"#{assoc_name}!", icon: "list" # , click: "action.show_assoc($index, \"#{assoc_name}!\")"
-                        action.run_scheme :star_to_many, :"#{assoc_name}!", assoc
+                        node.run_scheme :star_to_many, :"#{assoc_name}!", assoc
                     end
                 end
             end
@@ -396,15 +396,15 @@ module Engine2
                 model.type_info.each do |field, info|
                     case info[:type]
                     when :blob_store
-                        action.run_scheme :blob_store, model, field
+                        node.run_scheme :blob_store, model, field
                     when :foreign_blob_store
-                        action.run_scheme :foreign_blob_store, model, field
+                        node.run_scheme :foreign_blob_store, model, field
                     when :file_store
-                        action.run_scheme :file_store, model, field
+                        node.run_scheme :file_store, model, field
                     when :star_to_many_field
                         assoc = model.association_reflections[info[:assoc_name]] # info[:name] ?
                         raise E2Error.new("Association '#{info[:assoc_name]}' not found for model '#{model}'") unless assoc
-                        action.run_scheme :star_to_many_field, assoc, field
+                        node.run_scheme :star_to_many_field, assoc, field
                     end
                 end
             end
@@ -564,7 +564,7 @@ module Engine2
             panel_class 'modal-default'
 
             menu :panel_menu do
-                option :approve, icon: "ok", loc: LOCS[:ok], disabled: 'action.action_pending()'
+                option :approve, icon: "ok", loc: LOCS[:ok], disabled: "action.node_pending()"
                 option :cancel, icon: "remove"
             end
         end
@@ -577,11 +577,11 @@ module Engine2
 
     module MetaOnChangeSupport
         def on_change field, &blk
-            action_name = :"#{field}_on_change"
-            act = action.define_action action_name, (blk.arity > 2 ? OnChangeGetMeta : OnChangePostMeta)
+            node_name = :"#{field}_on_change"
+            act = node.define_node node_name, (blk.arity > 2 ? OnChangeGetMeta : OnChangePostMeta)
             act.*{request &blk}
 
-            info! field, remote_onchange: action_name
+            info! field, remote_onchange: node_name
             info! field, remote_onchange_record: :true if blk.arity > 2
         end
 
@@ -837,12 +837,12 @@ module Engine2
 
         def pre_run
             super
-            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
+            execute "action.errors || [action.parent().invoke(), action.panel_close()]"
         end
 
         def post_run
             super
-            validate_fields *action.parent.*.get[:fields] unless validate_fields
+            validate_fields *node.parent.*.get[:fields] unless validate_fields
         end
     end
 
@@ -884,7 +884,7 @@ module Engine2
                             if hash.is_a?(Hash)
                                 validate_and_approve_association(handler, record, name, :create, hash)
                                 validate_and_approve_association(handler, record, name, :modify, hash)
-                                a_meta = action.parent[:"#{name}!"]
+                                a_meta = node.parent[:"#{name}!"]
                                 raise Sequel::Rollback unless record.errors.empty?
                                 a_meta.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
                                 a_meta.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
@@ -898,10 +898,10 @@ module Engine2
             end
         end
 
-        def validate_and_approve_association handler, record, assoc_name, action_name, hash
-            records = hash[action_name].to_a
+        def validate_and_approve_association handler, record, assoc_name, node_name, hash
+            records = hash[node_name].to_a
             unless records.empty?
-                meta = action.parent[:"#{assoc_name}!"][action_name].approve.*
+                meta = node.parent[:"#{assoc_name}!"][node_name].approve.*
                 parent_id = Sequel::join_keys(record.primary_key_values)
                 records.each do |arec|
                     rec = meta.allocate_record(handler, arec)
@@ -946,9 +946,9 @@ module Engine2
             panel_template 'scaffold/form'
             field_template 'scaffold/fields'
             panel_class 'modal-large'
-            top = action.parent.parent == nil
+            top = node.parent.parent == nil
             menu :panel_menu do
-                option :approve, icon: "ok", disabled: 'action.action_pending()' # text: true,
+                option :approve, icon: "ok", disabled: "action.node_pending()" # text: true,
                 option :cancel, icon: "remove" unless top # text: true,
             end
             # modal_action false
@@ -1021,7 +1021,7 @@ module Engine2
         def pre_run
             super
             panel_title LOCS[:create_title]
-            action.parent.*.menu(:menu).option_at 0, action.name, icon: "plus-sign", button_loc: false
+            node.parent.*.menu(:menu).option_at 0, node.name, icon: "plus-sign", button_loc: false
 
             hide_pk unless assets[:model].natural_key
         end
@@ -1057,7 +1057,7 @@ module Engine2
         def pre_run
             super
             panel_title LOCS[:modify_title]
-            action.parent.*.menu(:item_menu).option action.name, icon: "pencil", button_loc: false
+            node.parent.*.menu(:item_menu).option node.name, icon: "pencil", button_loc: false
         end
 
         def record handler, record
@@ -1101,7 +1101,7 @@ module Engine2
             panel[:backdrop] = true
 
             menu(:panel_menu).option :cancel, icon: "remove"
-            action.parent.*.menu(:item_menu).option action.name, icon: "file", button_loc: false
+            node.parent.*.menu(:item_menu).option node.name, icon: "file", button_loc: false
         end
 
         def field_tabs hash
@@ -1149,8 +1149,8 @@ module Engine2
 
         def pre_run
             super
-            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
-            action.parent.parent.*.menu(:item_menu).option :confirm_delete, icon: "trash", show: "action.selected_size() == 0", button_loc: false
+            execute "action.errors || [action.parent().invoke(), action.panel_close()]"
+            node.parent.parent.*.menu(:item_menu).option :confirm_delete, icon: "trash", show: "action.selected_size() == 0", button_loc: false
         end
     end
 
@@ -1164,9 +1164,9 @@ module Engine2
 
         def pre_run
             super
-            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
-            action.parent.parent.*.select_toggle_menu
-            action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_delete, icon: "trash", show: "action.selected_size() > 0"
+            execute "action.errors || [action.parent().invoke(), action.panel_close()]"
+            node.parent.parent.*.select_toggle_menu
+            node.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_delete, icon: "trash", show: "action.selected_size() > 0"
         end
     end
 

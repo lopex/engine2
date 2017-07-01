@@ -28,7 +28,7 @@ module Engine2
                 search_live
 
                 on_change :model do |req, value|
-                    # action.parent.*.assets[:model].select(:field).where(model: value).all.map{|rec|f = rec.values[:field]; [f, f]}
+                    # node.parent.*.assets[:model].select(:field).where(model: value).all.map{|rec|f = rec.values[:field]; [f, f]}
                     # render :field, list: {a: 1, b: 2}.to_a
                 end
 

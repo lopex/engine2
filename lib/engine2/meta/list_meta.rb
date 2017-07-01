@@ -163,7 +163,7 @@ module Engine2
         # def decode_panel_title handler
         #     if handler.initial?
         #         # Hash[assets[:model].primary_keys.zip(split_keys(id))]]
-        #         p action.parent.decode_entry.*.invoke_decode([[handler.params[:parent_id]]])
+        #         p node.parent.decode_entry.*.invoke_decode([[handler.params[:parent_id]]])
         #         panel_title "ADFASDF"
         #     end
         # end
@@ -220,7 +220,7 @@ module Engine2
             super
             panel_title LOCS[:link_title]
             menu(:panel_menu).option_at 0, :link, icon: "ok", enabled: "action.selected_size() > 0"
-            action.parent.*.menu(:menu).option_at 0, :link_list, icon: "paperclip", button_loc: false
+            node.parent.*.menu(:menu).option_at 0, :link_list, icon: "paperclip", button_loc: false
         end
     end
 
@@ -276,7 +276,7 @@ module Engine2
             panel_panel_template nil
             panel_title LOCS[:link_title]
             menu(:panel_menu).option_at 0, :link, icon: "ok", enabled: "action.selected_size() > 0"
-            action.parent.*.menu(:menu).option_at 0, :link_list, icon: "paperclip", button_loc: false
+            node.parent.*.menu(:menu).option_at 0, :link_list, icon: "paperclip", button_loc: false
         end
     end
 end

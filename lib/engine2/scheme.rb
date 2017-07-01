@@ -33,49 +33,49 @@ module Engine2
     SCHEMES.instance_eval do
 
         define_scheme :view do |name = :view|
-            define_action name, ViewMeta
+            define_node name, ViewMeta
         end
 
         define_scheme :create do |name = :create|
-            define_action name, CreateMeta do
-                define_action :approve, InsertMeta
+            define_node name, CreateMeta do
+                define_node :approve, InsertMeta
             end
         end
 
         define_scheme :modify do |name = :modify|
-            define_action name, ModifyMeta do
-                define_action :approve, UpdateMeta
+            define_node name, ModifyMeta do
+                define_node :approve, UpdateMeta
             end
         end
 
         define_scheme :delete do
-            define_action :confirm_delete, ConfirmMeta do
+            define_node :confirm_delete, ConfirmMeta do
                 self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_delete_title]
-                define_action :delete, DeleteMeta
+                define_node :delete, DeleteMeta
             end
         end
 
         define_scheme :bulk_delete do
-            define_action :confirm_bulk_delete, ConfirmMeta do
+            define_node :confirm_bulk_delete, ConfirmMeta do
                 self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_bulk_delete_title]
-                define_action :bulk_delete, BulkDeleteMeta
+                define_node :bulk_delete, BulkDeleteMeta
             end
         end
 
         define_scheme :default do |name, model, options|
             options ||= Schemes::CRUD
-            define_action name, ListMeta, model: model do
+            define_node name, ListMeta, model: model do
                 options.each{|k, v| run_scheme(k) if v}
 
-                define_action_bundle :form, :create, :modify if options[:create] && options[:modify]
-                # define_action_bundle :decode, :decode_entry, :decode_list, :typahead
+                define_node_bundle :form, :create, :modify if options[:create] && options[:modify]
+                # define_node_bundle :decode, :decode_entry, :decode_list, :typahead
 
                 # if ?
-                define_action :decode_entry, DecodeEntryMeta
-                define_action :decode_list, DecodeListMeta
-                define_action :typeahead, TypeAheadMeta
+                define_node :decode_entry, DecodeEntryMeta
+                define_node :decode_list, DecodeListMeta
+                define_node :typeahead, TypeAheadMeta
             end
         end
 
@@ -83,7 +83,7 @@ module Engine2
         # Many to One
         #
         define_scheme :many_to_one do
-            define_action :list, ManyToOneListMeta do
+            define_node :list, ManyToOneListMeta do
                 run_scheme :view
             end
         end
@@ -99,11 +99,11 @@ module Engine2
                 options = info[:decode][:search]
             end
 
-            define_action :"#{assoc_name}!" do
+            define_node :"#{assoc_name}!" do
                 # iterate over options like in :default ?
-                define_action :list, DecodeListMeta, assoc: assoc if options[:list]
-                define_action :typeahead, TypeAheadMeta, assoc: assoc if options[:typeahead]
-                define_action :decode, DecodeEntryMeta, assoc: assoc do
+                define_node :list, DecodeListMeta, assoc: assoc if options[:list]
+                define_node :typeahead, TypeAheadMeta, assoc: assoc if options[:typeahead]
+                define_node :decode, DecodeEntryMeta, assoc: assoc do
                     run_scheme :many_to_one
                 end if options[:scaffold]
             end
@@ -113,34 +113,34 @@ module Engine2
         # * to Many
         #
         define_scheme :star_to_many_unlink do
-            define_action :confirm_unlink, ConfirmMeta do
+            define_node :confirm_unlink, ConfirmMeta do
                 self.*.message LOCS[:unlink_question]
                 self.*.panel_title LOCS[:confirm_unlink_title]
-                define_action :unlink, StarToManyUnlinkMeta
+                define_node :unlink, StarToManyUnlinkMeta
             end
         end
 
         define_scheme :star_to_many_bulk_unlink do
-            define_action :confirm_bulk_unlink, ConfirmMeta do
+            define_node :confirm_bulk_unlink, ConfirmMeta do
                 self.*.message LOCS[:unlink_question]
                 self.*.panel_title LOCS[:confirm_bulk_unlink_title]
-                define_action :bulk_unlink, StarToManyBulkUnlinkMeta
+                define_node :bulk_unlink, StarToManyBulkUnlinkMeta
             end
         end
 
         define_scheme :star_to_many_link do
-            define_action :link_list, StarToManyLinkListMeta do
+            define_node :link_list, StarToManyLinkListMeta do
                 run_scheme :view
-                define_action :link, StarToManyLinkMeta
+                define_node :link, StarToManyLinkMeta
             end
         end
 
         define_scheme :star_to_many do |act, assoc, model|
             options = assoc[:options] || Schemes::LINK
-            define_action act, StarToManyListMeta, model: model, assoc: assoc do
+            define_node act, StarToManyListMeta, model: model, assoc: assoc do
                 options.each{|k, v| run_scheme(k) if v}
 
-                define_action_bundle :form, :create, :modify if options[:create] && options[:modify]
+                define_node_bundle :form, :create, :modify if options[:create] && options[:modify]
             end
         end
 
@@ -148,11 +148,11 @@ module Engine2
         # arbitrary files per form
         #
         define_scheme :file_store do |model, field|
-            define_action :"#{field}_file_store!", FileStoreMeta do
+            define_node :"#{field}_file_store!", FileStoreMeta do
                 self.*.model = model
                 self.*.field = field
-                define_action :download, DownloadFileStoreMeta
-                define_action :upload, UploadFileStoreMeta
+                define_node :download, DownloadFileStoreMeta
+                define_node :upload, UploadFileStoreMeta
             end
         end
 
@@ -160,11 +160,11 @@ module Engine2
         # blob field in source table
         #
         define_scheme :blob_store do |model, field|
-            define_action :"#{field}_blob_store!", BlobStoreMeta do
+            define_node :"#{field}_blob_store!", BlobStoreMeta do
                 self.*.model = model
                 self.*.field = field # model.type_info[field][:field]
-                define_action :download, DownloadBlobStoreMeta
-                define_action :upload, UploadBlobStoreMeta
+                define_node :download, DownloadBlobStoreMeta
+                define_node :upload, UploadBlobStoreMeta
             end
         end
 
@@ -172,35 +172,35 @@ module Engine2
         # blob field in foreign (one to one) table
         #
         define_scheme :foreign_blob_store do |model, field|
-            define_action :"#{field}_blob_store!", ForeignBlobStoreMeta do
+            define_node :"#{field}_blob_store!", ForeignBlobStoreMeta do
                 self.*.model = model
                 self.*.field = field # model.type_info[field][:field]
-                define_action :download, DownloadForeignBlobStoreMeta
-                define_action :upload, UploadBlobStoreMeta
+                define_node :download, DownloadForeignBlobStoreMeta
+                define_node :upload, UploadBlobStoreMeta
             end
         end
 
         define_scheme :star_to_many_field_view do
-            define_action :view, ViewMeta do
+            define_node :view, ViewMeta do
                 meta{@meta_type = :star_to_many_field_view}
             end
         end
 
         define_scheme :star_to_many_field_link do
-            define_action :link, StarToManyLinkMeta
+            define_node :link, StarToManyLinkMeta
         end
 
         define_scheme :star_to_many_field_unlink do
-            define_action :confirm_unlink, ConfirmMeta do
+            define_node :confirm_unlink, ConfirmMeta do
                 self.*.message LOCS[:unlink_question]
-                define_action :unlink, StarToManyUnlinkMeta do
+                define_node :unlink, StarToManyUnlinkMeta do
                     meta{@meta_type = :star_to_many_field_unlink}
                 end
             end
         end
 
         define_scheme :star_to_many_field_link_list do
-            define_action :link_list, StarToManyFieldLinkListMeta do
+            define_node :link_list, StarToManyFieldLinkListMeta do
                 run_scheme :view
             end
         end
@@ -210,38 +210,38 @@ module Engine2
         #
         define_scheme :star_to_many_field do |assoc, field|
             schemes = assoc[:model].type_info.fetch(field)[:schemes]
-            define_action :"#{field}!", StarToManyFieldMeta, assoc: assoc do
+            define_node :"#{field}!", StarToManyFieldMeta, assoc: assoc do
                 schemes.each{|k, v| run_scheme(k) if v}
 
-                define_action_bundle :form, :star_to_many_field_create, :star_to_many_field_modify if schemes[:star_to_many_field_create] && schemes[:star_to_many_field_modify]
+                define_node_bundle :form, :star_to_many_field_create, :star_to_many_field_modify if schemes[:star_to_many_field_create] && schemes[:star_to_many_field_modify]
             end
         end
 
         define_scheme :star_to_many_field_create do
-            define_action :create, CreateMeta do
-                define_action :approve, StarToManyFieldInsertMeta
+            define_node :create, CreateMeta do
+                define_node :approve, StarToManyFieldInsertMeta
             end
         end
 
         define_scheme :star_to_many_field_modify do
-            define_action :modify, ModifyMeta do
+            define_node :modify, ModifyMeta do
                 meta{@meta_type = :star_to_many_field_modify}
-                define_action :approve, StarToManyFieldUpdateMeta
+                define_node :approve, StarToManyFieldUpdateMeta
             end
         end
 
         define_scheme :star_to_many_field_delete do
-            define_action :confirm_delete, ConfirmMeta do
+            define_node :confirm_delete, ConfirmMeta do
                 self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_delete_title]
-                define_action :delete, DeleteMeta do
+                define_node :delete, DeleteMeta do
                     meta{@meta_type = :star_to_many_field_delete}
                 end
             end
         end
 
         define_scheme :array do |name, model|
-            define_action name, ArrayListMeta, model: model do
+            define_node name, ArrayListMeta, model: model do
             end
         end
     end

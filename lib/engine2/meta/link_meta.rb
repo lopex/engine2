@@ -8,7 +8,7 @@ module Engine2
 
         def pre_run
             super
-            execute 'action.errors || [action.parent().invoke(), action.panel_close()]'
+            execute "action.errors || [action.parent().invoke(), action.panel_close()]"
         end
 
         def invoke handler
@@ -49,7 +49,7 @@ module Engine2
 
         def pre_run
             super
-            execute '[action.parent().invoke(), action.panel_close()]'
+            execute "[action.parent().invoke(), action.panel_close()]"
         end
 
         def invoke_unlink_db handler, parent, ids
@@ -87,7 +87,7 @@ module Engine2
 
         def pre_run
             super
-            action.parent.parent.*.menu(:item_menu).option :confirm_unlink, icon: "minus", show: "action.selected_size() == 0", button_loc: false
+            node.parent.parent.*.menu(:item_menu).option :confirm_unlink, icon: "minus", show: "action.selected_size() == 0", button_loc: false
         end
 
         def invoke handler
@@ -102,8 +102,8 @@ module Engine2
 
         def pre_run
             super
-            action.parent.parent.*.select_toggle_menu
-            action.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_unlink, icon: "minus", show: "action.selected_size() > 0", button_loc: false
+            node.parent.parent.*.select_toggle_menu
+            node.parent.parent.*.menu(:menu).option_after :default_order, :confirm_bulk_unlink, icon: "minus", show: "action.selected_size() > 0", button_loc: false
         end
 
         def invoke handler
