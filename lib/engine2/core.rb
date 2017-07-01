@@ -497,7 +497,7 @@ module Engine2
         def reload
             @core_loaded = true
             t = Time.now
-            Action.count = 0
+            ActionNode.count = 0
             SCHEMES.user.clear
 
             Sequel::DATABASES.each do |db|
@@ -515,7 +515,7 @@ module Engine2
             Sequel::DATABASES.each &:dump_schema_cache_to_file
 
             send(:remove_const, :ROOT) if defined? ROOT
-            const_set(:ROOT, Action.new(nil, :api, RootMeta, {}))
+            const_set(:ROOT, ActionNode.new(nil, :api, RootMeta, {}))
 
             @boot_blk.(ROOT)
             ROOT.setup_action_tree

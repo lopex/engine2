@@ -2,7 +2,7 @@
 
 module Engine2
 
-    class Action < BasicObject
+    class ActionNode < BasicObject
         ACCESS_FORBIDDEN ||= ->h{false}
         attr_reader :parent, :name, :number, :actions, :recheck_access
         attr_reader :meta_proc, :access_block
@@ -12,8 +12,8 @@ module Engine2
         end
 
         def initialize parent, name, meta_class, assets
-            Action.count += 1
-            @number = Action.count
+            ActionNode.count += 1
+            @number = ActionNode.count
             @parent = parent
             @name = name
             @meta = meta_class.new(self, assets)
@@ -47,8 +47,8 @@ module Engine2
         end
 
         def define_action name, meta_class = InlineMeta.inherit, assets = {}, &blk
-            ::Kernel.raise E2Error.new("Action #{name} already defined") if @actions[name]
-            action = @actions[name] = Action.new(self, name, meta_class, assets)
+            ::Kernel.raise E2Error.new("ActionNode #{name} already defined") if @actions[name]
+            action = @actions[name] = ActionNode.new(self, name, meta_class, assets)
             action.*.pre_run
             define_singleton_method! name do |&ablk| # forbidden list
                 action.instance_eval(&ablk) if ablk
@@ -76,7 +76,7 @@ module Engine2
                 if blk
                     actions.each{|a|__send__(a, &blk)} # if @actions[action] ?
                 else
-                    ActionBundle.new(self, actions)
+                    ActionNodeBundle.new(self, actions)
                 end
             end
         end
@@ -151,7 +151,7 @@ module Engine2
         end
 
         def inspect
-            "Action: #{@name}, meta: #{@meta.class}, meta_type: #{@meta.meta_type}"
+            "ActionNode: #{@name}, meta: #{@meta.class}, meta_type: #{@meta.meta_type}"
         end
 
         def setup_action_tree
@@ -198,7 +198,7 @@ module Engine2
                 true
             end
 
-            ::Kernel::puts "ACTIONS: #{Action.count}, Time: #{::Time.now - time}, Thefts: #{thefts}"
+            ::Kernel::puts "ACTIONS: #{ActionNode.count}, Time: #{::Time.now - time}, Thefts: #{thefts}"
         end
 
         def p *args
@@ -207,7 +207,7 @@ module Engine2
     end
 
 
-    class ActionBundle
+    class ActionNodeBundle
         def initialize action, action_names
             @action = action
             @action_names = action_names

@@ -16,7 +16,7 @@ require 'faye/websocket'
     model.rb
     templates.rb
     meta.rb
-    action.rb
+    action_node.rb
     scheme.rb
 
     meta/array_meta.rb
