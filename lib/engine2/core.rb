@@ -467,7 +467,6 @@ module Engine2
     end unless SETTINGS.frozen?
 
     class << self
-        attr_reader :app
         attr_reader :core_loaded
 
         def database name
@@ -520,15 +519,15 @@ module Engine2
 
             @boot_blk.(ROOT)
             ROOT.setup_action_tree
-            puts "BOOTSTRAP #{app}, Time: #{Time.new - t}"
+            puts "BOOTSTRAP #{Engine2::SETTINGS[:name]}, Time: #{Time.new - t}"
         end
 
-        def bootstrap app, settings = {}
-            @app = app
-            Handler.set :public_folder, "#{app}/public"
+        def bootstrap path, settings = {}
             SETTINGS.merge! settings
-            SETTINGS[:name] ||= File::basename(app)
+            SETTINGS[:path] = path
+            SETTINGS[:name] ||= File::basename(path)
             SETTINGS.freeze
+            Handler.set :public_folder, "public"
             Handler.set :views, [SETTINGS.path_for(:view_path), "#{Engine2::PATH}/views"]
             bootstrap_e2db
 

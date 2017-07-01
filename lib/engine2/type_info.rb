@@ -215,8 +215,8 @@ module Engine2
                 info[:multiple] = multiple
                 info[:table] = table
                 info[:store] = store
-                info[:store][:upload] ||= "#{Engine2::app}/store/upload"
-                info[:store][:files] ||= "#{Engine2::app}/store/files"
+                info[:store][:upload] ||= "#{Engine2::SETTINGS[:path]}/store/upload"
+                info[:store][:files] ||= "#{Engine2::SETTINGS[:path]}/store/files"
                 info[:transaction] = true
             end
         end
