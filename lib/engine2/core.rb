@@ -505,7 +505,7 @@ module Engine2
                 db.models.each{|n, m| Object.send(:remove_const, n) if Object.const_defined?(n)} unless db == E2DB || db == DUMMYDB
             end
 
-            load "#{app}/boot.rb"
+            load "#{Engine2::SETTINGS[:app_path]}/boot.rb"
 
             Sequel::DATABASES.each &:load_schema_cache_from_file
             @model_boot_blk.() if @model_boot_blk
