@@ -71,6 +71,14 @@ angular.module('Engine2')
                     $e2Modal.error("#{err.status}: #{err.data.message}", err.data.cause || err.data.message)
             $q.reject(err)
 
+        save_state: () ->
+            _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
+        load_state: () ->
+            _.each @meta.state, (s) => _.merge(@[s], localStorageService.get("#{globals.application}/#{@action_info().action_resource}/#{s}"))
+
+        destroy: (e) ->
+            console.log "DESTROY #{@action_info().action_resource}"
+
         create_action: (name, sc, el) ->
             info = @find_action_info(name)
             info.action_resource = "#{@action_info().action_resource}/#{info.name}"
@@ -138,14 +146,6 @@ angular.module('Engine2')
             (err) =>
                 globals.action_pending = false
                 @handle_error(err, info, @element())
-
-        save_state: () ->
-            _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
-        load_state: () ->
-            _.each @meta.state, (s) => _.merge(@[s], localStorageService.get("#{globals.application}/#{@action_info().action_resource}/#{s}"))
-
-        destroy: (e) ->
-            console.log "DESTROY #{@action_info().action_resource}"
 
         panel_render: ->
             if @meta.panel.modal_action
