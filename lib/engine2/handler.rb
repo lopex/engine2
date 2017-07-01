@@ -119,7 +119,7 @@ module Engine2
         end
 
         set :slim, pretty: true, sort_attrs: false
-        set :views, ["views", "#{PATH}/views"]
+        set :views, [SETTINGS.path_for(:view_path), "#{PATH}/views"]
         set :sessions, expire_after: 3600 # , :httponly => true, :secure => production?
 
         helpers do

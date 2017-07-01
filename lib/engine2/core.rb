@@ -161,7 +161,7 @@ class Sequel::Database
     attr_accessor :models, :default_schema
 
     def cache_file
-        "#{Engine2::SETTINGS[:db_loc]}/#{opts[:orig_opts][:name]}.dump"
+        "#{Engine2::SETTINGS.path_for(:db_path)}/#{opts[:orig_opts][:name]}.dump"
     end
 
     def load_schema_cache_from_file
@@ -452,7 +452,18 @@ end
 module Engine2
     LOCS ||= Hash.new{|h, k| ":#{k}:"}
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
-    SETTINGS ||= {}
+    SETTINGS ||= {
+        key_separator: '|',
+        app_path: 'app',
+        db_path: 'db',
+        model_path: 'models',
+        view_path: 'views',
+        asset_path: 'assets'
+    }
+
+    def SETTINGS.path_for path
+        "#{self[:app_path]}/#{self[path]}"
+    end unless SETTINGS.frozen?
 
     class << self
         attr_reader :app
@@ -476,8 +487,8 @@ module Engine2
         end
 
         def bootstrap_e2db
-            e2_db_loc = "#{Engine2::SETTINGS[:db_loc]}/engine2.db"
-            e2_db_url = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{e2_db_loc}" : "sqlite://#{e2_db_loc}"
+            e2_db_path = "#{Engine2::SETTINGS.path_for(:db_path)}/engine2.db"
+            e2_db_url = (defined? JRUBY_VERSION) ? "jdbc:sqlite:#{e2_db_path}" : "sqlite://#{e2_db_path}"
             const_set :E2DB, connect(e2_db_url, loggers: [Logger.new($stdout)], convert_types: false, name: :engine2)
             const_set :DUMMYDB, Sequel::Database.new(uri: 'dummy')
             def DUMMYDB.synchronize *args;end
@@ -499,7 +510,7 @@ module Engine2
             @model_boot_blk.() if @model_boot_blk
             load 'engine2/models/Files.rb'
             load 'engine2/models/UserInfo.rb'
-            Dir["#{app}/models/*"].each{|m| load m}
+            Dir["#{Engine2::SETTINGS.path_for(:model_path)}/*"].each{|m| load m}
             puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
             Sequel::DATABASES.each &:dump_schema_cache_to_file
 
@@ -516,8 +527,7 @@ module Engine2
             Handler.set :public_folder, "#{app}/public"
             SETTINGS.merge! settings
             SETTINGS[:name] ||= File::basename(app)
-            SETTINGS[:db_loc] ||= 'var/db/'
-            SETTINGS[:key_separator] ||= '|'
+            SETTINGS.freeze
             bootstrap_e2db
 
             require 'engine2/pre_bootstrap'
