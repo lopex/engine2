@@ -458,7 +458,8 @@ module Engine2
         db_path: 'db',
         model_path: 'models',
         view_path: 'views',
-        asset_path: 'assets'
+        asset_path: 'assets',
+        conf_path: 'conf'
     }
 
     def SETTINGS.path_for path
