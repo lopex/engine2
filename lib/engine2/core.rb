@@ -452,7 +452,7 @@ end
 module Engine2
     LOCS ||= Hash.new{|h, k| ":#{k}:"}
     PATH ||= File.expand_path('../..', File.dirname(__FILE__))
-    SETTINGS ||= {key_separator: '|'}
+    SETTINGS ||= {}
 
     class << self
         attr_reader :app
@@ -517,6 +517,7 @@ module Engine2
             SETTINGS.merge! settings
             SETTINGS[:name] ||= File::basename(app)
             SETTINGS[:db_loc] ||= 'var/db/'
+            SETTINGS[:key_separator] ||= '|'
             bootstrap_e2db
 
             require 'engine2/pre_bootstrap'
