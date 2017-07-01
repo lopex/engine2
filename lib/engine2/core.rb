@@ -529,6 +529,7 @@ module Engine2
             SETTINGS.merge! settings
             SETTINGS[:name] ||= File::basename(app)
             SETTINGS.freeze
+            Handler.set :views, [SETTINGS.path_for(:view_path), "#{Engine2::PATH}/views"]
             bootstrap_e2db
 
             require 'engine2/pre_bootstrap'
