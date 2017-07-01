@@ -267,7 +267,7 @@ module Engine2
             @meta[:fields] = [:name, :password]
             parent_meta = node.parent.*
             if parent_meta.is_a? MetaMenuSupport
-                parent_meta.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.node_pending()"
+                parent_meta.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.action_pending()"
             end
         end
 
