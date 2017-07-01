@@ -1,7 +1,7 @@
 # coding: utf-8
 
 module Engine2
-    class ViewMeta < Meta
-        include MetaViewSupport, MetaQuerySupport
+    class ViewAction < Action
+        include ActionViewSupport, ActionQuerySupport
     end
 end

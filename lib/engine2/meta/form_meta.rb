@@ -1,15 +1,15 @@
 # coding: utf-8
 
 module Engine2
-    class FormMeta < Meta
-        include MetaQuerySupport
+    class FormAction < Action
+        include ActionQuerySupport
     end
 
-    class CreateMeta < FormMeta
-        include MetaCreateSupport
+    class CreateAction < FormAction
+        include ActionCreateSupport
     end
 
-    class ModifyMeta < FormMeta
-        include MetaModifySupport
+    class ModifyAction < FormAction
+        include ActionModifySupport
     end
 end

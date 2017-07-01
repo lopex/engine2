@@ -1,8 +1,8 @@
 # coding: utf-8
 
 module Engine2
-    class StarToManyLinkMeta < Meta
-        include MetaModelSupport
+    class StarToManyLinkAction < Action
+        include ActionModelSupport
         http_method :post
         meta_type :star_to_many_link
 
@@ -43,8 +43,8 @@ module Engine2
         end
     end
 
-    class StarToManyUnlinkMetaBase < Meta
-        include MetaModelSupport
+    class StarToManyUnlinkActionBase < Action
+        include ActionModelSupport
         http_method :delete
 
         def pre_run
@@ -82,7 +82,7 @@ module Engine2
         end
     end
 
-    class StarToManyUnlinkMeta < StarToManyUnlinkMetaBase
+    class StarToManyUnlinkAction < StarToManyUnlinkActionBase
         meta_type :star_to_many_unlink
 
         def pre_run
@@ -97,7 +97,7 @@ module Engine2
         end
     end
 
-    class StarToManyBulkUnlinkMeta < StarToManyUnlinkMetaBase
+    class StarToManyBulkUnlinkAction < StarToManyUnlinkActionBase
         meta_type :star_to_many_bulk_unlink
 
         def pre_run

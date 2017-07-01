@@ -1,9 +1,9 @@
 # coding: utf-8
 
 module Engine2
-    class ArrayListMeta < Meta
+    class ArrayListAction < Action
         meta_type :list
-        include MetaListSupport
+        include ActionListSupport
 
         (DefaultFilters ||= {}).merge!(
             exact: lambda{|entries, name, value, type_info, hash|

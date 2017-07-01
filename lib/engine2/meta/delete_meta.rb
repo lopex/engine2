@@ -1,7 +1,7 @@
 # coding: utf-8
 
 module Engine2
-    class DeleteMetaBase < Meta
+    class DeleteActionBase < Action
         def invoke_delete_db handler, ids, from_assoc = nil
             model = assets[:model]
             model.db.transaction do
@@ -42,8 +42,8 @@ module Engine2
         end
     end
 
-    class DeleteMeta < DeleteMetaBase
-        include MetaDeleteSupport
+    class DeleteAction < DeleteActionBase
+        include ActionDeleteSupport
 
         def invoke handler
             handler.permit id = handler.params[:id]
@@ -51,8 +51,8 @@ module Engine2
         end
     end
 
-    class BulkDeleteMeta < DeleteMetaBase
-        include MetaBulkDeleteSupport
+    class BulkDeleteAction < DeleteActionBase
+        include ActionBulkDeleteSupport
 
         def invoke handler
             ids = handler.param_to_json(:ids)

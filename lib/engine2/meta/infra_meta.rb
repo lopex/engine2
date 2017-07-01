@@ -2,28 +2,28 @@
 
 module Engine2
     SCHEMES::define_scheme :login! do |user_info_model = UserInfo|
-        define_node :login_form, LoginFormMeta, model: user_info_model do
+        define_node :login_form, LoginFormAction, model: user_info_model do
             access!{|h|!h.logged_in?}
-            define_node :login, LoginMeta
+            define_node :login, LoginAction
         end
     end
 
     SCHEMES::define_scheme :logout! do
-        define_node :logout_form, LogoutFormMeta do
+        define_node :logout_form, LogoutFormAction do
             access! &:logged_in?
-            define_node :logout, LogoutMeta
+            define_node :logout, LogoutAction
         end
     end
 
     SCHEMES::define_scheme :infra! do |user_info_model = UserInfo|
         run_scheme :login!, user_info_model
-        define_node :infra!, InfraMeta do
+        define_node :infra!, InfraAction do
             run_scheme :login!, user_info_model
             run_scheme :logout!
 
-            define_node :inspect_modal, InspectModalMeta do
+            define_node :inspect_modal, InspectModalAction do
                 access! &:logged_in?
-                define_node :inspect, WebSocketMeta.inherit do
+                define_node :inspect, WebSocketAction.inherit do
                     self.* do
                         @meta_type = :inspect
 
@@ -62,11 +62,11 @@ module Engine2
     end
 
     SCHEMES::define_scheme :menu! do
-        define_node :menu!, MenuMeta do
+        define_node :menu!, MenuAction do
         end
     end
 
-    class FileStoreMeta < Meta
+    class FileStoreAction < Action
         meta_type :file_store
 
         attr_accessor :model, :field
@@ -78,7 +78,7 @@ module Engine2
     end
 
 
-    module BlobSupportMeta
+    module BlobSupportAction
         def serve_blob handler, entry, inf
             handler.permit entry
             handler.attachment entry[inf[:name_field]]
@@ -87,7 +87,7 @@ module Engine2
         end
     end
 
-    class DownloadFileStoreMeta < Meta
+    class DownloadFileStoreAction < Action
         meta_type :download
 
         def invoke handler
@@ -101,7 +101,7 @@ module Engine2
         end
     end
 
-    class UploadFileStoreMeta < Meta
+    class UploadFileStoreAction < Action
         http_method :post
         meta_type :upload
 
@@ -116,7 +116,7 @@ module Engine2
         end
     end
 
-    class BlobStoreMeta < Meta
+    class BlobStoreAction < Action
         meta_type :blob_store
 
         attr_accessor :model, :field
@@ -130,8 +130,8 @@ module Engine2
         end
     end
 
-    class DownloadBlobStoreMeta < Meta
-        include BlobSupportMeta
+    class DownloadBlobStoreAction < Action
+        include BlobSupportAction
         meta_type :download_blob
 
         def invoke handler
@@ -144,7 +144,7 @@ module Engine2
         end
     end
 
-    class UploadBlobStoreMeta < Meta
+    class UploadBlobStoreAction < Action
         http_method :post
         meta_type :upload_blob
 
@@ -159,7 +159,7 @@ module Engine2
         end
     end
 
-    class ForeignBlobStoreMeta < Meta
+    class ForeignBlobStoreAction < Action
         meta_type :blob_store
 
         attr_accessor :model, :field
@@ -180,8 +180,8 @@ module Engine2
         end
     end
 
-    class DownloadForeignBlobStoreMeta < Meta
-        include BlobSupportMeta
+    class DownloadForeignBlobStoreAction < Action
+        include BlobSupportAction
         meta_type :download_blob
 
         def invoke handler
@@ -198,7 +198,7 @@ module Engine2
         end
     end
 
-    # class UploadForeignBlobStoreMeta < Meta
+    # class UploadForeignBlobStoreAction < Action
     #     http_method :post
     #     meta_type :upload_blob
 
@@ -212,8 +212,8 @@ module Engine2
     #     end
     # end
 
-    class InfraMeta < Meta
-        include MetaPanelSupport, MetaMenuSupport, MetaAPISupport
+    class InfraAction < Action
+        include ActionPanelSupport, ActionMenuSupport, ActionAPISupport
         meta_type :infra
 
         def pre_run
@@ -239,8 +239,8 @@ module Engine2
         end
     end
 
-    class InspectModalMeta < Meta
-        include MetaPanelSupport, MetaMenuSupport
+    class InspectModalAction < Action
+        include ActionPanelSupport, ActionMenuSupport
         meta_type :inline
 
         def pre_run
@@ -254,8 +254,8 @@ module Engine2
         end
     end
 
-    class LoginFormMeta < Meta
-        include MetaFormSupport
+    class LoginFormAction < Action
+        include ActionFormSupport
         meta_type :login_form
 
         def pre_run
@@ -266,7 +266,7 @@ module Engine2
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
             @meta[:fields] = [:name, :password]
             parent_meta = node.parent.*
-            if parent_meta.is_a? MetaMenuSupport
+            if parent_meta.is_a? ActionMenuSupport
                 parent_meta.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.action_pending()"
             end
         end
@@ -276,8 +276,8 @@ module Engine2
         end
     end
 
-    class LoginMeta < Meta
-        include MetaApproveSupport
+    class LoginAction < Action
+        include ActionApproveSupport
         meta_type :login
 
         def validate_record handler, record
@@ -294,8 +294,8 @@ module Engine2
         end
     end
 
-    class LogoutFormMeta < Meta
-        include MetaPanelSupport, MetaMenuSupport
+    class LogoutFormAction < Action
+        include ActionPanelSupport, ActionMenuSupport
         meta_type :logout_form
         def pre_run
             super
@@ -311,7 +311,7 @@ module Engine2
         end
     end
 
-    class LogoutMeta < Meta
+    class LogoutAction < Action
         meta_type :logout
 
         def invoke handler

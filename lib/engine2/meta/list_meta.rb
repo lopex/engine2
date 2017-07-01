@@ -1,9 +1,9 @@
 # coding: utf-8
 
 module Engine2
-    class ListMeta < Meta
+    class ListAction < Action
         meta_type :list
-        include MetaListSupport, MetaQuerySupport
+        include ActionListSupport, ActionQuerySupport
 
         (DefaultFilters ||= {}).merge!(
             string: lambda{|query, name, value, type_info, hash|
@@ -141,7 +141,7 @@ module Engine2
     #
     # Many to One
     #
-    class ManyToOneListMeta < ListMeta
+    class ManyToOneListAction < ListAction
         meta_type :many_to_one_list
 
         def pre_run
@@ -152,7 +152,7 @@ module Engine2
     #
     # * to Many
     #
-    class StarToManyListMeta < ListMeta
+    class StarToManyListAction < ListAction
         meta_type :star_to_many_list
         def pre_run
             super
@@ -214,7 +214,7 @@ module Engine2
         end
     end
 
-    class StarToManyLinkListMeta < StarToManyListMeta
+    class StarToManyLinkListAction < StarToManyListAction
         meta_type :star_to_many_link_list
         def pre_run
             super
@@ -225,7 +225,7 @@ module Engine2
     end
 
     # *_to_many_field
-    class StarToManyFieldMeta < StarToManyListMeta
+    class StarToManyFieldAction < StarToManyListAction
         meta_type :star_to_many_field
 
         def pre_run
@@ -267,7 +267,7 @@ module Engine2
         end
     end
 
-    class StarToManyFieldLinkListMeta < StarToManyFieldMeta
+    class StarToManyFieldLinkListAction < StarToManyFieldAction
         meta_type :star_to_many_field_link_list
 
         def pre_run

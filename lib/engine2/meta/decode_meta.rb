@@ -1,8 +1,8 @@
 # coding: utf-8
 
 module Engine2
-    class DecodeMeta < Meta
-        include MetaAPISupport, MetaModelSupport, MetaQuerySupport
+    class DecodeAction < Action
+        include ActionAPISupport, ActionModelSupport, ActionQuerySupport
 
         def decode *fields, &blk
             query select(*fields), &blk
@@ -50,7 +50,7 @@ module Engine2
 
     end
 
-    class DecodeListMeta < DecodeMeta
+    class DecodeListAction < DecodeAction
         meta_type :decode_list
 
         def invoke handler
@@ -58,7 +58,7 @@ module Engine2
         end
     end
 
-    class TypeAheadMeta < DecodeMeta
+    class TypeAheadAction < DecodeAction
         meta_type :typeahead
 
         def pre_run
@@ -83,7 +83,7 @@ module Engine2
         end
     end
 
-    class DecodeEntryMeta < DecodeMeta
+    class DecodeEntryAction < DecodeAction
         meta_type :decode_entry
 
         def invoke handler
@@ -101,7 +101,7 @@ module Engine2
             if assoc = assets[:assoc]
                 decode = assoc[:model].type_info[assoc[:keys].first][:decode]
 
-                if decode[:search][:multiple] && node.parent.parent.*.is_a?(ListMeta)
+                if decode[:search][:multiple] && node.parent.parent.*.is_a?(ListAction)
                     node.list.*.menu(:panel_menu).option :choose, icon: :ok #, disabled: "action.selected_size() == 0"
                     node.list.*.menu(:panel_menu).option :cancel, icon: "remove"
                 end

@@ -515,7 +515,7 @@ module Engine2
             Sequel::DATABASES.each &:dump_schema_cache_to_file
 
             send(:remove_const, :ROOT) if defined? ROOT
-            const_set(:ROOT, ActionNode.new(nil, :api, RootMeta, {}))
+            const_set(:ROOT, ActionNode.new(nil, :api, RootAction, {}))
 
             @boot_blk.(ROOT)
             ROOT.setup_node_tree
