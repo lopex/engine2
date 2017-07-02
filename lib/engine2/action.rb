@@ -4,8 +4,8 @@ module Engine2
         attr_reader :node, :meta, :assets, :static, :invokable
 
         class << self
-            def action_type mt = nil
-                mt ? @action_type = mt : @action_type
+            def action_type at = nil
+                at ? @action_type = at : @action_type
             end
 
             def http_method hm = nil
@@ -353,8 +353,8 @@ module Engine2
             # p_model_name = parent_model_name
             model = @assets[:model]
 
-            mt = action_type
-            case mt
+            at = action_type
+            case at
             when :list, :star_to_many_list, :star_to_many_link_list, :star_to_many_field, :star_to_many_field_link_list # :many_to_one_list
                 model.many_to_one_associations.each do |assoc_name, assoc|
                     unless assoc[:propagate] == false # || p_model_name == assoc[:class_name]
@@ -364,7 +364,7 @@ module Engine2
                 end
             end
 
-            case mt
+            case at
             when :modify, :create
                 model.many_to_one_associations.each do |assoc_name, assoc|
                     unless assoc[:propagate] == false # || p_model_name == assoc[:class_name]
@@ -374,7 +374,7 @@ module Engine2
                 end
             end
 
-            case mt
+            case at
             when :list #, :star_to_many_list, :many_to_one_list # list dropdowns
                 divider = false
                 model.one_to_many_associations.merge(model.many_to_many_associations).each do |assoc_name, assoc|
@@ -387,7 +387,7 @@ module Engine2
                 end
             end
 
-            case mt
+            case at
             when :modify, :create
                 model.type_info.each do |field, info|
                     case info[:type]
@@ -574,8 +574,8 @@ module Engine2
     module ActionOnChangeSupport
         def on_change field, &blk
             node_name = :"#{field}_on_change"
-            act = node.define_node node_name, (blk.arity > 2 ? OnChangeGetAction : OnChangePostAction)
-            act.*{request &blk}
+            nd = node.define_node node_name, (blk.arity > 2 ? OnChangeGetAction : OnChangePostAction)
+            nd.*{request &blk}
 
             info! field, remote_onchange: node_name
             info! field, remote_onchange_record: :true if blk.arity > 2
@@ -880,11 +880,11 @@ module Engine2
                             if hash.is_a?(Hash)
                                 validate_and_approve_association(handler, record, name, :create, hash)
                                 validate_and_approve_association(handler, record, name, :modify, hash)
-                                a_action = node.parent[:"#{name}!"]
+                                nd = node.parent[:"#{name}!"]
                                 raise Sequel::Rollback unless record.errors.empty?
-                                a_action.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
-                                a_action.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
-                                a_action.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
+                                nd.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
+                                nd.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
+                                nd.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
                             end
                         end
                         result
