@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 module Engine2
     class Action
         attr_reader :node, :meta, :assets, :static, :invokable

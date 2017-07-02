@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 module Engine2
     MAJOR, MINOR, TINY = [1, 0, 4]

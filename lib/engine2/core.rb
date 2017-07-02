@@ -1,4 +1,5 @@
-#coding: utf-8
+# coding: utf-8
+# frozen_string_literal: true
 
 module PrettyJSON
     def to_json_pretty

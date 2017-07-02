@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 module Engine2
     class UserInfo < Sequel::Model(DUMMYDB)

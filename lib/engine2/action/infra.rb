@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 module Engine2
     SCHEMES::define_scheme :login! do |user_info_model = UserInfo|
