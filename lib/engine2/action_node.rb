@@ -59,13 +59,13 @@ module Engine2
             node
         end
 
-        def define_node_action name, action_class = InlineAction.inherit, assets = {}, &blk
+        def define_action name, action_class = InlineAction.inherit, assets = {}, &blk
             define_node name, action_class, assets do
                 self.* &blk
             end
         end
 
-        def define_node_invoke name, action_class = InlineAction.inherit, assets = {}, &blk
+        def define_invoke name, action_class = InlineAction.inherit, assets = {}, &blk
             define_node name, action_class, assets do
                 self.*.define_invoke &blk
             end

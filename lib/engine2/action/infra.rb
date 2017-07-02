@@ -32,11 +32,11 @@ module Engine2
                         end
                     end
 
-                    define_node_invoke :models do |handler|
+                    define_invoke :models do |handler|
                         {models: Sequel::DATABASES.map{|db| {name: db.uri, models: db.models.keys} }}
                     end
 
-                    define_node_invoke :model_info do |handler|
+                    define_invoke :model_info do |handler|
                         db_name = handler.params[:db]
                         handler.permit db = Sequel::DATABASES.find{|d|d.uri == db_name || (d.uri && d.uri.start_with?(db_name))}
                         handler.permit model = db.models[handler.params[:model].to_sym]
@@ -53,7 +53,7 @@ module Engine2
                         }
                     end
 
-                    define_node_invoke :environment do |handler|
+                    define_invoke :environment do |handler|
                         {environment: handler.env}
                     end
                 end
