@@ -1,7 +1,7 @@
 .modal ng-class="action.meta.panel.class"
   .modal-dialog
     .modal-content
-      .modal-header
+      .modal-header ng-if="::action.meta.panel.header"
         button.close type="button" ng-click="$hide()" &times;
         h4.modal-title ng-bind-html="action.meta.panel.title"
 

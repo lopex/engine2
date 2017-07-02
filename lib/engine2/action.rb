@@ -506,6 +506,7 @@ module Engine2
                 # modal_action false if panel[:panel_template] == false
                 panel_class '' unless panel[:class]
                 panel_footer true if panel[:footer] != false && menu?(:panel_menu)
+                panel_header true if panel[:header] != false
             end
         end
 
@@ -531,6 +532,10 @@ module Engine2
 
         def panel_title tle
             panel[:title] = tle
+        end
+
+        def panel_header hdr
+            panel[:header] = hdr
         end
 
         def panel_footer ftr

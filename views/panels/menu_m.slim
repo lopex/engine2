@@ -1,5 +1,5 @@
 .panel.panel-default
-  .panel-heading
+  .panel-heading ng-if="::action.meta.panel.header"
     h4.modal-title ng-bind-html="action.meta.panel.title"
   .panel-body
     | modal-content-to-replace
