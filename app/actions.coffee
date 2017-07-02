@@ -91,7 +91,7 @@ angular.module('Engine2')
                     else response # $q.when ^
             else $q.when(data: (meta: {}, actions: []))
             E2A = $injector.get("E2Actions")
-            get_meta.then (mresponse) => new (E2A[info.meta_type] ? E2A.default_action)(mresponse.data, sc, @, el, info)
+            get_meta.then (mresponse) => new (E2A[info.action_type] ? E2A.default_action)(mresponse.data, sc, @, el, info)
             ,
             (err) => @handle_error(err, info, el)
 

@@ -25,7 +25,7 @@ module Engine2
                 access! &:logged_in?
                 define_node :inspect, WebSocketAction.inherit do
                     self.* do
-                        @meta_type = :inspect
+                        @action_type = :inspect
 
                         ws_message do |msg, ws|
                             ws.send! number: msg[:number].to_i + 1
@@ -67,7 +67,7 @@ module Engine2
     end
 
     class FileStoreAction < Action
-        meta_type :file_store
+        action_type :file_store
 
         attr_accessor :model, :field
 
@@ -88,7 +88,7 @@ module Engine2
     end
 
     class DownloadFileStoreAction < Action
-        meta_type :download
+        action_type :download
 
         def invoke handler
             handler.permit id = handler.params[:id]
@@ -103,7 +103,7 @@ module Engine2
 
     class UploadFileStoreAction < Action
         http_method :post
-        meta_type :upload
+        action_type :upload
 
         def invoke handler
             file = handler.params[:file]
@@ -117,7 +117,7 @@ module Engine2
     end
 
     class BlobStoreAction < Action
-        meta_type :blob_store
+        action_type :blob_store
 
         attr_accessor :model, :field
 
@@ -132,7 +132,7 @@ module Engine2
 
     class DownloadBlobStoreAction < Action
         include BlobSupportAction
-        meta_type :download_blob
+        action_type :download_blob
 
         def invoke handler
             model = node.parent.*.model
@@ -146,7 +146,7 @@ module Engine2
 
     class UploadBlobStoreAction < Action
         http_method :post
-        meta_type :upload_blob
+        action_type :upload_blob
 
         def invoke handler
             file = handler.params[:file]
@@ -160,7 +160,7 @@ module Engine2
     end
 
     class ForeignBlobStoreAction < Action
-        meta_type :blob_store
+        action_type :blob_store
 
         attr_accessor :model, :field
 
@@ -182,7 +182,7 @@ module Engine2
 
     class DownloadForeignBlobStoreAction < Action
         include BlobSupportAction
-        meta_type :download_blob
+        action_type :download_blob
 
         def invoke handler
             model = node.parent.*.model
@@ -200,7 +200,7 @@ module Engine2
 
     # class UploadForeignBlobStoreAction < Action
     #     http_method :post
-    #     meta_type :upload_blob
+    #     action_type :upload_blob
 
     #     def invoke handler
     #         file = handler.params[:file]
@@ -214,7 +214,7 @@ module Engine2
 
     class InfraAction < Action
         include ActionPanelSupport, ActionMenuSupport, ActionAPISupport
-        meta_type :infra
+        action_type :infra
 
         def pre_run
             super
@@ -241,7 +241,7 @@ module Engine2
 
     class InspectModalAction < Action
         include ActionPanelSupport, ActionMenuSupport
-        meta_type :inline
+        action_type :inline
 
         def pre_run
             super
@@ -256,7 +256,7 @@ module Engine2
 
     class LoginFormAction < Action
         include ActionFormSupport
-        meta_type :login_form
+        action_type :login_form
 
         def pre_run
             super
@@ -265,9 +265,9 @@ module Engine2
             info! :name, loc: LOCS[:user_name]
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
             @meta[:fields] = [:name, :password]
-            parent_meta = node.parent.*
-            if parent_meta.is_a? ActionMenuSupport
-                parent_meta.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.action_pending()"
+            parent_action = node.parent.*
+            if parent_action.is_a? ActionMenuSupport
+                parent_action.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.action_pending()"
             end
         end
 
@@ -278,7 +278,7 @@ module Engine2
 
     class LoginAction < Action
         include ActionApproveSupport
-        meta_type :login
+        action_type :login
 
         def validate_record handler, record
             super
@@ -296,7 +296,7 @@ module Engine2
 
     class LogoutFormAction < Action
         include ActionPanelSupport, ActionMenuSupport
-        meta_type :logout_form
+        action_type :logout_form
         def pre_run
             super
             panel_template 'scaffold/message'
@@ -312,7 +312,7 @@ module Engine2
     end
 
     class LogoutAction < Action
-        meta_type :logout
+        action_type :logout
 
         def invoke handler
             handler.session.clear

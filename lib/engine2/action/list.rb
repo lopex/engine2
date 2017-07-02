@@ -2,7 +2,7 @@
 
 module Engine2
     class ListAction < Action
-        meta_type :list
+        action_type :list
         include ActionListSupport, ActionQuerySupport
 
         (DefaultFilters ||= {}).merge!(
@@ -142,7 +142,7 @@ module Engine2
     # Many to One
     #
     class ManyToOneListAction < ListAction
-        meta_type :many_to_one_list
+        action_type :many_to_one_list
 
         def pre_run
             super
@@ -153,7 +153,7 @@ module Engine2
     # * to Many
     #
     class StarToManyListAction < ListAction
-        meta_type :star_to_many_list
+        action_type :star_to_many_list
         def pre_run
             super
             menu(:panel_menu).option_at 0, :cancel, icon: "remove"
@@ -170,7 +170,7 @@ module Engine2
 
         # def post_run
         #     super
-        #     unless @request_meta_proc
+        #     unless @request_action_proc
         #         request{|h| decode_panel_title h}
         #     end
         # end
@@ -215,7 +215,7 @@ module Engine2
     end
 
     class StarToManyLinkListAction < StarToManyListAction
-        meta_type :star_to_many_link_list
+        action_type :star_to_many_link_list
         def pre_run
             super
             panel_title LOCS[:link_title]
@@ -226,7 +226,7 @@ module Engine2
 
     # *_to_many_field
     class StarToManyFieldAction < StarToManyListAction
-        meta_type :star_to_many_field
+        action_type :star_to_many_field
 
         def pre_run
             super
@@ -268,7 +268,7 @@ module Engine2
     end
 
     class StarToManyFieldLinkListAction < StarToManyFieldAction
-        meta_type :star_to_many_field_link_list
+        action_type :star_to_many_field_link_list
 
         def pre_run
             super

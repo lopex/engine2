@@ -8,22 +8,22 @@ module Engine2
 
     class InsertAction < SaveAction
         include ActionInsertSupport
-        meta_type :approve
+        action_type :approve
     end
 
     class UpdateAction < SaveAction
         include ActionUpdateSupport
-        meta_type :approve
+        action_type :approve
     end
 
     class StarToManyFieldInsertAction < InsertAction
         self.validate_only = true
-        meta_type :star_to_many_field_approve
+        action_type :star_to_many_field_approve
     end
 
     class StarToManyFieldUpdateAction < UpdateAction
         self.validate_only = true
-        meta_type :star_to_many_field_approve
+        action_type :star_to_many_field_approve
     end
 
 end

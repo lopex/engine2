@@ -2,7 +2,7 @@
 
 module Engine2
     class ArrayListAction < Action
-        meta_type :list
+        action_type :list
         include ActionListSupport
 
         (DefaultFilters ||= {}).merge!(

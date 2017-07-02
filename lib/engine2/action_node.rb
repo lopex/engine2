@@ -11,21 +11,21 @@ module Engine2
             attr_accessor :count
         end
 
-        def initialize parent, name, meta_class, assets
+        def initialize parent, name, action_class, assets
             ActionNode.count += 1
             @number = ActionNode.count
             @parent = parent
             @name = name
-            @meta = meta_class.new(self, assets)
+            @action = action_class.new(self, assets)
             @nodes = {}
         end
 
         def * &blk
             @meta_proc = @meta_proc ? @meta_proc.chain(&blk) : blk if blk
-            @meta
+            @action
         end
 
-        alias :meta :*
+        alias :action :*
 
         def access! &blk
             ::Kernel.raise E2Error.new("Access for node #{name} already defined") if @access_block
@@ -46,9 +46,9 @@ module Engine2
             result
         end
 
-        def define_node name, meta_class = InlineAction.inherit, assets = {}, &blk
+        def define_node name, action_class = InlineAction.inherit, assets = {}, &blk
             ::Kernel.raise E2Error.new("ActionNode #{name} already defined") if @nodes[name]
-            node = @nodes[name] = ActionNode.new(self, name, meta_class, assets)
+            node = @nodes[name] = ActionNode.new(self, name, action_class, assets)
             node.*.pre_run
             define_singleton_method! name do |&ablk| # forbidden list
                 node.instance_eval(&ablk) if ablk
@@ -59,14 +59,14 @@ module Engine2
             node
         end
 
-        def define_node_meta name, meta_class = InlineAction.inherit, assets = {}, &blk
-            define_node name, meta_class, assets do
+        def define_node_action name, action_class = InlineAction.inherit, assets = {}, &blk
+            define_node name, action_class, assets do
                 self.* &blk
             end
         end
 
-        def define_node_invoke name, meta_class = InlineAction.inherit, assets = {}, &blk
-            define_node name, meta_class, assets do
+        def define_node_invoke name, action_class = InlineAction.inherit, assets = {}, &blk
+            define_node name, action_class, assets do
                 self.*.define_invoke &blk
             end
         end
@@ -93,22 +93,22 @@ module Engine2
 
         def nodes_info handler
             info = nodes.reduce({}) do |h, (name, a)|
-                meta = a.*
+                action = a.*
                 act = {
-                    meta_type: meta.meta_type,
-                    method: meta.http_method,
+                    action_type: action.action_type,
+                    method: action.http_method,
                     number: a.number,
                     terminal: a.nodes.empty?,
-                    meta: !meta.get.empty?
+                    meta: !action.get.empty?
                 }
 
                 act[:access] = true if !recheck_access && a.check_access!(handler)
                 act[:recheck_access] = true if a.recheck_access
 
                 if Handler::development?
-                    act[:meta_class] = meta.class
+                    act[:action_class] = action.class
                     act[:access_block] = a.access_block if a.access_block
-                    act[:model] = meta.assets[:model]
+                    act[:model] = action.assets[:model]
                 end
 
                 h[name] = act
@@ -151,7 +151,7 @@ module Engine2
         end
 
         def inspect
-            "ActionNode: #{@name}, meta: #{@meta.class}, meta_type: #{@meta.meta_type}"
+            "ActionNode: #{@name}, action: #{@action.class}, action_type: #{@action.action_type}"
         end
 
         def setup_node_tree
@@ -172,23 +172,23 @@ module Engine2
 
             thefts = 0
             each_node do |node|
-                meta = node.*
-                model = meta.assets[:model]
-                assoc = meta.assets[:assoc]
+                action = node.*
+                model = action.assets[:model]
+                assoc = action.assets[:assoc]
                 if model && assoc
                     if source_nodes = model_nodes[model.name.to_sym]
-                        source_node = source_nodes.select{|sa| sa.meta_proc && sa.*.class >= meta.class}
-                        # source_node = source_nodes.select{|sa| sa.meta_proc && meta.class <= sa.*.class}
+                        source_node = source_nodes.select{|sa| sa.meta_proc && sa.*.class >= action.class}
+                        # source_node = source_nodes.select{|sa| sa.meta_proc && action.class <= sa.*.class}
                         unless source_node.empty?
-                            raise E2Error.new("Multiple meta candidates for #{node.inspect} found in '#{source_node.inspect}'") if source_node.size > 1
+                            raise E2Error.new("Multiple action candidates for #{node.inspect} found in '#{source_node.inspect}'") if source_node.size > 1
                             # puts "#{node.inspect} => #{source_node.inspect}\n"
-                            meta.instance_eval(&source_node.first.meta_proc)
+                            action.instance_eval(&source_node.first.meta_proc)
                             thefts += 1
                         end
                     end
                 end
 
-                meta.instance_eval(&node.meta_proc) if node.meta_proc
+                action.instance_eval(&node.meta_proc) if node.meta_proc
                 true
             end
 

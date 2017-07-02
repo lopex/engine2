@@ -73,13 +73,13 @@ module Engine2
                 halt_unauthorized unless node.check_access!(self)
             end
 
-            meta = node.*
+            action = node.*
             response = if is_meta
-                params[:access] ? node.access_info(self) : {meta: meta.get, actions: node.nodes_info(self)}
+                params[:access] ? node.access_info(self) : {meta: action.get, actions: node.nodes_info(self)}
             else
-                if meta.http_method == verb && meta.invokable
+                if action.http_method == verb && action.invokable
                     begin
-                        meta.invoke!(self)
+                        action.invoke!(self)
                     rescue => error
                         attachment nil, nil
                         # content_type :json

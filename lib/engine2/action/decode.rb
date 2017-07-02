@@ -51,7 +51,7 @@ module Engine2
     end
 
     class DecodeListAction < DecodeAction
-        meta_type :decode_list
+        action_type :decode_list
 
         def invoke handler
             {entries: get_query.limit(200).all}
@@ -59,7 +59,7 @@ module Engine2
     end
 
     class TypeAheadAction < DecodeAction
-        meta_type :typeahead
+        action_type :typeahead
 
         def pre_run
             super
@@ -84,7 +84,7 @@ module Engine2
     end
 
     class DecodeEntryAction < DecodeAction
-        meta_type :decode_entry
+        action_type :decode_entry
 
         def invoke handler
             {entries: invoke_decode(handler, handler.param_to_json(:ids))}

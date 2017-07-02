@@ -19,15 +19,15 @@ require 'faye/websocket'
     action_node.rb
     scheme.rb
 
-    meta/array_meta.rb
-    meta/list_meta.rb
-    meta/view_meta.rb
-    meta/form_meta.rb
-    meta/save_meta.rb
-    meta/delete_meta.rb
-    meta/decode_meta.rb
-    meta/link_meta.rb
-    meta/infra_meta.rb
+    action/array.rb
+    action/list.rb
+    action/view.rb
+    action/form.rb
+    action/save.rb
+    action/delete.rb
+    action/decode.rb
+    action/link.rb
+    action/infra.rb
 ].each do |f|
     load "engine2/#{f}"
 end

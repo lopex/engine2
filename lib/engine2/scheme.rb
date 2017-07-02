@@ -182,7 +182,7 @@ module Engine2
 
         define_scheme :star_to_many_field_view do
             define_node :view, ViewAction do
-                meta{@meta_type = :star_to_many_field_view}
+                action{@action_type = :star_to_many_field_view}
             end
         end
 
@@ -194,7 +194,7 @@ module Engine2
             define_node :confirm_unlink, ConfirmAction do
                 self.*.message LOCS[:unlink_question]
                 define_node :unlink, StarToManyUnlinkAction do
-                    meta{@meta_type = :star_to_many_field_unlink}
+                    action{@action_type = :star_to_many_field_unlink}
                 end
             end
         end
@@ -225,7 +225,7 @@ module Engine2
 
         define_scheme :star_to_many_field_modify do
             define_node :modify, ModifyAction do
-                meta{@meta_type = :star_to_many_field_modify}
+                action{@action_type = :star_to_many_field_modify}
                 define_node :approve, StarToManyFieldUpdateAction
             end
         end
@@ -235,7 +235,7 @@ module Engine2
                 self.*.message LOCS[:delete_question]
                 self.*.panel_title LOCS[:confirm_delete_title]
                 define_node :delete, DeleteAction do
-                    meta{@meta_type = :star_to_many_field_delete}
+                    action{@action_type = :star_to_many_field_delete}
                 end
             end
         end

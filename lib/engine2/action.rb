@@ -4,8 +4,8 @@ module Engine2
         attr_reader :node, :assets, :static, :invokable
 
         class << self
-            def meta_type mt = nil
-                mt ? @meta_type = mt : @meta_type
+            def action_type mt = nil
+                mt ? @action_type = mt : @action_type
             end
 
             def http_method hm = nil
@@ -18,7 +18,7 @@ module Engine2
 
             def inherit
                 Class.new self do
-                    meta_type superclass.meta_type
+                    action_type superclass.action_type
                 end
             end
         end
@@ -33,29 +33,29 @@ module Engine2
         end
 
         def http_method
-            @http_method # || (raise E2Error.new("No http method for meta #{self.class}"))
+            @http_method # || (raise E2Error.new("No http method for action #{self.class}"))
         end
 
-        def meta_type
-            @meta_type || (raise E2Error.new("No meta_type for meta #{self.class}"))
+        def action_type
+            @action_type || (raise E2Error.new("No action_type for action #{self.class}"))
         end
 
-        def check_static_meta
-            raise E2Error.new("Static meta required") if dynamic?
+        def check_static_action
+            raise E2Error.new("Static action required") if dynamic?
         end
 
         def define_invoke &blk
-            check_static_meta
+            check_static_action
             self.class.class_eval{define_method :invoke, &blk}
         end
 
         def invoke! handler
-            if rmp = @request_meta_proc
-                meta = self.class.new(node, assets, self)
-                meta_result = meta.instance_exec(handler, *meta.request_meta_proc_params(handler), &rmp)
-                meta.post_process
-                response = @requestable ? (meta_result || {}) : meta.invoke(handler)
-                response[:meta] = meta.get
+            if rmp = @request_action_proc
+                action = self.class.new(node, assets, self)
+                action_result = action.instance_exec(handler, *action.request_action_proc_params(handler), &rmp)
+                action.post_process
+                response = @requestable ? (action_result || {}) : action.invoke(handler)
+                response[:meta] = action.get
                 response
             else
                 invoke(handler)
@@ -91,7 +91,7 @@ module Engine2
         # end
 
         def lookup *keys
-            if dynamic? # we are the request meta
+            if dynamic? # we are the request action
                 value = @meta.path(*keys)
                 value.nil? ? @static.get.path(*keys) : value
                 # value || @static.value.path(keys)
@@ -116,20 +116,20 @@ module Engine2
             freeze
         end
 
-        def request_meta_proc_params handler
+        def request_action_proc_params handler
             []
         end
 
         def request &blk
-            raise E2Error.new("No block given for request meta") unless blk
-            raise E2Error.new("Request meta already supplied") if @request_meta_proc
-            raise E2Error.new("No request block in request meta allowed") if dynamic?
-            @request_meta_proc = blk
+            raise E2Error.new("No block given for request action") unless blk
+            raise E2Error.new("Request action proc already supplied") if @request_action_proc
+            raise E2Error.new("No request block in request action allowed") if dynamic?
+            @request_action_proc = blk
             nil
         end
 
         def pre_run
-            @meta_type = self.class.meta_type
+            @action_type = self.class.action_type
             @http_method = self.class.http_method
         end
 
@@ -140,14 +140,14 @@ module Engine2
             if respond_to? :invoke
                 @invokable = true
             else
-                if @request_meta_proc
+                if @request_action_proc
                     @invokable = true
                     @requestable = true
                 else
                     @meta[:invokable] = false
                 end
             end
-            @meta[:dynamic_meta] = true if @request_meta_proc
+            @meta[:dynamic_meta] = true if @request_action_proc
             post_process
         end
 
@@ -214,7 +214,7 @@ module Engine2
     end
 
     class InlineAction < Action
-        meta_type :inline
+        action_type :inline
     end
 
     class RootAction < Action
@@ -312,7 +312,7 @@ module Engine2
 
             # @meta[:model!] = assets[:model]
             # @meta[:assoc!] = assets[:assoc] ? assets[:assoc][:name] : nil
-            # @meta[:meta_class!] = self.class
+            # @meta[:action_class!] = self.class
             super
         end
 
@@ -357,7 +357,7 @@ module Engine2
             # p_model_name = parent_model_name
             model = @assets[:model]
 
-            mt = meta_type
+            mt = action_type
             case mt
             when :list, :star_to_many_list, :star_to_many_link_list, :star_to_many_field, :star_to_many_field_link_list # :many_to_one_list
                 model.many_to_one_associations.each do |assoc_name, assoc|
@@ -542,7 +542,7 @@ module Engine2
 
     class MenuAction < Action
         include ActionMenuSupport
-        meta_type :menu
+        action_type :menu
 
         def invoke handler
             {}
@@ -551,7 +551,7 @@ module Engine2
 
     class ConfirmAction < Action
         include ActionPanelSupport, ActionMenuSupport
-        meta_type :confirm
+        action_type :confirm
 
         def message msg
             @meta[:message] = msg
@@ -588,7 +588,7 @@ module Engine2
         class OnChangeAction < Action
             include ActionAPISupport, ActionAngularSupport
 
-            def request_meta_proc_params handler
+            def request_action_proc_params handler
                 if handler.request.post?
                     json = handler.post_to_json
                     [json[:value], json[:record]]
@@ -604,9 +604,9 @@ module Engine2
         end
 
         class OnChangeGetAction < OnChangeAction
-            meta_type :on_change
+            action_type :on_change
 
-            def request_meta_proc_params handler
+            def request_action_proc_params handler
                 params = handler.request.params
                 [params["value"], params["record"]]
             end
@@ -614,9 +614,9 @@ module Engine2
 
         class OnChangePostAction < OnChangeAction
             http_method :post
-            meta_type :on_change
+            action_type :on_change
 
-            def request_meta_proc_params handler
+            def request_action_proc_params handler
                 json = handler.post_to_json
                 [json[:value], json[:record]]
             end
@@ -771,8 +771,8 @@ module Engine2
         include ActionModelSupport
         attr_reader :validations
 
-        def self.included meta
-            meta.http_method :post if meta.is_a? Class
+        def self.included action
+            action.http_method :post if action.is_a? Class
         end
 
         def validate_fields *fields
@@ -849,9 +849,9 @@ module Engine2
     module ActionSaveSupport
         include ActionApproveSupport
 
-        def self.included meta
-            meta.http_method :post
-            class << meta
+        def self.included action
+            action.http_method :post
+            class << action
                 attr_accessor :validate_only
             end
         end
@@ -884,11 +884,11 @@ module Engine2
                             if hash.is_a?(Hash)
                                 validate_and_approve_association(handler, record, name, :create, hash)
                                 validate_and_approve_association(handler, record, name, :modify, hash)
-                                a_meta = node.parent[:"#{name}!"]
+                                a_action = node.parent[:"#{name}!"]
                                 raise Sequel::Rollback unless record.errors.empty?
-                                a_meta.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
-                                a_meta.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
-                                a_meta.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
+                                a_action.confirm_delete.delete.*.invoke_delete_db(handler, hash[:delete].to_a, model.table_name) unless hash[:delete].to_a.empty?
+                                a_action.link.*.invoke_link_db(handler, record.primary_key_values, hash[:link].to_a) unless hash[:link].to_a.empty?
+                                a_action.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
                             end
                         end
                         result
@@ -901,11 +901,11 @@ module Engine2
         def validate_and_approve_association handler, record, assoc_name, node_name, hash
             records = hash[node_name].to_a
             unless records.empty?
-                meta = node.parent[:"#{assoc_name}!"][node_name].approve.*
+                action = node.parent[:"#{assoc_name}!"][node_name].approve.*
                 parent_id = Sequel::join_keys(record.primary_key_values)
                 records.each do |arec|
-                    rec = meta.allocate_record(handler, arec)
-                    meta.validate_and_approve(handler, rec, parent_id, false)
+                    rec = action.allocate_record(handler, arec)
+                    action.validate_and_approve(handler, rec, parent_id, false)
                     rec.errors.each do |k, v|
                         (record.errors[assoc_name] ||= []).concat(v)
                     end unless rec.errors.empty?
@@ -1014,8 +1014,8 @@ module Engine2
     module ActionCreateSupport
         include ActionFormSupport
 
-        def self.included meta
-            meta.meta_type :create
+        def self.included action
+            action.action_type :create
         end
 
         def pre_run
@@ -1050,8 +1050,8 @@ module Engine2
     module ActionModifySupport
         include ActionFormSupport
 
-        def self.included meta
-            meta.meta_type :modify
+        def self.included action
+            action.action_type :modify
         end
 
         def pre_run
@@ -1090,8 +1090,8 @@ module Engine2
     module ActionViewSupport
         include ActionModelSupport, ActionAPISupport, ActionTabSupport, ActionPanelSupport, ActionMenuSupport
 
-        def self.included meta
-            meta.meta_type :view
+        def self.included action
+            action.action_type :view
         end
 
         def pre_run
@@ -1142,9 +1142,9 @@ module Engine2
     module ActionDeleteSupport
         include ActionModelSupport
 
-        def self.included meta
-            meta.http_method :delete
-            meta.meta_type :delete
+        def self.included action
+            action.http_method :delete
+            action.action_type :delete
         end
 
         def pre_run
@@ -1157,9 +1157,9 @@ module Engine2
     module ActionBulkDeleteSupport
         include ActionModelSupport
 
-        def self.included meta
-            meta.http_method :delete
-            meta.meta_type :bulk_delete
+        def self.included action
+            action.http_method :delete
+            action.action_type :bulk_delete
         end
 
         def pre_run
@@ -1171,146 +1171,146 @@ module Engine2
     end
 
     (FormRendererPostProcessors ||= {}).merge!(
-        boolean: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
-            meta.info(field)[:dont_strip] = info[:dont_strip] if info[:dont_strip]
+        boolean: lambda{|action, field, info|
+            action.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
+            action.info(field)[:dont_strip] = info[:dont_strip] if info[:dont_strip]
         },
-        date: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
+        date: lambda{|action, field, info|
+            action.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
             if date_to = info[:other_date]
-                meta.info(field)[:render].merge! other_date: date_to #, format: info[:format], model_format: info[:model_format]
-                meta.hide_fields date_to
+                action.info(field)[:render].merge! other_date: date_to #, format: info[:format], model_format: info[:model_format]
+                action.hide_fields date_to
             elsif time = info[:other_time]
-                meta.info(field)[:render].merge! other_time: time
-                meta.hide_fields time
+                action.info(field)[:render].merge! other_time: time
+                action.hide_fields time
             end
         },
-        time: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
+        time: lambda{|action, field, info|
+            action.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
         },
-        decimal_date: lambda{|meta, field, info|
-            FormRendererPostProcessors[:date].(meta, field, info)
-            meta.info! field, type: :decimal_date
+        decimal_date: lambda{|action, field, info|
+            FormRendererPostProcessors[:date].(action, field, info)
+            action.info! field, type: :decimal_date
         },
-        decimal_time: lambda{|meta, field, info|
-            FormRendererPostProcessors[:time].(meta, field, info)
-            meta.info! field, type: :decimal_time
+        decimal_time: lambda{|action, field, info|
+            FormRendererPostProcessors[:time].(action, field, info)
+            action.info! field, type: :decimal_time
         },
-        datetime: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
+        datetime: lambda{|action, field, info|
+            action.info(field)[:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
         },
-        currency: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! symbol: info[:symbol]
+        currency: lambda{|action, field, info|
+            action.info(field)[:render].merge! symbol: info[:symbol]
         },
-        # date_range: lambda{|meta, field, info|
-        #     meta.info[field][:render].merge! other_date: info[:other_date], format: info[:format], model_format: info[:model_format]
-        #     meta.hide_fields info[:other_date]
-        #     meta.info[field][:decimal_date] = true if info[:validations][:decimal_date]
+        # date_range: lambda{|action, field, info|
+        #     action.info[field][:render].merge! other_date: info[:other_date], format: info[:format], model_format: info[:model_format]
+        #     action.hide_fields info[:other_date]
+        #     action.info[field][:decimal_date] = true if info[:validations][:decimal_date]
         # },
-        list_select: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! list: info[:list]
+        list_select: lambda{|action, field, info|
+            action.info(field)[:render].merge! list: info[:list]
         },
-        many_to_one: lambda{|meta, field, info|
-            field_info = meta.info(field)
+        many_to_one: lambda{|action, field, info|
+            field_info = action.info(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = info[:keys]
             field_info[:type] = info[:otype]
 
             (info[:keys] - [field]).each do |of|
-                f_info = meta.info(of)
+                f_info = action.info(of)
                 f_info[:hidden] = true
-                f_info[:type] = meta.assets[:model].type_info[of].fetch(:otype)
+                f_info[:type] = action.assets[:model].type_info[of].fetch(:otype)
             end
         },
-        file_store: lambda{|meta, field, info|
-            meta.info(field)[:render].merge! multiple: info[:multiple]
+        file_store: lambda{|action, field, info|
+            action.info(field)[:render].merge! multiple: info[:multiple]
         },
-        star_to_many_field: lambda{|meta, field, info|
-            field_info = meta.info(field)
+        star_to_many_field: lambda{|action, field, info|
+            field_info = action.info(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
         }
     )
 
     (ListRendererPostProcessors ||= {}).merge!(
-        boolean: lambda{|meta, field, info|
-            meta.info! field, type: :boolean # move to meta ?
-            meta.info(field)[:render] ||= {}
-            meta.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
+        boolean: lambda{|action, field, info|
+            action.info! field, type: :boolean # move to action ?
+            action.info(field)[:render] ||= {}
+            action.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
         },
-        list_select: lambda{|meta, field, info|
-            meta.info! field, type: :list_select
-            meta.info(field)[:render] ||= {}
-            meta.info(field)[:render].merge! list: info[:list]
+        list_select: lambda{|action, field, info|
+            action.info! field, type: :list_select
+            action.info(field)[:render] ||= {}
+            action.info(field)[:render].merge! list: info[:list]
         },
-        datetime: lambda{|meta, field, info|
-            meta.info! field, type: :datetime
+        datetime: lambda{|action, field, info|
+            action.info! field, type: :datetime
         },
-        decimal_date: lambda{|meta, field, info|
-            meta.info! field, type: :decimal_date
+        decimal_date: lambda{|action, field, info|
+            action.info! field, type: :decimal_date
         },
-        decimal_time: lambda{|meta, field, info|
-            meta.info! field, type: :decimal_time
+        decimal_time: lambda{|action, field, info|
+            action.info! field, type: :decimal_time
         },
-        # date_range: lambda{|meta, field, info|
-        #     meta.info[field][:type] = :decimal_date if info[:validations][:decimal_date] # ? :decimal_date : :date
+        # date_range: lambda{|action, field, info|
+        #     action.info[field][:type] = :decimal_date if info[:validations][:decimal_date] # ? :decimal_date : :date
         # }
     )
 
     (SearchRendererPostProcessors ||= {}).merge!(
-        many_to_one: lambda{|meta, field, info|
-            model = meta.assets[:model]
+        many_to_one: lambda{|action, field, info|
+            model = action.assets[:model]
             if model.type_info[field]
                 keys = info[:keys]
             else
-                meta.check_static_meta
+                action.check_static_action
                 model = model.many_to_one_associations[field.table].associated_class
                 keys = info[:keys].map{|k| model.table_name.q(k)}
             end
 
-            field_info = meta.info(field)
+            field_info = action.info(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = keys
             field_info[:type] = info[:otype]
 
             (keys - [field]).each do |of|
-                f_info = meta.info(of)
-                raise E2Error.new("Missing searchable field: '#{of}' in model '#{meta.assets[:model]}'") unless f_info
+                f_info = action.info(of)
+                raise E2Error.new("Missing searchable field: '#{of}' in model '#{action.assets[:model]}'") unless f_info
                 f_info[:hidden_search] = true
                 f_info[:type] = model.type_info[of].fetch(:otype)
             end
         },
-        date: lambda{|meta, field, info|
-            meta.info(field)[:render] ||= {}
-            meta.info(field)[:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
+        date: lambda{|action, field, info|
+            action.info(field)[:render] ||= {}
+            action.info(field)[:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
         },
-        decimal_date: lambda{|meta, field, info|
-            SearchRendererPostProcessors[:date].(meta, field, info)
+        decimal_date: lambda{|action, field, info|
+            SearchRendererPostProcessors[:date].(action, field, info)
         }
     )
 
     (DefaultFormRenderers ||= {}).merge!(
-        date: lambda{|meta, info|
+        date: lambda{|action, info|
             info[:other_date] ? Templates.date_range : (info[:other_time] ? Templates.date_time : Templates.date_picker)
 
         },
-        time: lambda{|meta, info| Templates.time_picker},
-        datetime: lambda{|meta, info| Templates.datetime_picker},
-        file_store: lambda{|meta, info| Templates.file_store},
-        blob: lambda{|meta, info| Templates.blob}, # !!!
-        blob_store: lambda{|meta, info| Templates.blob},
-        foreign_blob_store: lambda{|meta, info| Templates.blob},
-        string: lambda{|meta, info| Templates.input_text(info[:length])},
-        text: lambda{|meta, info| Templates.text},
-        integer: lambda{|meta, info| Templates.integer},
-        decimal: lambda{|meta, info| Templates.decimal},
-        decimal_date: lambda{|meta, info| DefaultFormRenderers[:date].(meta, info)},
-        decimal_time: lambda{|meta, info| Templates.time_picker},
-        email: lambda{|meta, info| Templates.email(info[:length])},
-        password: lambda{|meta, info| Templates.password(info[:length])},
-        # date_range: lambda{|meta, info| Templates.date_range},
-        boolean: lambda{|meta, info| Templates.checkbox_buttons(optional: !info[:required])},
-        currency: lambda{|meta, info| Templates.currency},
-        list_select: lambda{|meta, info|
+        time: lambda{|action, info| Templates.time_picker},
+        datetime: lambda{|action, info| Templates.datetime_picker},
+        file_store: lambda{|action, info| Templates.file_store},
+        blob: lambda{|action, info| Templates.blob}, # !!!
+        blob_store: lambda{|action, info| Templates.blob},
+        foreign_blob_store: lambda{|action, info| Templates.blob},
+        string: lambda{|action, info| Templates.input_text(info[:length])},
+        text: lambda{|action, info| Templates.text},
+        integer: lambda{|action, info| Templates.integer},
+        decimal: lambda{|action, info| Templates.decimal},
+        decimal_date: lambda{|action, info| DefaultFormRenderers[:date].(action, info)},
+        decimal_time: lambda{|action, info| Templates.time_picker},
+        email: lambda{|action, info| Templates.email(info[:length])},
+        password: lambda{|action, info| Templates.password(info[:length])},
+        # date_range: lambda{|action, info| Templates.date_range},
+        boolean: lambda{|action, info| Templates.checkbox_buttons(optional: !info[:required])},
+        currency: lambda{|action, info| Templates.currency},
+        list_select: lambda{|action, info|
             length = info[:list].length
             if length <= 3
                 Templates.list_buttons(optional: !info[:required])
@@ -1322,8 +1322,8 @@ module Engine2
                 Templates.list_select(max_length, optional: !info[:required])
             end
         },
-        star_to_many_field: lambda{|meta, info| Templates.scaffold},
-        many_to_one: lambda{|meta, info|
+        star_to_many_field: lambda{|action, info| Templates.scaffold},
+        many_to_one: lambda{|action, info|
             tmpl_type = info[:decode][:form]
             case
             when tmpl_type[:scaffold]; Templates.scaffold_picker
@@ -1336,12 +1336,12 @@ module Engine2
     )
 
     (DefaultSearchRenderers ||= {}).merge!(
-        date: lambda{|meta, info| SearchTemplates.date_range},
-        decimal_date: lambda{|meta, info| SearchTemplates.date_range},
-        integer: lambda{|meta, info| SearchTemplates.integer_range},
-        string: lambda{|meta, info| SearchTemplates.input_text},
-        boolean: lambda{|meta, info| SearchTemplates.checkbox_buttons},
-        list_select: lambda{|meta, info|
+        date: lambda{|action, info| SearchTemplates.date_range},
+        decimal_date: lambda{|action, info| SearchTemplates.date_range},
+        integer: lambda{|action, info| SearchTemplates.integer_range},
+        string: lambda{|action, info| SearchTemplates.input_text},
+        boolean: lambda{|action, info| SearchTemplates.checkbox_buttons},
+        list_select: lambda{|action, info|
             length = info[:list].length
             if length <= 3
                 SearchTemplates.list_buttons
@@ -1353,7 +1353,7 @@ module Engine2
                 SearchTemplates.list_select
             end
         },
-        many_to_one: lambda{|meta, info|
+        many_to_one: lambda{|action, info|
             tmpl_type = info[:decode][:search]
             case
             when tmpl_type[:scaffold]; SearchTemplates.scaffold_picker(multiple: tmpl_type[:multiple])

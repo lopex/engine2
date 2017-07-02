@@ -4,7 +4,7 @@ module Engine2
     class StarToManyLinkAction < Action
         include ActionModelSupport
         http_method :post
-        meta_type :star_to_many_link
+        action_type :star_to_many_link
 
         def pre_run
             super
@@ -83,7 +83,7 @@ module Engine2
     end
 
     class StarToManyUnlinkAction < StarToManyUnlinkActionBase
-        meta_type :star_to_many_unlink
+        action_type :star_to_many_unlink
 
         def pre_run
             super
@@ -98,7 +98,7 @@ module Engine2
     end
 
     class StarToManyBulkUnlinkAction < StarToManyUnlinkActionBase
-        meta_type :star_to_many_bulk_unlink
+        action_type :star_to_many_bulk_unlink
 
         def pre_run
             super
