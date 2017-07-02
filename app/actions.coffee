@@ -197,6 +197,8 @@ angular.module('Engine2')
         panel_menu_cancel: ->
             @panel_close()
 
+        router_state: -> $state
+
         find_element: (id) ->
             element = document.querySelector(id)
             console.warn "Element #{id} not found" unless element
