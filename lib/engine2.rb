@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen-string-literal: true
 
 require 'yaml'
 require 'logger'
