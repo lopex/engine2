@@ -84,8 +84,18 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         _.each(o.class, (v, k) -> out.push "'#{k}': #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
-.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse) ->
-    globals: {}
+.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse, PushJS, $state, $e2Modal) ->
+    globals:
+        element: (id) ->
+            element = document.querySelector(id)
+            console.warn "Element #{id} not found" unless element
+            element
+
+        notification: (name, body, icon, timeoutx, on_close) ->
+            PushJS.create name, body: body, icon: icon, timeout: timeoutx, onClick: on_close
+
+        state: -> $state
+        modal: -> $e2Modal
 
     uuid: (length) ->
         Math.random().toString(36).substring(length)

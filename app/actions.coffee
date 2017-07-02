@@ -22,7 +22,7 @@ angular.module('Engine2')
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
-.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $rootScope, $location, angularLoad, $websocket, PushJS, MetaCache, $state, $stateRegistry, $urlRouter) ->
+.factory 'E2Actions', (E2, $http, $timeout, $injector, $compile, $templateCache, $q, localStorageService, $rootScope, $location, angularLoad, $websocket, MetaCache, $stateRegistry, $urlRouter) ->
     globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
@@ -68,7 +68,7 @@ angular.module('Engine2')
                 if action_info.access
                     $rootScope.$broadcast "relogin", element?, create
                 else
-                    $e2Modal.error("#{err.status}: #{err.data.message}", err.data.cause || err.data.message)
+                    @globals().modal().error("#{err.status}: #{err.data.message}", err.data.cause || err.data.message)
             $q.reject(err)
 
         save_state: () ->
@@ -157,13 +157,13 @@ angular.module('Engine2')
                         @panel_shown?()
 
                 else
-                    $e2Modal.show(@).then => @
+                    @globals().modal().show(@).then => @
             else
                 @panel_scope?().$destroy()
                 act = @
                 act = act.parent() until act.element()
                 element = act.element() # @element()
-                is_modal = $e2Modal.is_modal() && !@element()
+                is_modal = @globals().modal().is_modal() && !@element()
                 E2.fetch_panel(@meta.panel, is_modal).then (template) =>
                     @panel_show?()
                     # @panel_scope().$destroy()
@@ -197,16 +197,6 @@ angular.module('Engine2')
         panel_menu_cancel: ->
             @panel_close()
 
-        router_state: -> $state
-
-        find_element: (id) ->
-            element = document.querySelector(id)
-            console.warn "Element #{id} not found" unless element
-            element
-
-        show_notification: (name, body, icon, timeoutx, on_close) ->
-            PushJS.create name, body: body, icon: icon, timeout: timeoutx, onClick: on_close
-
         websocket_connect: ->
             l = $location
             ws_meta = @meta.websocket
@@ -219,7 +209,7 @@ angular.module('Engine2')
                         is_message = method == 'message'
                         if is_message
                             msg = JSON.parse(evt.data)
-                            if msg.error then $e2Modal.error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception) else
+                            if msg.error then @globals().modal().error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception) else
                                 E2.merge(@, msg)
                                 @process_meta()
                         else msg = evt
@@ -307,7 +297,7 @@ angular.module('Engine2')
                     @element().replaceWith(out)
                     @element = -> out
                     loc = $location.path().slice(1)
-                    $state.go(if init && !_.isEmpty($location.path()) && $stateRegistry.get(loc)? then loc else otherwise)
+                    @globals().state().go(if init && !_.isEmpty($location.path()) && $stateRegistry.get(loc)? then loc else otherwise)
 
             $stateRegistry.load_routes(true)
 
@@ -385,7 +375,7 @@ angular.module('Engine2')
             @scope().$broadcast 'render_table'
 
         menu_show_meta: ->
-            $e2Modal.show
+            @globals().modal().show
                 the_meta: @meta
                 meta: panel: (panel_template: "close_m", template_string: "<pre>{{action.the_meta | json}}</pre>", title: "Meta", class: "modal-huge", backdrop: true, footer: true)
 
