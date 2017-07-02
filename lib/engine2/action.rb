@@ -1,7 +1,7 @@
 # coding: utf-8
 module Engine2
     class Action
-        attr_reader :node, :assets, :static, :invokable
+        attr_reader :node, :meta, :assets, :static, :invokable
 
         class << self
             def action_type mt = nil
@@ -55,7 +55,7 @@ module Engine2
                 action_result = action.instance_exec(handler, *action.request_action_proc_params(handler), &rmp)
                 action.post_process
                 response = @requestable ? (action_result || {}) : action.invoke(handler)
-                response[:meta] = action.get
+                response[:meta] = action.meta
                 response
             else
                 invoke(handler)
@@ -74,10 +74,6 @@ module Engine2
             @meta[:execute] = time
         end
 
-        def get
-            @meta
-        end
-
         def dynamic?
             self != @static
         end
@@ -93,7 +89,7 @@ module Engine2
         def lookup *keys
             if dynamic? # we are the request action
                 value = @meta.path(*keys)
-                value.nil? ? @static.get.path(*keys) : value
+                value.nil? ? @static.meta.path(*keys) : value
                 # value || @static.value.path(keys)
             else
                 @meta.path(*keys)
@@ -103,9 +99,9 @@ module Engine2
         def merge *keys
             if keys.length == 1
                 key = keys.first
-                dynamic? ? @static.get[key].merge(@meta[key] || {}) : @meta[key]
+                dynamic? ? @static.meta[key].merge(@meta[key] || {}) : @meta[key]
             else
-                dynamic? ? @static.get.path(*keys).merge(@meta.path(*keys)) : @meta.path(*keys)
+                dynamic? ? @static.meta.path(*keys).merge(@meta.path(*keys)) : @meta.path(*keys)
             end
         end
 
@@ -686,7 +682,7 @@ module Engine2
 
         def post_process
             if fields = @meta[:search_fields]
-                fields = fields - static.get[:search_fields] if dynamic?
+                fields = fields - static.meta[:search_fields] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|
@@ -711,7 +707,7 @@ module Engine2
             end
 
             if fields = @meta[:fields]
-                fields = fields - static.get[:fields] if dynamic?
+                fields = fields - static.meta[:fields] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|
@@ -842,7 +838,7 @@ module Engine2
 
         def post_run
             super
-            validate_fields *node.parent.*.get[:fields] unless validate_fields
+            validate_fields *node.parent.*.meta[:fields] unless validate_fields
         end
     end
 
@@ -964,7 +960,7 @@ module Engine2
 
         def post_process
             if fields = @meta[:fields]
-                fields = fields - static.get[:fields] if dynamic?
+                fields = fields - static.meta[:fields] if dynamic?
 
                 decorate(fields)
 
@@ -1125,7 +1121,7 @@ module Engine2
 
         def post_process
             if fields = @meta[:fields]
-                fields = fields - static.get[:fields] if dynamic?
+                fields = fields - static.meta[:fields] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|

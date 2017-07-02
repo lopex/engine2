@@ -99,7 +99,7 @@ module Engine2
                     method: action.http_method,
                     number: a.number,
                     terminal: a.nodes.empty?,
-                    meta: !action.get.empty?
+                    meta: !action.meta.empty?
                 }
 
                 act[:access] = true if !recheck_access && a.check_access!(handler)

@@ -19,7 +19,7 @@ module Engine2
 
         def post_process
             if fields = @meta[:fields]
-                fields = fields - static.get[:fields] if dynamic?
+                fields = fields - static.meta[:fields] if dynamic?
                 # no decorate here
                 fields.each do |name|
                     type_info = assets[:model].type_info[name] # foreign keys ?

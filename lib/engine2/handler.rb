@@ -75,7 +75,7 @@ module Engine2
 
             action = node.*
             response = if is_meta
-                params[:access] ? node.access_info(self) : {meta: action.get, actions: node.nodes_info(self)}
+                params[:access] ? node.access_info(self) : {meta: action.meta, actions: node.nodes_info(self)}
             else
                 if action.http_method == verb && action.invokable
                     begin
