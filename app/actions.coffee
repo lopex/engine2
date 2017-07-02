@@ -22,7 +22,7 @@ angular.module('Engine2')
             $http.get("api/meta").then (mresponse) -> $scope.$broadcast "bootstrap_action",
                 $scope.action = new E2Actions.root(mresponse.data, $scope, null, $element, action_resource: 'api')
 
-.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $window, $rootScope, $location, angularLoad, $websocket, PushJS, MetaCache, $state, $stateRegistry, $urlRouter) ->
+.factory 'E2Actions', (E2, $http, $timeout, $e2Modal, $injector, $compile, $templateCache, $q, localStorageService, $rootScope, $location, angularLoad, $websocket, PushJS, MetaCache, $state, $stateRegistry, $urlRouter) ->
     globals = E2.globals
     action: class Action
         constructor: (response, scope, parent, element, action_info) ->
@@ -357,7 +357,6 @@ angular.module('Engine2')
 
             delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.fields, @query.order)
             _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_fields, sn))
-            # $window.addEventListener 'beforeunload', (e, v) => @save_state()
 
         destroy: ->
             @save_state()
