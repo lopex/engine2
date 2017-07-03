@@ -32,7 +32,7 @@ module Sequel
           columns = SequelFixes.fix_aliased_expression(clone(:append_sql=>'', :placeholder_literal_null=>true))
           dsa1 = dataset_alias(1)
           rn = row_number_column
-          sql = @opts[:append_sql] || ''
+          sql = @opts[:append_sql] || String.new
           subselect_sql_append(sql, unlimited.
             unordered.
             select_append{:ROW_NUMBER.sql_function.over(:order=>order).as(rn)}.
