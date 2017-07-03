@@ -195,7 +195,7 @@ module Engine2
 
             each_node do |node|
                 node.*.post_run
-                node.*.freeze_meta
+                node.*.freeze_action
                 true
             end
 

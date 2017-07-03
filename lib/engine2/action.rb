@@ -107,7 +107,7 @@ module Engine2
             end
         end
 
-        def freeze_meta
+        def freeze_action
             hash = @meta
             hash.freeze
             # hash.each_pair{|k, v| freeze(v) if v.is_a? Hash}
