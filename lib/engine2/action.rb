@@ -120,9 +120,8 @@ module Engine2
 
         def request &blk
             raise E2Error.new("No block given for request action") unless blk
-            raise E2Error.new("Request action proc already supplied") if @request_action_proc
             raise E2Error.new("No request block in request action allowed") if dynamic?
-            @request_action_proc = blk
+            @request_action_proc = @request_action_proc ? @request_action_proc.chain(&blk) : blk
             nil
         end
 
