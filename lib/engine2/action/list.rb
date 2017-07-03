@@ -161,21 +161,6 @@ module Engine2
             panel_title "#{:list.icon} #{LOCS[assets[:assoc][:name]]}"
         end
 
-        # def decode_panel_title handler
-        #     if handler.initial?
-        #         # Hash[assets[:model].primary_keys.zip(split_keys(id))]]
-        #         p node.parent.decode_entry.*.invoke_decode([[handler.params[:parent_id]]])
-        #         panel_title "ADFASDF"
-        #     end
-        # end
-
-        # def post_run
-        #     super
-        #     unless @request_action_proc
-        #         request{|h| decode_panel_title h}
-        #     end
-        # end
-
         def list_context query, handler
             handler.permit parent = handler.params[:parent_id]
             model = assets[:model]
@@ -211,6 +196,17 @@ module Engine2
                     end.filter(l_keys_vals)
                 end
             else unsupported_association
+            end
+        end
+
+        def post_run
+            super
+            request do |h|
+                if h.initial?
+                    action = node.parent.decode_entry.*
+                    rec = action.invoke_decode(h, [[h.params[:parent_id]]]).first
+                    panel_title "#{static.panel[:title]} - #{rec}"
+                end
             end
         end
     end
