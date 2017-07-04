@@ -202,8 +202,8 @@ module Engine2
         def post_run
             super
             request do |h|
-                if h.initial?
-                    action = node.parent.decode_entry.*
+                if h.initial? && nd = node.parent.nodes[:decode_entry]
+                    action = nd.*
                     rec = action.invoke_decode(h, [[h.params[:parent_id]]]).first
                     panel_title "#{static.panel[:title]} - #{rec}"
                 end
