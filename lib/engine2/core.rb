@@ -40,10 +40,18 @@ class Proc
     end
 
     def chain &blk
-        proc = self
+        prc = self
         lambda do |obj|
-            obj.instance_eval(&proc)
+            obj.instance_eval(&prc)
             obj.instance_eval(&blk)
+        end
+    end
+
+    def chain_args &blk
+        prc = self
+        lambda do |*args|
+            instance_exec(*args, &prc)
+            instance_exec(*args, &blk)
         end
     end
 end
