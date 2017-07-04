@@ -72,9 +72,9 @@ angular.module('Engine2')
             $q.reject(err)
 
         save_state: () ->
-            _.each @meta.state, (s) => localStorageService.set("#{globals.application}/#{@action_info().action_resource}/#{s}", @[s])
+            _.each @meta.state, (s) => localStorageService.set("#{@globals().application}/#{@action_info().action_resource}/#{s}", @[s])
         load_state: () ->
-            _.each @meta.state, (s) => _.merge(@[s], localStorageService.get("#{globals.application}/#{@action_info().action_resource}/#{s}"))
+            _.each @meta.state, (s) => _.merge(@[s], localStorageService.get("#{@globals().application}/#{@action_info().action_resource}/#{s}"))
 
         destroy: (e) ->
             console.log "DESTROY #{@action_info().action_resource}"
@@ -110,7 +110,7 @@ angular.module('Engine2')
 
         invoke: (params) ->
             params ?= {}
-            globals.action_pending = if @meta.panel then @ else @parent()
+            @globals().action_pending = if @meta.panel then @ else @parent()
             @pre_invoke(params)
             _.merge(params, @meta.arguments) if @meta.arguments
 
@@ -140,11 +140,11 @@ angular.module('Engine2')
                     $timeout (=> @invoke(params)), @meta.repeat unless @destroyed
                     delete @meta.repeat
 
-                globals.action_pending = false
+                @globals().action_pending = false
                 promise
             ,
             (err) =>
-                globals.action_pending = false
+                @globals().action_pending = false
                 @handle_error(err, info, @element())
 
         panel_render: ->
@@ -201,7 +201,7 @@ angular.module('Engine2')
             l = $location
             ws_meta = @meta.websocket
             ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}/#{@action_info().action_resource}", undefined, ws_meta.options
-            _.each globals.ws_methods, (method) =>
+            _.each @globals().ws_methods, (method) =>
                 ws_method_impl = @["ws_#{method}"]
                 ws_method_exec = ws_meta.execute?[method]
                 if ws_method_impl || ws_method_exec
@@ -881,12 +881,12 @@ angular.module('Engine2')
             _.each files, (file) =>
                 upload = $injector.get('Upload').upload url: "#{@action_info().action_resource}/upload", file: file
                 upload.progress (e) =>
-                    globals.action_pending = false
+                    @globals().action_pending = false
                     @progress = parseInt(100.0 * e.loaded / e.total)
                 upload.success (data, status, headers, config) =>
                     @parent().record[@scope().f].push mime: file.type, name: file.name, rackname: data.rackname, id: data.id, new: true
                     @message = "Wysłano, #{file.name}"
-                    globals.action_pending = false
+                    @globals().action_pending = false
 
         delete_file: (file) ->
             @scope().$broadcast 'confirm_delete',
