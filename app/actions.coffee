@@ -221,6 +221,9 @@ angular.module('Engine2')
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
 
+        console_log: (o) ->
+            console.log o
+
     root: class RootAction extends Action
         initialize: ->
             super()
