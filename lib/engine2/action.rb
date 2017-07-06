@@ -1022,7 +1022,7 @@ module Engine2
 
         def pre_run
             super
-            panel_title LOCS[:create_title]
+            panel_title "#{LOCS[:create_title]} - #{LOCS[assets[:model].table_name]}"
             node.parent.*.menu(:menu).option_at 0, node.name, icon: "plus-sign", button_loc: false
 
             hide_pk unless assets[:model].natural_key
@@ -1058,7 +1058,7 @@ module Engine2
 
         def pre_run
             super
-            panel_title LOCS[:modify_title]
+            panel_title "#{LOCS[:modify_title]} - #{LOCS[assets[:model].table_name]}"
             node.parent.*.menu(:item_menu).option node.name, icon: "pencil", button_loc: false
         end
 
@@ -1099,7 +1099,7 @@ module Engine2
         def pre_run
             super
             panel_template 'scaffold/view'
-            panel_title LOCS[:view_title]
+            panel_title "#{LOCS[:view_title]} - #{LOCS[assets[:model].table_name]}"
             panel[:backdrop] = true
 
             menu(:panel_menu).option :cancel, icon: "remove"
