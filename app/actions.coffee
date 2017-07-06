@@ -798,6 +798,12 @@ angular.module('Engine2')
             @query.changes = @changes
             super()
 
+        sync_entry: ->
+            if entry = @current_entry_is('create') ? @current_entry_is('modify')
+                _.assign(entry, @current_entry())
+            else
+                @changes.modify.push @current_entry()
+
         current_entry_is: (mode) ->
             key = E2.id_for(@current_entry(), @meta)
             _.find(@changes[mode], (e) => E2.id_for(e, @meta) == key)
