@@ -472,6 +472,17 @@ angular.module('Engine2')
         selected_info: ->
             @meta.loc.selected + ": " + @selected_size()
 
+        entry_dropped: (moved_to) ->
+            from = @entries[@moved_from]
+            @entries.splice(@moved_from, 1)
+            @entries.splice(moved_to, 0, from)
+            delete @moved_from
+            @render_table()
+            true
+
+        entry_moved: (index) ->
+            @moved_from = index
+
     bulk_delete: class BulkDeleteAction extends Action
         invoke: ->
             super(ids: [_.keys(@parent().parent().selection)]).then =>

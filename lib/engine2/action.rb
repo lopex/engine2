@@ -542,6 +542,12 @@ module Engine2
         end
     end
 
+    module ActionDraggableSupport
+        def draggable
+            @meta[:draggable] ||= {}
+        end
+    end
+
     class MenuAction < Action
         include ActionMenuSupport
         action_type :menu
@@ -626,7 +632,7 @@ module Engine2
     end
 
     module ActionListSupport
-        include ActionModelSupport, ActionAPISupport, ActionTabSupport, ActionPanelSupport, ActionMenuSupport, ActionOnChangeSupport
+        include ActionModelSupport, ActionAPISupport, ActionTabSupport, ActionPanelSupport, ActionMenuSupport, ActionOnChangeSupport, ActionDraggableSupport
         attr_reader :filters, :orders
 
         def pre_run

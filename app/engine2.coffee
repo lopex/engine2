@@ -318,7 +318,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             elem.after($compile(response.data)(scope))
 
 .directive 'e2TableBody', ($parse, $compile) ->
-    table_tmpl = _.template("<thead><tr>{{thead}}</tr></thead><tbody>{{tbody}}</tbody>")
+    table_tmpl = _.template("<thead><tr>{{thead}}</tr></thead><tbody {{tbody_attrs}}>{{tbody}}</tbody>")
     scope: false
     restrict: 'A'
     link: (scope, elem, attrs) ->
@@ -326,6 +326,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             # ev.stopPropagation()
             action = scope.action
             meta = action.meta
+            draggable = meta.draggable
             position = meta.menus.item_menu.properties.position ? 0
             right_style = if position >= meta.fields.length then "style=\"text-align: right\"" else ""
 
@@ -352,7 +353,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             _.each action.entries, (e, i) ->
                 tbody += if action.selection then "<tr ng-class=\"action.selected_class(#{i})\" class=\"tr_hover\" ng-click=\"action.select(#{i}, $event)\">" else
                     row_cls = e.$row_info?.class
-                    if row_cls then "<tr class=\"#{row_cls}\">" else "<tr>"
+                    tr_attrs = if draggable then "dnd-draggable=\"action.entries[#{i}]\" dnd-dragstart=\"action.entry_moved(#{i})\"" else ''
+                    if row_cls then "<tr class=\"#{row_cls}\" #{tr_attrs}>" else "<tr #{tr_attrs}>"
                 _.each fields, (f) ->
                     if f
                         tbody += if col_cls = meta.info[f].column_class then "<td class=\"#{col_cls}\">" else "<td>"
@@ -362,8 +364,9 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                         tbody += "<td #{right_style}><div e2-button-set=\"action.meta.menus.item_menu\" index=\"#{i}\"></div></td>"
                 tbody += "</tr>"
 
+            tbody_attrs = if draggable then 'dnd-list=\"action.entries\" dnd-drop=\"action.entry_dropped(index, external, type)\"' else ''
             elem.empty()
-            elem.append($compile(table_tmpl thead: thead, tbody: tbody)(scope))
+            elem.append($compile(table_tmpl thead: thead, tbody: tbody, tbody_attrs: tbody_attrs)(scope))
 
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
