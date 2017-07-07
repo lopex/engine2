@@ -362,6 +362,9 @@ angular.module('Engine2')
 
         # confirm_create, view, confirm_modify, confirm_delete, assocs - implicit
 
+        render_table: ->
+            @scope().$broadcast 'render_table'
+
         menu_search_toggle: ->
             @ui_state.search_active = !@ui_state.search_active
             @save_state() unless @ui_state.search_active
@@ -375,7 +378,8 @@ angular.module('Engine2')
 
         menu_select_toggle: ->
             if @selection then delete @selection else @selection = {}
-            @scope().$broadcast 'render_table'
+            @render_table()
+
 
         menu_show_meta: ->
             @globals().modal().show
@@ -407,7 +411,7 @@ angular.module('Engine2')
             super(query).then =>
                 @ui = _.pick @query, ['order', 'asc', 'page']
                 @ui.pagination_active = @ui.page != 0 || @entries.length >= @meta.config.per_page
-                @scope().$broadcast 'render_table'
+                @render_table()
 
         load_new: ->
             @query.page = 0
