@@ -7,10 +7,11 @@ require 'angular-ui-tree'
 require '@uirouter/angularjs'
 require 'ng-file-upload'
 require 'angular-load'
+require 'angular-drag-and-drop-lists'
 
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router']) # 'draggabilly'
+angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router', 'dndLists'])
 .config ($httpProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->
