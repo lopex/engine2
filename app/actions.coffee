@@ -825,9 +825,13 @@ angular.module('Engine2')
             super(moved_to, false)
             _.each positions, (p, i) =>
                 if @entries[i][pos_field] != p
-                    @changes.modify.push(@entries[i]) unless @current_entry_is('modify', @entries[i])
-                @entries[i][pos_field] = p
-            @render_table()
+                    if entry = @current_entry_is('create', @entries[i]) ? @current_entry_is('modify', @entries[i])
+                        entry[pos_field] = p
+                    else
+                        @changes.modify.push(@entries[i])
+                    @entries[i][pos_field] = p
+
+            @render_table() # @invoke()
             true
 
         current_entry_is: (mode, entry = @current_entry()) ->
@@ -860,6 +864,9 @@ angular.module('Engine2')
                         pparent.changes.modify.push @parent().record
                 else # CreateAction
                     _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
+                    if draggable = pparent.meta.draggable
+                        max = _.maxBy(pparent.entries, (e) -> e.position)
+                        @parent().record[draggable.position_field] = if max then max[draggable.position_field] + 1 else 1
                     pparent.changes.create.push @parent().record
 
     star_to_many_field_delete: class StarToManyFieldDelete extends Action
