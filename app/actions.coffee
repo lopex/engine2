@@ -475,7 +475,7 @@ angular.module('Engine2')
         entry_dropped: (moved_to) ->
             from = @entries[@moved_from]
             @entries.splice(@moved_from, 1)
-            @entries.splice(moved_to, 0, from)
+            @entries.splice((if moved_to > @moved_from then moved_to - 1 else moved_to), 0, from)
             delete @moved_from
             @render_table()
             true
