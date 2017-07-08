@@ -205,3 +205,15 @@ button {
 }*/
 
 a[ng-click] {cursor:pointer;}
+
+.dndDragging {
+}
+
+.dndDraggingSource {
+}
+
+.dndPlaceholder{
+}
+
+.dndDragover {
+}
