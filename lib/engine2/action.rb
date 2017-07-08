@@ -546,6 +546,11 @@ module Engine2
         def draggable
             @meta[:draggable] ||= {}
         end
+
+        def post_run
+            super
+            draggable[:position_field] ||= 'position'
+        end
     end
 
     class MenuAction < Action

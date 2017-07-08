@@ -472,12 +472,12 @@ angular.module('Engine2')
         selected_info: ->
             @meta.loc.selected + ": " + @selected_size()
 
-        entry_dropped: (moved_to) ->
+        entry_dropped: (moved_to, render = true) ->
             from = @entries[@moved_from]
             @entries.splice(@moved_from, 1)
             @entries.splice((if moved_to > @moved_from then moved_to - 1 else moved_to), 0, from)
             delete @moved_from
-            @render_table()
+            @render_table() if render
             true
 
         entry_moved: (index) ->
@@ -819,8 +819,19 @@ angular.module('Engine2')
             else
                 @changes.modify.push @current_entry()
 
-        current_entry_is: (mode) ->
-            key = E2.id_for(@current_entry(), @meta)
+        entry_dropped: (moved_to) ->
+            pos_field = @meta.draggable.position_field
+            positions = @entries.map (e) -> e[pos_field]
+            super(moved_to, false)
+            _.each positions, (p, i) =>
+                if @entries[i][pos_field] != p
+                    @changes.modify.push(@entries[i]) unless @current_entry_is('modify', @entries[i])
+                @entries[i][pos_field] = p
+            @render_table()
+            true
+
+        current_entry_is: (mode, entry = @current_entry()) ->
+            key = E2.id_for(entry, @meta)
             _.find(@changes[mode], (e) => E2.id_for(e, @meta) == key)
 
     star_to_many_field_view: class StarToManyFieldView extends ViewAction
