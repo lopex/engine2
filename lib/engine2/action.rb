@@ -549,7 +549,7 @@ module Engine2
 
         def post_run
             super
-            draggable[:position_field] ||= 'position'
+            draggable[:position_field] ||= 'position' if @meta[:draggable]
         end
     end
 
