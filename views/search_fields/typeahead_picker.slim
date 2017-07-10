@@ -1,4 +1,4 @@
-e2-action action="[info.assoc, 'typeahead']"
+e2-action action="[field.assoc, 'typeahead']"
   .col-lg-3.col-md-4.col-sm-5
     .form-group
       .input-group.input-group-sm
@@ -8,11 +8,11 @@ e2-action action="[info.assoc, 'typeahead']"
           bs-options="v.value for v in action.load($viewValue)"
           ng-keypress="action.key_pressed = true"
 
-          ng-class="info.render.class"
+          ng-class="field.render.class"
           class="form-control"
 
-          data-animation="{{::info.render.animation}}"
-          placeholder="{{::info.loc}}"
+          data-animation="{{::field.render.animation}}"
+          placeholder="{{::field.loc}}"
           data-html="true"
           data-limit="10"
           bs-typeahead=""

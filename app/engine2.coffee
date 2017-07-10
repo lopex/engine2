@@ -234,7 +234,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
 
     render_field: (entry, name, meta) ->
         value = entry[name]
-        if value? && info = meta.info
+        if value? && info = meta.fields
             f_info = info[name]
             if f_info? && type = f_info.type
                 @renderers[type](value, f_info.render)
@@ -261,7 +261,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
 
         name = attrs.e2Field || scope.f
         meta = scope.action.meta
-        info = meta.info[name]
+        info = meta.fields[name]
         scope.$on "focus_field", (event, n, mode) ->
             if n == name
                 elem[0].focus()
@@ -294,7 +294,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     link: (scope, elem, attrs, controller) ->
         name = attrs.e2Field || scope.f
         meta = scope.action.meta
-        info = meta.info[name]
+        info = meta.fields[name]
         if info.filter
             filter = $filter(info.filter)
             controller.$parsers.push (value) ->
@@ -335,7 +335,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             fields.splice(position, 0, null)
             _.each fields, (f) ->
                 if f
-                    info = meta.info[f]
+                    info = meta.fields[f]
                     thead += "<th>"
                     title = if info.title then "title=\"#{info.title}\"" else ""
                     if info.sort
@@ -357,7 +357,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                     if row_cls then "<tr class=\"#{row_cls}\" #{tr_attrs}>" else "<tr #{tr_attrs}>"
                 _.each fields, (f) ->
                     if f
-                        tbody += if col_cls = meta.info[f].column_class then "<td class=\"#{col_cls}\">" else "<td>"
+                        tbody += if col_cls = meta.fields[f].column_class then "<td class=\"#{col_cls}\">" else "<td>"
                         tbody += action.list_cell(e, f) ? ''
                         tbody += "</td>"
                     else
@@ -508,7 +508,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         action = scope.action
         mode = attr.e2Datepicker
         field = scope.other_date ? scope.other_time ? scope.f
-        info = action.meta.info[field]
+        info = action.meta.fields[field]
 
         if action.query
             scope.value[mode] = parse(action.query.search[scope.f][mode], info)

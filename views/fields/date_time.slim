@@ -5,13 +5,13 @@
         type="text"
         class="form-control"
         ng-model="value"
-        ng-disabled="info.disabled"
+        ng-disabled="field.disabled"
 
-        data-date-format="{{::info.render.format}}"
-        data-animation="{{::info.render.animation}}"
+        data-date-format="{{::field.render.format}}"
+        data-animation="{{::field.render.animation}}"
         bs-datepicker=""
         e2-datepicker=""
-        e2-model-format="{{::info.render.model_format}}"
+        e2-model-format="{{::field.render.model_format}}"
         data-autoclose="1"
 
         e2-field=""
@@ -22,17 +22,17 @@
   .col-lg-3.col-md-3.col-sm-5
     .input-group.input-group-sm
       input.btn.btn-default [
-        ng-init="other_time = action.meta.info[f].render.other_time; info = action.meta.info[other_time]"
+        ng-init="other_time = action.meta.fields[f].render.other_time; field = action.meta.fields[other_time]"
         type="text"
         class="form-control"
         ng-model="value"
-        ng-disabled="info.disabled"
+        ng-disabled="field.disabled"
 
-        data-time-format="{{::info.render.format}}"
-        data-animation="{{::info.render.animation}}"
+        data-time-format="{{::field.render.format}}"
+        data-animation="{{::field.render.animation}}"
         bs-timepicker=""
         e2-datepicker=""
-        e2-model-format="{{::info.render.model_format}}"
+        e2-model-format="{{::field.render.model_format}}"
         data-autoclose="1"
 
         e2-field="{{other_time}}"

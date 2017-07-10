@@ -5,8 +5,8 @@
         div ng-init="tabs = action.meta.tabs"
         div ng-repeat="t in ::action.meta.tab_list track by $index" title="{{::tabs[t].loc}}" bs-pane=""
           br
-          span ng-repeat="f in tabs[t].field_list track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
-            e2-include template="info.render.template"
+          span ng-repeat="f in tabs[t].field_list track by $index" ng-if="!action.meta.fields[f].hidden_search" ng-init="field = action.meta.fields[f]"
+            e2-include template="field.render.template"
 
       .btn-group.btn-group-sm.pull-right
         button.btn.btn-default ng-click="action.load_new()"

@@ -88,7 +88,7 @@ module Engine2
 
             if order_str = params[:order]
                 order = order_str.to_sym
-                handler.permit lookup(:info, order, :sort)
+                handler.permit lookup(:fields, order, :sort)
 
                 if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
                     query = order_blk.(query, handler)

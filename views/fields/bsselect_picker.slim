@@ -1,15 +1,15 @@
-e2-action action="[info.assoc, 'list']"
+e2-action action="[field.assoc, 'list']"
   .col-lg-7.col-md-8.col-sm-12
     button.btn.btn-default.btn-sm [
       type="button"
       ng-model="action.selected"
       bs-options="v.id as v.value for v in action.values"
       ng-change="action.change()"
-      ng-disabled="info.disabled"
-      ng-class="info.render.class"
+      ng-disabled="field.disabled"
+      ng-class="field.render.class"
       class="form-control input-sm"
 
-      data-animation="{{::info.render.animation}}"
+      data-animation="{{::field.render.animation}}"
       data-placeholder="..."
       data-html="true"
       bs-select=""

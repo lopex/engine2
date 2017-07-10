@@ -1,4 +1,4 @@
-e2-action action="[info.assoc, 'list']"
+e2-action action="[field.assoc, 'list']"
   .col-lg-3.col-md-4.col-sm-5
     .form-group
       .input-group.input-group-sm
@@ -7,11 +7,11 @@ e2-action action="[info.assoc, 'list']"
           ng-model="action.selected"
           bs-options="v.id as v.value for v in action.values"
           ng-change="action.change()"
-          ng-class="info.render.class"
+          ng-class="field.render.class"
           class="form-control"
 
-          data-animation="{{::info.render.animation}}"
-          data-placeholder="{{::info.loc}}"
+          data-animation="{{::field.render.animation}}"
+          data-placeholder="{{::field.loc}}"
           data-html="true"
           bs-select=""
 

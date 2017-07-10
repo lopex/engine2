@@ -4,8 +4,8 @@ div
     div ng-repeat="t in ::action.meta.tab_list" title="{{::tabs[t].loc}}" bs-pane=""
       br
       table.table.table-striped.table-condensed.table-hover
-        tr ng-repeat="f in tabs[t].field_list" ng-hide="::action.meta.info[f].hidden"
-          td ng-bind="::action.meta.info[f].loc"
+        tr ng-repeat="f in tabs[t].field_list" ng-hide="::action.meta.fields[f].hidden"
+          td ng-bind="::action.meta.fields[f].loc"
           td
             div ng-bind-html="action.view_cell(action.record, f)"
 

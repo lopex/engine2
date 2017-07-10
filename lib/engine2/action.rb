@@ -223,7 +223,7 @@ module Engine2
 
     module ActionAPISupport
         def info field
-            (@meta[:info] ||= {})[field.to_sym] ||= {}
+            (@meta[:fields] ||= {})[field.to_sym] ||= {}
         end
 
         def config
@@ -999,7 +999,7 @@ module Engine2
                 assoc = assets[:assoc]
                 if assoc && assoc[:type] == :one_to_many
                     # fields.select{|f| assoc[:keys].include? f}.each do |key|
-                    #     # hide_fields(key) if self[:info, key, :hidden] == nil
+                    #     # hide_fields(key) if self[:fields, key, :hidden] == nil
                     #     info! key, disabled: true
                     # end
                     assoc[:keys].each do |key|

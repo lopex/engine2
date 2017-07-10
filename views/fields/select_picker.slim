@@ -1,11 +1,11 @@
-e2-action action="[info.assoc, 'list']"
+e2-action action="[field.assoc, 'list']"
   .col-lg-7.col-md-8.col-sm-12
     select.btn.btn-default.btn-sm [
       ng-model="action.selected"
       ng-options="v.id as v.value for v in action.values"
       ng-change="action.change()"
-      ng-disabled="info.disabled"
-      ng-class="info.render.class"
+      ng-disabled="field.disabled"
+      ng-class="field.render.class"
       class="form-control input-sm"
       e2-field=""
     ]

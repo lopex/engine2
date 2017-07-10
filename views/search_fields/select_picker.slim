@@ -1,4 +1,4 @@
-e2-action action="[info.assoc, 'list']"
+e2-action action="[field.assoc, 'list']"
   .col-lg-3.col-md-4.col-sm-5
     .form-group
       .input-group.input-group-sm
@@ -6,11 +6,11 @@ e2-action action="[info.assoc, 'list']"
           ng-model="action.selected"
           ng-options="v.id as v.value for v in action.values"
           ng-change="action.change()"
-          ng-class="::info.render.class"
+          ng-class="::field.render.class"
           class="form-control"
         ]
 
-          option value="" ng-bind="::info.loc"
+          option value="" ng-bind="::field.loc"
         .input-group-btn
           a.btn.btn-default ng-disabled="!action.selected" ng-click="action.reset()"
             span.glyphicon.glyphicon-off

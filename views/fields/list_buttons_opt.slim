@@ -1,5 +1,5 @@
 .col-lg-12
   .btn-group.btn-group-sm ng-model="action.record[f]" e2-field=""
-    a.btn.btn-default ng-class="action.record[f] == v[0] && 'active'" ng-click="action.record[f] = v[0]" ng-repeat="v in info.render.list" ng-bind-html="v[1]" ng-disabled="info.disabled"
-    a.btn.btn-default ng-disabled="action.record[f] == null || info.disabled" ng-click="action.record[f] = null"
+    a.btn.btn-default ng-class="action.record[f] == v[0] && 'active'" ng-click="action.record[f] = v[0]" ng-repeat="v in field.render.list" ng-bind-html="v[1]" ng-disabled="field.disabled"
+    a.btn.btn-default ng-disabled="action.record[f] == null || field.disabled" ng-click="action.record[f] = null"
       span.glyphicon.glyphicon-remove

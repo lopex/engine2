@@ -1,15 +1,15 @@
 /.col-lg-7.col-md-8.col-sm-12
-div e2-input-cols="{{::info.render.length}}"
+div e2-input-cols="{{::field.render.length}}"
   button.btn.btn-default.btn-sm [
     type="button"
     ng-model="action.record[f]"
-    bs-options="v[0] as v[1] for v in info.render.list"
+    bs-options="v[0] as v[1] for v in field.render.list"
     data-html="true"
-    ng-disabled="info.disabled"
-    ng-class="info.render.class"
+    ng-disabled="field.disabled"
+    ng-class="field.render.class"
     class="form-control input-sm"
 
-    data-animation="{{::info.render.animation}}"
+    data-animation="{{::field.render.animation}}"
     data-placeholder="..."
     bs-select=""
 

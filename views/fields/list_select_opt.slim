@@ -1,14 +1,14 @@
 /.col-lg-7.col-md-8.col-sm-12
-div e2-input-cols="{{::info.render.length}}"
+div e2-input-cols="{{::field.render.length}}"
   .input-group.input-group-sm
     select.btn.btn-default.btn-sm [
       ng-model="action.record[f]"
-      ng-options="v[0] as v[1] for v in info.render.list"
-      ng-disabled="info.disabled"
-      ng-class="info.render.class"
+      ng-options="v[0] as v[1] for v in field.render.list"
+      ng-disabled="field.disabled"
+      ng-class="field.render.class"
       class="form-control input-sm"
       e2-field=""
     ]
     .input-group-btn
-      a.btn.btn-default ng-disabled="info.disabled || action.record[f] == null" ng-click="action.record[f] = null"
+      a.btn.btn-default ng-disabled="field.disabled || action.record[f] == null" ng-click="action.record[f] = null"
         span.glyphicon.glyphicon-remove

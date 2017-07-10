@@ -1,8 +1,8 @@
 .col-lg-12
   .btn-group.btn-group-sm ng-model="action.record[f]" e2-field=""
-    a.btn.btn-default ng-class="action.record[f] === info.render.true_value && 'active'" ng-click="action.record[f] = info.render.true_value" ng-disabled="info.disabled"
+    a.btn.btn-default ng-class="action.record[f] === field.render.true_value && 'active'" ng-click="action.record[f] = field.render.true_value" ng-disabled="field.disabled"
       span.glyphicon.glyphicon-check
-    a.btn.btn-default ng-class="action.record[f] === info.render.false_value && 'active'" ng-click="action.record[f] = info.render.false_value" ng-disabled="info.disabled"
+    a.btn.btn-default ng-class="action.record[f] === field.render.false_value && 'active'" ng-click="action.record[f] = field.render.false_value" ng-disabled="field.disabled"
       span.glyphicon.glyphicon-unchecked
-    a.btn.btn-default ng-class="(action.record[f] === null || action.record[f] === undefined) && 'active'" ng-click="action.record[f] = null" ng-disabled="info.disabled"
+    a.btn.btn-default ng-class="(action.record[f] === null || action.record[f] === undefined) && 'active'" ng-click="action.record[f] = null" ng-disabled="field.disabled"
       span.glyphicon.glyphicon-off

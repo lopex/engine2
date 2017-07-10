@@ -1,20 +1,20 @@
 /.col-lg-7.col-md-8.col-sm-12
-div e2-input-cols="{{::info.render.length}}"
+div e2-input-cols="{{::field.render.length}}"
   .input-group.input-group-sm
     button.btn.btn-default [
       type="button"
       ng-model="action.record[f]"
-      bs-options="v[0] as v[1] for v in info.render.list"
+      bs-options="v[0] as v[1] for v in field.render.list"
       data-html="true"
-      ng-disabled="info.disabled"
-      ng-class="info.render.class"
+      ng-disabled="field.disabled"
+      ng-class="field.render.class"
       class="form-control input-sm"
       e2-field=""
 
-      data-animation="{{::info.render.animation}}"
+      data-animation="{{::field.render.animation}}"
       data-placeholder="..."
       bs-select=""
     ]
     .input-group-btn
-      a.btn.btn-default ng-disabled="info.disabled || action.record[f] == null" ng-click="action.record[f] = null"
+      a.btn.btn-default ng-disabled="field.disabled || action.record[f] == null" ng-click="action.record[f] = null"
         span.glyphicon.glyphicon-remove

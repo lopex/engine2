@@ -4,14 +4,14 @@
       button.btn.btn-default [
         type="button"
         ng-model="action.query.search[f]"
-        bs-options="v[0] as v[1] for v in info.render.list"
+        bs-options="v[0] as v[1] for v in field.render.list"
         data-html="true"
         ng-change="action.search_field_change(f)"
-        ng-class="info.render.class"
+        ng-class="field.render.class"
         class="form-control"
 
-        data-animation="{{::info.render.animation}}"
-        data-placeholder="{{::info.loc}}"
+        data-animation="{{::field.render.animation}}"
+        data-placeholder="{{::field.loc}}"
         bs-select=""
         e2-search-field=""
       ]

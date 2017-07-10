@@ -1,10 +1,10 @@
 .col-lg-3.col-md-3.col-sm-3
   .form-group
     .btn-group.btn-group-sm xe2-search-field=""
-      a.btn.btn-default ng-class="action.query.search[f] == info.render.true_value && 'active'" ng-click="action.query.search[f] = info.render.true_value; action.search_field_change(f)"
+      a.btn.btn-default ng-class="action.query.search[f] == field.render.true_value && 'active'" ng-click="action.query.search[f] = field.render.true_value; action.search_field_change(f)"
         span.glyphicon.glyphicon-ok
-      a.btn.btn-default ng-class="action.query.search[f] == info.render.false_value && 'active'" ng-click="action.query.search[f] = info.render.false_value; action.search_field_change(f)"
+      a.btn.btn-default ng-class="action.query.search[f] == field.render.false_value && 'active'" ng-click="action.query.search[f] = field.render.false_value; action.search_field_change(f)"
         span.glyphicon.glyphicon-remove
       a.btn.btn-default ng-disabled="action.query.search[f] == null" ng-click="action.query.search[f] = null; action.search_field_change(f)"
-        span ng-bind="::info.loc"
+        span ng-bind="::field.loc"
         span.glyphicon.glyphicon-off<

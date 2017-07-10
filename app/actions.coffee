@@ -271,7 +271,10 @@ angular.module('Engine2')
                     _.each response.data.actions, (act, nm) -> act.name = nm
                     tree.actions ?= _.toArray(response.data.actions)
                     @meta_json = response.data.meta
-                    @action_state = if @meta_json.state then _.zipObject(@meta_json.state.map (k) -> [k, localStorageService.get("#{path}/#{k}")]) else {}
+                    if @meta_json.state
+                        @action_state = {}
+                        _.each @meta_json.state, (s) => @action_state[s] = localStorageService.get("#{@globals().application}/#{path.join('/')}/#{s}")
+                        @action_state
             ,
             (err) =>
                 delete @meta_json
@@ -348,7 +351,7 @@ angular.module('Engine2')
             @ui_state = {}
             @load_state()
 
-            delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.field_list, @query.order)
+            delete @query.order unless @meta.fields[@query.order]?.sort # _.includes(@meta.field_list, @query.order)
             _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_field_list, sn))
 
         destroy: ->
@@ -358,7 +361,7 @@ angular.module('Engine2')
         process_meta: ->
             super()
             meta = @meta
-            meta.field_list = meta.field_list.filter((f) => !meta.info[f].hidden) if meta.field_list
+            meta.field_list = meta.field_list.filter((f) => !meta.fields[f].hidden) if meta.field_list
 
         # confirm_create, view, confirm_modify, confirm_delete, assocs - implicit
 
@@ -444,7 +447,7 @@ angular.module('Engine2')
             @load_new()
 
         search_field_change: (f) ->
-            info = @meta.info[f]
+            info = @meta.fields[f]
 
             @scope().$eval(info.onchange) if info.onchange
 
@@ -495,7 +498,7 @@ angular.module('Engine2')
     form_base_action: class FormBaseAction extends Action
         initialize: ->
             super()
-            _.each @meta.info, (info, name) =>
+            _.each @meta.fields, (info, name) =>
                 if info.remote_onchange
                     @scope().$watch (=> @record?[name]), (n) => if n? #if typeof(n) != "undefined"
                         params = value: @record[name]
@@ -514,12 +517,12 @@ angular.module('Engine2')
 
         post_invoke: (args) ->
             super()
-            _.each @meta.info, (info, name) =>
+            _.each @meta.fields, (info, name) =>
                 if _.isString(@record[name]) && !info.dont_strip
                     @record[name] = @record[name].trim()
 
         panel_menu_default_action: ->
-            _.each @meta.info, (v, n) =>
+            _.each @meta.fields, (v, n) =>
                 @record[n] = null if @record[n] is undefined
             params = record: @record
             params.parent_id ?= @parent().query?.parent_id # and StarToManyList ?
@@ -544,7 +547,7 @@ angular.module('Engine2')
                             @alert = @errors
                     else
                         field = _(@meta.field_list).find((f) => @errors[f])
-                        @alert = @errors if (!field || !@meta.info[field] || @meta.info[field].hidden) # ?
+                        @alert = @errors if (!field || !@meta.fields[field] || @meta.fields[field].hidden) # ?
                     $timeout => @scope().$broadcast("focus_field", field)
                     #e.scope.$eval(meta.execute) if meta.execute # ?
                     dfd.resolve()
@@ -556,12 +559,12 @@ angular.module('Engine2')
             field = if @meta.tab_list
                 tab = @meta.tabs[@meta.tab_list[@activeTab]]
                 if @errors
-                    _(tab.field_list).find((f) => @errors[f]) || _(tab.field_list).find((f) => !@meta.info[f].hidden)
+                    _(tab.field_list).find((f) => @errors[f]) || _(tab.field_list).find((f) => !@meta.fields[f].hidden)
                 else
                     tab ?= @meta.tabs[@meta.tab_list[0]]
-                    _(tab.field_list).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
+                    _(tab.field_list).find((f) => !@meta.fields[f].hidden && !@meta.fields[f].disabled)
             else
-                _(@meta.field_list).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
+                _(@meta.field_list).find((f) => !@meta.fields[f].hidden && !@meta.fields[f].disabled)
             $timeout (=> @scope().$broadcast("focus_field", field)), 300 # hack, on shown ?
 
     infra: class InfraAction extends Action
@@ -571,7 +574,7 @@ angular.module('Engine2')
                 if @user
                     @invoke_action('login_form').then (act) =>
                         act.record = name: @user.name
-                        act.meta.info.name.disabled = true
+                        act.meta.fields.name.disabled = true
                         act.dont_reload_routes = !reload_routes # true
                 else
                     @invoke().then => @set_access(true, true, @user)
@@ -610,7 +613,7 @@ angular.module('Engine2')
     modify: class ModifyAction extends FormAction
         # invoke: (args) ->
         #     super(args).then =>
-        #         _.each @meta.primary_fields, (f) => @meta.info[f].disabled = true
+        #         _.each @meta.primary_fields, (f) => @meta.fields[f].disabled = true
 
     confirm: class ConfirmAction extends Action
         panel_menu_approve: ->
@@ -621,7 +624,7 @@ angular.module('Engine2')
         initialize: ->
             super()
             @decode_field = @scope().f
-            @dinfo = @parentp().meta.info[@decode_field]
+            @dinfo = @parentp().meta.fields[@decode_field]
             throw "Primary and foreign key list lengths dont match: [#{@meta.primary_fields}] and [#{@dinfo.fields}]" unless @meta.primary_fields.length == @dinfo.fields.length
             @scope().$on "search_reset", => @clean()
 
@@ -667,11 +670,11 @@ angular.module('Engine2')
                 if @selected.length > 0
                     _.each @dinfo.fields, (fk) -> record[fk] = []
                     _.each @selected, (sel) =>
-                        _(@dinfo.fields).zip(E2.split_keys(sel)).each(([fk, k]) => record[fk].push E2.parse_entry(k, @parentp().meta.info[fk])).value
+                        _(@dinfo.fields).zip(E2.split_keys(sel)).each(([fk, k]) => record[fk].push E2.parse_entry(k, @parentp().meta.fields[fk])).value
                 else @clear_record()
             else
                 if @selected
-                    _(@dinfo.fields).zip(E2.split_keys(@selected)).each(([fk, k]) => record[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value
+                    _(@dinfo.fields).zip(E2.split_keys(@selected)).each(([fk, k]) => record[fk] = E2.parse_entry(k, @parentp().meta.fields[fk])).value
                 else @clear_record()
 
             @parentp().search_field_change?(@decode_field)
@@ -693,12 +696,12 @@ angular.module('Engine2')
                 if @multiple
                     _.each @dinfo.fields, (fk) => record[fk] = []
                     _.each sel, (rec, ids) =>
-                        _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k].push E2.parse_entry(v, @parentp().meta.info[k])).value
+                        _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k].push E2.parse_entry(v, @parentp().meta.fields[k])).value
                     @invoke_decode _.values(sel)
                     delete @decode if _.isEmpty(sel)
                 else
                     [ids, rec] = _(sel).toPairs().head()
-                    _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k] = E2.parse_entry(v, @parentp().meta.info[k])).value
+                    _(@dinfo.fields).zip(E2.split_keys(ids)).each(([k, v]) => record[k] = E2.parse_entry(v, @parentp().meta.fields[k])).value
                     @invoke_decode [rec]
                 @parentp().search_field_change?(@decode_field)
 
@@ -734,7 +737,7 @@ angular.module('Engine2')
 
             @scope().$on "$typeahead.select", (e, v, index) =>
                 e.stopPropagation()
-                _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.info[fk])).value
+                _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.fields[fk])).value
                 @parentp().search_field_change?(@decode_field)
 
             @scope().$watch "action.decode", (e) => if e?

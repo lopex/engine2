@@ -27,18 +27,18 @@ e2-action action="[f + '_file_store!']"
       .progress.progress-striped
         .progress-bar.progress-bar-success ng-style="{'width': action.progress + '%'}"
 
-      div ng-if="info.render.multiple"
+      div ng-if="field.render.multiple"
         input [
           type="file"
-          ng-disabled="info.disabled"
+          ng-disabled="field.disabled"
           ngf-select="action.select($files)"
           ngf-multiple="true"
         ]
 
-      div ng-if="!info.render.multiple"
+      div ng-if="!field.render.multiple"
         input [
           type="file"
-          ng-disabled="info.disabled"
+          ng-disabled="field.disabled"
           ngf-select="action.select($files)"
           ngf-multiple="false"
         ]
