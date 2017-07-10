@@ -222,7 +222,7 @@ module Engine2
     end
 
     module ActionAPISupport
-        def info field
+        def fields field
             (@meta[:fields] ||= {})[field.to_sym] ||= {}
         end
 
@@ -230,10 +230,10 @@ module Engine2
             @meta[:config] ||= {}
         end
 
-        def info! *fields, options
+        def fields! *fields, options
             raise E2Error.new("No fields given to info") if fields.empty?
             fields.each do |field|
-                info(field).merge! options # rmerge ?
+                fields(field).merge! options # rmerge ?
             end
         end
 
@@ -243,24 +243,24 @@ module Engine2
 
         def decorate list
             list.each do |f|
-                info(f)[:loc] ||= LOCS[f.to_sym]
+                fields(f)[:loc] ||= LOCS[f.to_sym]
             end
         end
 
         def render field, options
-            info! field, render: options
+            fields! field, render: options
         end
 
         def hide_fields *flds
-            info! *flds, hidden: true
+            fields! *flds, hidden: true
         end
 
         def show_fields *flds
-            info! *flds, hidden: false
+            fields! *flds, hidden: false
         end
 
         def field_filter *flds, filter
-            info! *flds, filter: filter
+            fields! *flds, filter: filter
         end
     end
 
@@ -594,8 +594,8 @@ module Engine2
             nd = node.define_node node_name, (blk.arity > 2 ? OnChangeGetAction : OnChangePostAction)
             nd.*{request &blk}
 
-            info! field, remote_onchange: node_name
-            info! field, remote_onchange_record: :true if blk.arity > 2
+            fields! field, remote_onchange: node_name
+            fields! field, remote_onchange_record: :true if blk.arity > 2
         end
 
         class OnChangeAction < Action
@@ -705,14 +705,14 @@ module Engine2
                 fields.each do |name|
                     type_info = get_type_info(name)
 
-                    # render = info[name][:render]
+                    # render = fields[name][:render]
                     # if not render
-                    #     info[name][:render] = find_renderer(type_info)
+                    #     fields[name][:render] = find_renderer(type_info)
                     # else
-                    #     info[name][:render].merge!(find_renderer(type_info)){|key, v1, v2|v1}
+                    #     fields[name][:render].merge!(find_renderer(type_info)){|key, v1, v2|v1}
                     # end
 
-                    info(name)[:render] ||= begin # set before :field_list
+                    fields(name)[:render] ||= begin # set before :field_list
                         renderer = DefaultSearchRenderers[type_info[:type]] || DefaultSearchRenderers[type_info[:otype]]
                         raise E2Error.new("No search renderer found for field '#{type_info[:name]}'") unless renderer
                         renderer.(self, type_info)
@@ -743,12 +743,12 @@ module Engine2
 
         def sortable *flds
             flds = @meta[:field_list] if flds.empty?
-            info! *flds, sort: true
+            fields! *flds, sort: true
         end
 
         def search_live *flds
             flds = @meta[:search_field_list] if flds.empty?
-            info! *flds, search_live: true
+            fields! *flds, search_live: true
         end
 
         def searchable *flds
@@ -986,7 +986,7 @@ module Engine2
                     # type_info = model.type_info.fetch(name)
                     type_info = get_type_info(name)
 
-                    info(name)[:render] ||= begin
+                    fields(name)[:render] ||= begin
                         renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)
                         raise E2Error.new("No form renderer found for field '#{type_info[:name]}' of type '#{type_info[:type]}'") unless renderer
                         renderer.(self, type_info)
@@ -1000,10 +1000,10 @@ module Engine2
                 if assoc && assoc[:type] == :one_to_many
                     # fields.select{|f| assoc[:keys].include? f}.each do |key|
                     #     # hide_fields(key) if self[:fields, key, :hidden] == nil
-                    #     info! key, disabled: true
+                    #     fields! key, disabled: true
                     # end
                     assoc[:keys].each do |key|
-                        info! key, disabled: true if fields.include? key
+                        fields! key, disabled: true if fields.include? key
                     end
                 end
             end
@@ -1021,7 +1021,7 @@ module Engine2
         end
 
         def hr_after field, message = '-'
-            info! field, hr: message
+            fields! field, hr: message
         end
     end
 
@@ -1096,7 +1096,7 @@ module Engine2
         def post_run
             super
             assets[:model].primary_keys.each do |key| # pre_run ?
-                info! key, disabled: true
+                fields! key, disabled: true
             end
         end
     end
@@ -1186,87 +1186,87 @@ module Engine2
 
     (FormRendererPostProcessors ||= {}).merge!(
         boolean: lambda{|action, field, info|
-            action.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
-            action.info(field)[:dont_strip] = info[:dont_strip] if info[:dont_strip]
+            action.fields(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
+            action.fields(field)[:dont_strip] = info[:dont_strip] if info[:dont_strip]
         },
         date: lambda{|action, field, info|
-            action.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
+            action.fields(field)[:render].merge! format: info[:format], model_format: info[:model_format]
             if date_to = info[:other_date]
-                action.info(field)[:render].merge! other_date: date_to #, format: info[:format], model_format: info[:model_format]
+                action.fields(field)[:render].merge! other_date: date_to #, format: info[:format], model_format: info[:model_format]
                 action.hide_fields date_to
             elsif time = info[:other_time]
-                action.info(field)[:render].merge! other_time: time
+                action.fields(field)[:render].merge! other_time: time
                 action.hide_fields time
             end
         },
         time: lambda{|action, field, info|
-            action.info(field)[:render].merge! format: info[:format], model_format: info[:model_format]
+            action.fields(field)[:render].merge! format: info[:format], model_format: info[:model_format]
         },
         decimal_date: lambda{|action, field, info|
             FormRendererPostProcessors[:date].(action, field, info)
-            action.info! field, type: :decimal_date
+            action.fields! field, type: :decimal_date
         },
         decimal_time: lambda{|action, field, info|
             FormRendererPostProcessors[:time].(action, field, info)
-            action.info! field, type: :decimal_time
+            action.fields! field, type: :decimal_time
         },
         datetime: lambda{|action, field, info|
-            action.info(field)[:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
+            action.fields(field)[:render].merge! date_format: info[:date_format], time_format: info[:time_format], date_model_format: info[:date_model_format], time_model_format: info[:time_model_format]
         },
         currency: lambda{|action, field, info|
-            action.info(field)[:render].merge! symbol: info[:symbol]
+            action.fields(field)[:render].merge! symbol: info[:symbol]
         },
         # date_range: lambda{|action, field, info|
-        #     action.info[field][:render].merge! other_date: info[:other_date], format: info[:format], model_format: info[:model_format]
+        #     action.fields[field][:render].merge! other_date: info[:other_date], format: info[:format], model_format: info[:model_format]
         #     action.hide_fields info[:other_date]
-        #     action.info[field][:decimal_date] = true if info[:validations][:decimal_date]
+        #     action.fields[field][:decimal_date] = true if info[:validations][:decimal_date]
         # },
         list_select: lambda{|action, field, info|
-            action.info(field)[:render].merge! list: info[:list]
+            action.fields(field)[:render].merge! list: info[:list]
         },
         many_to_one: lambda{|action, field, info|
-            field_info = action.info(field)
+            field_info = action.fields(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = info[:keys]
             field_info[:type] = info[:otype]
 
             (info[:keys] - [field]).each do |of|
-                f_info = action.info(of)
+                f_info = action.fields(of)
                 f_info[:hidden] = true
                 f_info[:type] = action.assets[:model].type_info[of].fetch(:otype)
             end
         },
         file_store: lambda{|action, field, info|
-            action.info(field)[:render].merge! multiple: info[:multiple]
+            action.fields(field)[:render].merge! multiple: info[:multiple]
         },
         star_to_many_field: lambda{|action, field, info|
-            field_info = action.info(field)
+            field_info = action.fields(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
         }
     )
 
     (ListRendererPostProcessors ||= {}).merge!(
         boolean: lambda{|action, field, info|
-            action.info! field, type: :boolean # move to action ?
-            action.info(field)[:render] ||= {}
-            action.info(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
+            action.fields! field, type: :boolean # move to action ?
+            action.fields(field)[:render] ||= {}
+            action.fields(field)[:render].merge! true_value: info[:true_value], false_value: info[:false_value]
         },
         list_select: lambda{|action, field, info|
-            action.info! field, type: :list_select
-            action.info(field)[:render] ||= {}
-            action.info(field)[:render].merge! list: info[:list]
+            action.fields! field, type: :list_select
+            action.fields(field)[:render] ||= {}
+            action.fields(field)[:render].merge! list: info[:list]
         },
         datetime: lambda{|action, field, info|
-            action.info! field, type: :datetime
+            action.fields! field, type: :datetime
         },
         decimal_date: lambda{|action, field, info|
-            action.info! field, type: :decimal_date
+            action.fields! field, type: :decimal_date
         },
         decimal_time: lambda{|action, field, info|
-            action.info! field, type: :decimal_time
+            action.fields! field, type: :decimal_time
         },
         # date_range: lambda{|action, field, info|
-        #     action.info[field][:type] = :decimal_date if info[:validations][:decimal_date] # ? :decimal_date : :date
+        #     action.fields[field][:type] = :decimal_date if info[:validations][:decimal_date] # ? :decimal_date : :date
         # }
     )
 
@@ -1281,21 +1281,21 @@ module Engine2
                 keys = info[:keys].map{|k| model.table_name.q(k)}
             end
 
-            field_info = action.info(field)
+            field_info = action.fields(field)
             field_info[:assoc] = :"#{info[:assoc_name]}!"
             field_info[:fields] = keys
             field_info[:type] = info[:otype]
 
             (keys - [field]).each do |of|
-                f_info = action.info(of)
+                f_info = action.fields(of)
                 raise E2Error.new("Missing searchable field: '#{of}' in model '#{action.assets[:model]}'") unless f_info
                 f_info[:hidden_search] = true
                 f_info[:type] = model.type_info[of].fetch(:otype)
             end
         },
         date: lambda{|action, field, info|
-            action.info(field)[:render] ||= {}
-            action.info(field)[:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
+            action.fields(field)[:render] ||= {}
+            action.fields(field)[:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
         },
         decimal_date: lambda{|action, field, info|
             SearchRendererPostProcessors[:date].(action, field, info)

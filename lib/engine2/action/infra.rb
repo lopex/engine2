@@ -263,7 +263,7 @@ module Engine2
             super
             panel_class 'modal-default'
             panel_title LOCS[:login_title]
-            info! :name, loc: LOCS[:user_name]
+            fields! :name, loc: LOCS[:user_name]
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
             @meta[:field_list] = [:name, :password]
             parent_action = node.parent.*
