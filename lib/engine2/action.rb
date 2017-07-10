@@ -448,15 +448,15 @@ module Engine2
         end
 
         def field_tabs hash
-            @meta[:tabs] = hash.map{|k, v| {name: k, loc: LOCS[k], fields: v} }
+            @meta[:tabs] = hash.keys
+            @meta[:tab_info] = hash.reduce({}){|h, (k, v)| h[k] = {name: k, loc: LOCS[k], fields: v}; h}
         end
 
-        def lazy_tab tab_name
-           tabs = @meta[:tabs]
-           raise E2Error.new("No tabs defined") unless tabs
-           tab = tabs.find{|t| t[:name] == tab_name}
-           raise E2Error.new("No tab #{tab_name} defined") unless tab
-           tab[:lazy] = true
+        def tab *tabs, options
+            raise E2Error.new("No tabs given to info") if tabs.empty?
+            tabs.each do |tab|
+                @meta[:tab_info][tab].merge! options # rmerge ?
+            end
         end
     end
 

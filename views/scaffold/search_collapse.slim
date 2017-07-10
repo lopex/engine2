@@ -9,13 +9,14 @@
           ng-init="action.ui_state.search_tab = (action.ui_state.search_tab + 0) <= 0 ? [0] : action.ui_state.search_tab"
           ng-model="action.ui_state.search_tab"
         ]
+        div ng-init="tab_info = action.meta.tab_info"
         div.panel.panel-default ng-repeat="t in ::action.meta.tabs track by $index"
           div.panel-heading role="tab"
             h4.panel-title
-              a bs-collapse-toggle="" ng-click="" ng-bind="::t.loc"
-          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = t.fields"
+              a bs-collapse-toggle="" ng-click="" ng-bind="::tab_info[t].loc"
+          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tab_info[t].fields"
             div.panel-body
-              span ng-repeat="f in t.fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
+              span ng-repeat="f in form_field_list track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
                 e2-include template="info.render.template"
 
       .btn-group.btn-group-sm.pull-right

@@ -528,7 +528,8 @@ angular.module('Engine2')
                 if @errors
                     if @meta.tabs
                         [i, first, curr] = [0, null, false]
-                        for tab in @meta.tabs
+                        for tab_name in @meta.tabs
+                            tab = @meta.tab_info[tab_name]
                             if _(tab.fields).find((f) => @errors[f])
                                 first = i if not first?
                                 act = true if @activeTab == i
@@ -536,7 +537,7 @@ angular.module('Engine2')
                         @activeTab = first unless act
 
                         if @activeTab?
-                            field = _(@meta.tabs[@activeTab].fields).find((f) => @errors[f])
+                            field = _(@meta.tab_info[@meta.tabs[@activeTab]].fields).find((f) => @errors[f])
                             # console.log field undefined ?
                         else
                             @activeTab = 0
@@ -553,11 +554,11 @@ angular.module('Engine2')
 
         panel_shown: ->
             field = if @meta.tabs
-                tab = @meta.tabs[@activeTab]
+                tab = @meta.tab_info[@meta.tabs[@activeTab]]
                 if @errors
                     _(tab.fields).find((f) => @errors[f]) || _(tab.fields).find((f) => !@meta.info[f].hidden)
                 else
-                    tab ?= @meta.tabs[0]
+                    tab ?= @meta.tab_info[@meta.tabs[0]]
                     _(tab.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
             else
                 _(@meta.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)

@@ -2,9 +2,10 @@
   .panel-body
     form
       div bs-tabs="" ng-init="action.ui_state.search_tab = (action.ui_state.search_tab + 0) <= 0 ? 0 : action.ui_state.search_tab" bs-active-pane="action.ui_state.search_tab"
-        div ng-repeat="t in ::action.meta.tabs track by $index" title="{{::t.loc}}" bs-pane=""
+        div ng-init="tab_info = action.meta.tab_info"
+        div ng-repeat="t in ::action.meta.tabs track by $index" title="{{::tab_info[t].loc}}" bs-pane=""
           br
-          span ng-repeat="f in t.fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
+          span ng-repeat="f in tab_info[t].fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
             e2-include template="info.render.template"
 
       .btn-group.btn-group-sm.pull-right
