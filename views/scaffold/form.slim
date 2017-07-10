@@ -1,5 +1,5 @@
 form.form-horizontal role="form"
-  span ng-init="form_field_list = action.meta.fields" ng-if="true"
+  span ng-init="form_field_list = action.meta.field_list" ng-if="true"
     e2-include template="action.meta.panel.field_template"
 
   span ng-if="action.alert": .alert.alert-danger[] {{action.alert}}

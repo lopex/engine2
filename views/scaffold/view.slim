@@ -1,6 +1,6 @@
 div
   table.table.table-striped.table-condensed.table-hover
-    tr ng-repeat="f in action.meta.fields track by $index" ng-hide="::action.meta.info[f].hidden"
+    tr ng-repeat="f in action.meta.field_list track by $index" ng-hide="::action.meta.info[f].hidden"
         td ng-bind="::action.meta.info[f].loc"
         td
           div ng-bind-html="action.view_cell(action.record, f)"

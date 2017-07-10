@@ -14,7 +14,7 @@
           div.panel-heading role="tab"
             h4.panel-title
               a bs-collapse-toggle="" ng-click="" ng-bind="::tabs[t].loc"
-          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tabs[t].fields"
+          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tabs[t].field_list"
             div.panel-body
               span ng-repeat="f in form_field_list track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
                 e2-include template="info.render.template"

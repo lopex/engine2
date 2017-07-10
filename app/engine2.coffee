@@ -328,10 +328,10 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             meta = action.meta
             draggable = meta.draggable
             position = meta.menus.item_menu.properties.position ? 0
-            right_style = if position >= meta.fields.length then "style=\"text-align: right\"" else ""
+            right_style = if position >= meta.field_list.length then "style=\"text-align: right\"" else ""
 
             thead = ""
-            fields = meta.fields.slice()
+            fields = meta.field_list.slice()
             fields.splice(position, 0, null)
             _.each fields, (f) ->
                 if f

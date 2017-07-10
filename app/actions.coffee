@@ -348,8 +348,8 @@ angular.module('Engine2')
             @ui_state = {}
             @load_state()
 
-            delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.fields, @query.order)
-            _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_fields, sn))
+            delete @query.order unless @meta.info[@query.order]?.sort # _.includes(@meta.field_list, @query.order)
+            _.each @query.search, ((sv, sn) => delete @query.search[sn] unless _.includes(@meta.search_field_list, sn))
 
         destroy: ->
             @save_state()
@@ -358,7 +358,7 @@ angular.module('Engine2')
         process_meta: ->
             super()
             meta = @meta
-            meta.fields = meta.fields.filter((f) => !meta.info[f].hidden) if meta.fields
+            meta.field_list = meta.field_list.filter((f) => !meta.info[f].hidden) if meta.field_list
 
         # confirm_create, view, confirm_modify, confirm_delete, assocs - implicit
 
@@ -530,20 +530,20 @@ angular.module('Engine2')
                         [i, first, curr] = [0, null, false]
                         for tab_name in @meta.tab_list
                             tab = @meta.tabs[tab_name]
-                            if _(tab.fields).find((f) => @errors[f])
+                            if _(tab.field_list).find((f) => @errors[f])
                                 first = i if not first?
                                 act = true if @activeTab == i
                             i++
                         @activeTab = first unless act
 
                         if @activeTab?
-                            field = _(@meta.tabs[@meta.tab_list[@activeTab]].fields).find((f) => @errors[f])
+                            field = _(@meta.tabs[@meta.tab_list[@activeTab]].field_list).find((f) => @errors[f])
                             # console.log field undefined ?
                         else
                             @activeTab = 0
                             @alert = @errors
                     else
-                        field = _(@meta.fields).find((f) => @errors[f])
+                        field = _(@meta.field_list).find((f) => @errors[f])
                         @alert = @errors if (!field || !@meta.info[field] || @meta.info[field].hidden) # ?
                     $timeout => @scope().$broadcast("focus_field", field)
                     #e.scope.$eval(meta.execute) if meta.execute # ?
@@ -556,12 +556,12 @@ angular.module('Engine2')
             field = if @meta.tab_list
                 tab = @meta.tabs[@meta.tab_list[@activeTab]]
                 if @errors
-                    _(tab.fields).find((f) => @errors[f]) || _(tab.fields).find((f) => !@meta.info[f].hidden)
+                    _(tab.field_list).find((f) => @errors[f]) || _(tab.field_list).find((f) => !@meta.info[f].hidden)
                 else
                     tab ?= @meta.tabs[@meta.tab_list[0]]
-                    _(tab.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
+                    _(tab.field_list).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
             else
-                _(@meta.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
+                _(@meta.field_list).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
             $timeout (=> @scope().$broadcast("focus_field", field)), 300 # hack, on shown ?
 
     infra: class InfraAction extends Action

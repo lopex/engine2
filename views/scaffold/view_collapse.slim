@@ -15,7 +15,7 @@ div
       div.panel-collapse role="tabpanel" bs-collapse-target=""
         div.panel-body
           table.table.table-striped.table-condensed.table-hover
-            tr ng-repeat="f in tabs[t].fields" ng-hide="::action.meta.info[f].hidden"
+            tr ng-repeat="f in tabs[t].field_list" ng-hide="::action.meta.info[f].hidden"
               td ng-bind="::action.meta.info[f].loc"
               td
                 div ng-bind-html="action.view_cell(action.record, f)"

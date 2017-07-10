@@ -437,7 +437,7 @@ module Engine2
         def select *args, use_pk: true, &blk
             ds = assets[:model].select(*args, &blk)
             ds = ds.ensure_primary_key if use_pk
-            ds.setup!(@meta[:fields] = [])
+            ds.setup!(@meta[:field_list] = [])
         end
     end
 
@@ -449,7 +449,7 @@ module Engine2
 
         def field_tabs hash
             @meta[:tab_list] = hash.keys
-            @meta[:tabs] = hash.reduce({}){|h, (k, v)| h[k] = {name: k, loc: LOCS[k], fields: v}; h}
+            @meta[:tabs] = hash.reduce({}){|h, (k, v)| h[k] = {name: k, loc: LOCS[k], field_list: v}; h}
         end
 
         def tab *tabs, options
@@ -649,7 +649,7 @@ module Engine2
             loc! LOCS[:list_locs]
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
-                option :search_toggle, icon: "search", show: "action.meta.search_fields", active: "action.ui_state.search_active", button_loc: false
+                option :search_toggle, icon: "search", show: "action.meta.search_field_list", active: "action.ui_state.search_active", button_loc: false
                 # divider
                 option :refresh, icon: "refresh", button_loc: false
                 option :default_order, icon: "signal", button_loc: false
@@ -680,7 +680,7 @@ module Engine2
 
         def post_run
             unless panel[:class]
-                panel_class case @meta[:fields].size
+                panel_class case @meta[:field_list].size
                 when 1..3; ''
                 when 4..6; 'modal-large'
                 else; 'modal-huge'
@@ -698,8 +698,8 @@ module Engine2
         # end
 
         def post_process
-            if fields = @meta[:search_fields]
-                fields = fields - static.meta[:search_fields] if dynamic?
+            if fields = @meta[:search_field_list]
+                fields = fields - static.meta[:search_field_list] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|
@@ -712,7 +712,7 @@ module Engine2
                     #     info[name][:render].merge!(find_renderer(type_info)){|key, v1, v2|v1}
                     # end
 
-                    info(name)[:render] ||= begin # set before :fields
+                    info(name)[:render] ||= begin # set before :field_list
                         renderer = DefaultSearchRenderers[type_info[:type]] || DefaultSearchRenderers[type_info[:otype]]
                         raise E2Error.new("No search renderer found for field '#{type_info[:name]}'") unless renderer
                         renderer.(self, type_info)
@@ -723,8 +723,8 @@ module Engine2
                 end
             end
 
-            if fields = @meta[:fields]
-                fields = fields - static.meta[:fields] if dynamic?
+            if fields = @meta[:field_list]
+                fields = fields - static.meta[:field_list] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|
@@ -742,12 +742,12 @@ module Engine2
         end
 
         def sortable *flds
-            flds = @meta[:fields] if flds.empty?
+            flds = @meta[:field_list] if flds.empty?
             info! *flds, sort: true
         end
 
         def search_live *flds
-            flds = @meta[:search_fields] if flds.empty?
+            flds = @meta[:search_field_list] if flds.empty?
             info! *flds, search_live: true
         end
 
@@ -755,7 +755,7 @@ module Engine2
             @meta.delete(:tab_list)
             @meta.delete(:tabs)
             search_template 'scaffold/search'
-            @meta[:search_fields] = *flds
+            @meta[:search_field_list] = *flds
         end
 
         def searchable_tabs tabs
@@ -856,7 +856,7 @@ module Engine2
 
         def post_run
             super
-            validate_fields *node.parent.*.meta[:fields] unless validate_fields
+            validate_fields *node.parent.*.meta[:field_list] unless validate_fields
         end
     end
 
@@ -977,8 +977,8 @@ module Engine2
         end
 
         def post_process
-            if fields = @meta[:fields]
-                fields = fields - static.meta[:fields] if dynamic?
+            if fields = @meta[:field_list]
+                fields = fields - static.meta[:field_list] if dynamic?
 
                 decorate(fields)
 
@@ -1138,8 +1138,8 @@ module Engine2
         end
 
         def post_process
-            if fields = @meta[:fields]
-                fields = fields - static.meta[:fields] if dynamic?
+            if fields = @meta[:field_list]
+                fields = fields - static.meta[:field_list] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|

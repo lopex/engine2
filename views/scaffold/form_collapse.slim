@@ -13,7 +13,7 @@ form.form-horizontal role="form"
           div.panel-heading role="tab"
             h4.panel-title
               a bs-collapse-toggle="" ng-click="" ng-bind="::tabs[t].loc"
-          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tabs[t].fields"
+          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tabs[t].field_list"
             div.panel-body
               e2-include template="action.meta.panel.field_template"
 

@@ -1,7 +1,7 @@
 .panel.panel-default
   .panel-body
     form
-      span ng-repeat="f in action.meta.search_fields track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
+      span ng-repeat="f in action.meta.search_field_list track by $index" ng-if="!action.meta.info[f].hidden_search" ng-init="info = action.meta.info[f]"
         e2-include template="info.render.template"
 
       .btn-group.btn-group-sm.pull-right

@@ -60,7 +60,7 @@ module Engine2
         def list_search entries, handler, search
             hash = JSON.parse(search, symbolize_names: true) rescue handler.halt_forbidden
             model = assets[:model]
-            sfields = lookup(:search_fields)
+            sfields = lookup(:search_field_list)
             handler.permit sfields
             hash.each_pair do |name, value|
                 handler.permit sfields.include?(name)

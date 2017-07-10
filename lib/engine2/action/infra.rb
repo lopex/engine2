@@ -265,7 +265,7 @@ module Engine2
             panel_title LOCS[:login_title]
             info! :name, loc: LOCS[:user_name]
             menu(:panel_menu).modify_option :approve, name: :login, icon: :"log-in"
-            @meta[:fields] = [:name, :password]
+            @meta[:field_list] = [:name, :password]
             parent_action = node.parent.*
             if parent_action.is_a? ActionMenuSupport
                 parent_action.menu(:menu).option :login_form, icon: :"log-in", disabled: "action.action_pending()"
