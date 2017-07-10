@@ -8,12 +8,12 @@ form.form-horizontal role="form"
           ng-init="action.activeTab = [0]"
           ng-model="action.activeTab"
         ]
-        div ng-init="tab_info = action.meta.tab_info"
-        div.panel.panel-default ng-repeat="t in ::action.meta.tabs track by $index" ng-if="!tab_info[t].hidden"
+        div ng-init="tabs = action.meta.tabs"
+        div.panel.panel-default ng-repeat="t in ::action.meta.tab_list track by $index" ng-if="!tabs[t].hidden"
           div.panel-heading role="tab"
             h4.panel-title
-              a bs-collapse-toggle="" ng-click="" ng-bind="::tab_info[t].loc"
-          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tab_info[t].fields"
+              a bs-collapse-toggle="" ng-click="" ng-bind="::tabs[t].loc"
+          div.panel-collapse role="tabpanel" bs-collapse-target="" ng-init="form_field_list = tabs[t].fields"
             div.panel-body
               e2-include template="action.meta.panel.field_template"
 

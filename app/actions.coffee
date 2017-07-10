@@ -506,7 +506,7 @@ angular.module('Engine2')
                     @scope().$watch (=> @record?[name]), (n) => if n?
                         @scope().$eval(info.onchange)
 
-            if @meta.tabs
+            if @meta.tab_list
                 @scope().$watch "action.activeTab", (tab) => if tab? # && tab >= 0
                     @panel_shown()
 
@@ -526,10 +526,10 @@ angular.module('Engine2')
             @invoke_action(@default_action_name, params).then =>
                 dfd = $q.defer()
                 if @errors
-                    if @meta.tabs
+                    if @meta.tab_list
                         [i, first, curr] = [0, null, false]
-                        for tab_name in @meta.tabs
-                            tab = @meta.tab_info[tab_name]
+                        for tab_name in @meta.tab_list
+                            tab = @meta.tabs[tab_name]
                             if _(tab.fields).find((f) => @errors[f])
                                 first = i if not first?
                                 act = true if @activeTab == i
@@ -537,7 +537,7 @@ angular.module('Engine2')
                         @activeTab = first unless act
 
                         if @activeTab?
-                            field = _(@meta.tab_info[@meta.tabs[@activeTab]].fields).find((f) => @errors[f])
+                            field = _(@meta.tabs[@meta.tab_list[@activeTab]].fields).find((f) => @errors[f])
                             # console.log field undefined ?
                         else
                             @activeTab = 0
@@ -553,12 +553,12 @@ angular.module('Engine2')
                 dfd.promise
 
         panel_shown: ->
-            field = if @meta.tabs
-                tab = @meta.tab_info[@meta.tabs[@activeTab]]
+            field = if @meta.tab_list
+                tab = @meta.tabs[@meta.tab_list[@activeTab]]
                 if @errors
                     _(tab.fields).find((f) => @errors[f]) || _(tab.fields).find((f) => !@meta.info[f].hidden)
                 else
-                    tab ?= @meta.tab_info[@meta.tabs[0]]
+                    tab ?= @meta.tabs[@meta.tab_list[0]]
                     _(tab.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)
             else
                 _(@meta.fields).find((f) => !@meta.info[f].hidden && !@meta.info[f].disabled)

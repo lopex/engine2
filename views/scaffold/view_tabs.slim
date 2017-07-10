@@ -1,10 +1,10 @@
 div
   div bs-tabs="" bs-active-pane="action.activeTab" ng-init="action.activeTab = 0"
-    div ng-init="tab_info = action.meta.tab_info"
-    div ng-repeat="t in ::action.meta.tabs" title="{{::tab_info[t].loc}}" bs-pane=""
+    div ng-init="tabs = action.meta.tabs"
+    div ng-repeat="t in ::action.meta.tab_list" title="{{::tabs[t].loc}}" bs-pane=""
       br
       table.table.table-striped.table-condensed.table-hover
-        tr ng-repeat="f in tab_info[t].fields" ng-hide="::action.meta.info[f].hidden"
+        tr ng-repeat="f in tabs[t].fields" ng-hide="::action.meta.info[f].hidden"
           td ng-bind="::action.meta.info[f].loc"
           td
             div ng-bind-html="action.view_cell(action.record, f)"

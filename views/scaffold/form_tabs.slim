@@ -1,9 +1,9 @@
 form.form-horizontal role="form"
   span ng-if="true"
     div bs-tabs="" bs-active-pane="action.activeTab" ng-init="action.activeTab = 0"
-      div ng-init="tab_info = action.meta.tab_info"
-      div ng-repeat="t in ::action.meta.tabs track by $index" title="{{::tab_info[t].loc}}" bs-pane="" disabled="{{tab_info[t].disabled}}" ng-if="!tab_info[t].hidden"
-        div ng-if="!tab_info[t].lazy || $index == action.activeTab" ng-init="form_field_list = tab_info[t].fields"
+      div ng-init="tabs = action.meta.tabs"
+      div ng-repeat="t in ::action.meta.tab_list track by $index" title="{{::tabs[t].loc}}" bs-pane="" disabled="{{tabs[t].disabled}}" ng-if="!tabs[t].hidden"
+        div ng-if="!tabs[t].lazy || $index == action.activeTab" ng-init="form_field_list = tabs[t].fields"
           br
           e2-include template="action.meta.panel.field_template"
 

@@ -448,14 +448,14 @@ module Engine2
         end
 
         def field_tabs hash
-            @meta[:tabs] = hash.keys
-            @meta[:tab_info] = hash.reduce({}){|h, (k, v)| h[k] = {name: k, loc: LOCS[k], fields: v}; h}
+            @meta[:tab_list] = hash.keys
+            @meta[:tabs] = hash.reduce({}){|h, (k, v)| h[k] = {name: k, loc: LOCS[k], fields: v}; h}
         end
 
         def tab *tabs, options
             raise E2Error.new("No tabs given to info") if tabs.empty?
             tabs.each do |tab|
-                @meta[:tab_info][tab].merge! options # rmerge ?
+                @meta[:tabs][tab].merge! options # rmerge ?
             end
         end
     end
@@ -752,6 +752,7 @@ module Engine2
         end
 
         def searchable *flds
+            @meta.delete(:tab_list)
             @meta.delete(:tabs)
             search_template 'scaffold/search'
             @meta[:search_fields] = *flds
