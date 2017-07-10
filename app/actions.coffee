@@ -611,11 +611,6 @@ angular.module('Engine2')
         #     super(args).then =>
         #         _.each @meta.primary_fields, (f) => @meta.info[f].disabled = true
 
-    on_change: class OnChangeAction extends Action
-        post_invoke: ->
-            super()
-            @parent().scope().$eval(@meta.execute) if @meta.execute
-
     confirm: class ConfirmAction extends Action
         panel_menu_approve: ->
             @initial_arguments ?= @arguments
