@@ -484,7 +484,7 @@ module Engine2
 
         def ng_info! name, *selector, expression
             # expression = "'#{expression}'" if expression.is_a? String
-            "action.meta.info['#{name}'].#{selector.join('.')} = #{expression}"
+            "action.meta.fields['#{name}'].#{selector.join('.')} = #{expression}"
         end
 
         def ng_call name, *args
