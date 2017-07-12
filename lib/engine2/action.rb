@@ -806,7 +806,7 @@ module Engine2
         def validate_and_approve handler, record, parent_id
             static.before_approve(handler, record)
             record.valid?
-            validate_record(handler, record)
+            validate_record(handler, record, parent_id)
             if record.errors.empty?
                 static.after_approve(handler, record)
                 true
@@ -840,10 +840,10 @@ module Engine2
             (@validations ||= {})[name] = blk
         end
 
-        def validate_record handler, record
+        def validate_record handler, record, parent_id
             @validations.each do |name, val|
                 unless record.errors[name]
-                    result = val.(record, handler)
+                    result = val.(record, handler, parent_id)
                     record.errors.add(name, result) if result
                 end
             end if @validations
