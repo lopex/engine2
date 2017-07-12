@@ -2,6 +2,7 @@
   "name": "engine2",
   "description": "engine2",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "postinstall": "bower install --allow-root",
     "dev": "brunch w",
