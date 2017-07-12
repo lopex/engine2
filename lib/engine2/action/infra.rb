@@ -281,7 +281,7 @@ module Engine2
         include ActionApproveSupport
         action_type :login
 
-        def validate_record handler, record
+        def validate_record handler, record, parent_id
             super
             record.values[:password] = nil
         end
