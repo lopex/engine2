@@ -983,7 +983,6 @@ module Engine2
                 decorate(fields)
 
                 fields.each do |name|
-                    # type_info = model.type_info.fetch(name)
                     type_info = get_type_info(name)
 
                     fields(name)[:render] ||= begin

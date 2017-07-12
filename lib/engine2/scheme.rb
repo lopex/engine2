@@ -163,7 +163,7 @@ module Engine2
         define_scheme :blob_store do |model, field|
             define_node :"#{field}_blob_store!", BlobStoreAction do
                 self.*.model = model
-                self.*.field = field # model.type_info[field][:field]
+                self.*.field = field
                 define_node :download, DownloadBlobStoreAction
                 define_node :upload, UploadBlobStoreAction
             end
@@ -175,7 +175,7 @@ module Engine2
         define_scheme :foreign_blob_store do |model, field|
             define_node :"#{field}_blob_store!", ForeignBlobStoreAction do
                 self.*.model = model
-                self.*.field = field # model.type_info[field][:field]
+                self.*.field = field
                 define_node :download, DownloadForeignBlobStoreAction
                 define_node :upload, UploadBlobStoreAction
             end
