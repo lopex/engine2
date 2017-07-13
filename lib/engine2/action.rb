@@ -773,7 +773,7 @@ module Engine2
 
         def filter_case_insensitive name
             raise E2Error.new("Field '#{name}' needs to be a string one") unless get_type_info(name)[:otype] == :string
-            filter(name){|query, hash, handler| query.where(name.ilike("%#{hash[name]}%")) }
+            filter(name){|handler, query, hash| query.where(name.ilike("%#{hash[name]}%")) }
         end
 
         def order name, &blk
@@ -843,7 +843,7 @@ module Engine2
         def validate_record handler, record, parent_id
             @validations.each do |name, val|
                 unless record.errors[name]
-                    result = val.(record, handler, parent_id)
+                    result = val.(handler, record, parent_id)
                     record.errors.add(name, result) if result
                 end
             end if @validations

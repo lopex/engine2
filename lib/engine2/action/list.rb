@@ -91,7 +91,7 @@ module Engine2
                 handler.permit lookup(:fields, order, :sort)
 
                 if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
-                    query = order_blk.(query, handler)
+                    query = order_blk.(handler, query)
                 else
                     order = model.table_name.q(order) if model.type_info[order]
                     query = query.order(order)
@@ -121,7 +121,7 @@ module Engine2
 
                 type_info = get_type_info(name)
                 query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
-                    filter.(query, hash, handler)
+                    filter.(handler, query, hash)
                 elsif filter = DefaultFilters[type_info[:otype]]
                     name = model.type_info[name] ? model.table_name.q(name) : Sequel.expr(name)
                     filter.(query, name, value, type_info, hash)

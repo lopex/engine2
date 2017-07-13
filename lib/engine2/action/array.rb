@@ -67,7 +67,7 @@ module Engine2
 
                 type_info = get_type_info(name)
                 entries = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
-                    filter.(entries, hash, handler)
+                    filter.(handler, entries, hash)
                 elsif filter = DefaultFilters[type_info[:otype]]
                     filter.(entries, name, value, type_info, hash)
                 else
