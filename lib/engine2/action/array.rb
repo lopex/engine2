@@ -65,7 +65,7 @@ module Engine2
             hash.each_pair do |name, value|
                 handler.permit sfields.include?(name)
 
-                type_info = get_type_info(name)
+                type_info = find_type_info(name)
                 entries = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
                     filter.(handler, entries, hash)
                 elsif filter = DefaultFilters[type_info[:otype]]

@@ -321,7 +321,7 @@ module Engine2
             show_fields *assets[:model].primary_keys
         end
 
-        def get_type_info name
+        def find_type_info name
             model = assets[:model]
             info = case name
             when Symbol
@@ -703,7 +703,7 @@ module Engine2
 
                 decorate(fields)
                 fields.each do |name|
-                    type_info = get_type_info(name)
+                    type_info = find_type_info(name)
 
                     # render = fields[name][:render]
                     # if not render
@@ -728,7 +728,7 @@ module Engine2
 
                 decorate(fields)
                 fields.each do |name|
-                    type_info = get_type_info(name)
+                    type_info = find_type_info(name)
                     proc = ListRendererPostProcessors[type_info[:type]]
                     proc.(self, name, type_info) if proc
                 end
@@ -772,7 +772,7 @@ module Engine2
         end
 
         def filter_case_insensitive name
-            raise E2Error.new("Field '#{name}' needs to be a string one") unless get_type_info(name)[:otype] == :string
+            raise E2Error.new("Field '#{name}' needs to be a string one") unless find_type_info(name)[:otype] == :string
             filter(name){|handler, query, hash| query.where(name.ilike("%#{hash[name]}%")) }
         end
 
@@ -983,7 +983,7 @@ module Engine2
                 decorate(fields)
 
                 fields.each do |name|
-                    type_info = get_type_info(name)
+                    type_info = find_type_info(name)
 
                     fields(name)[:render] ||= begin
                         renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)
@@ -1142,7 +1142,7 @@ module Engine2
 
                 decorate(fields)
                 fields.each do |name|
-                    type_info = get_type_info(name)
+                    type_info = find_type_info(name)
                     proc = ListRendererPostProcessors[type_info[:type]]
                     proc.(self, name, type_info) if proc
                 end
