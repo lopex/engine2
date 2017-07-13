@@ -203,17 +203,15 @@ angular.module('Engine2')
             ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}/#{@action_info().action_resource}", undefined, ws_meta.options
             _.each @globals().ws_methods, (method) =>
                 ws_method_impl = @["ws_#{method}"]
-                ws_method_exec = ws_meta.execute?[method]
-                if ws_method_impl || ws_method_exec
-                    ws["on#{_.capitalize(method)}"] (evt) =>
-                        if method == 'message'
-                            msg = JSON.parse(evt.data)
-                            if msg.error then @globals().modal().error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception) else
-                                E2.merge(@, msg)
-                                @process_meta()
-                        else msg = evt
-                        ws_method_impl.bind(@)(msg, ws, evt) if ws_method_impl
-                        @scope().$eval(ws_method_exec) if ws_method_exec
+                ws["on#{_.capitalize(method)}"] (evt) =>
+                    if method == 'message'
+                        msg = JSON.parse(evt.data)
+                        if msg.error then @globals().modal().error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception) else
+                            E2.merge(@, msg)
+                            @process_meta()
+                    else msg = evt
+                    ws_method_impl.bind(@)(msg, ws, evt) if ws_method_impl
+                    @scope().$eval(@meta.execute) if @meta.execute
 
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
