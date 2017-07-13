@@ -205,9 +205,8 @@ angular.module('Engine2')
                 ws_method_impl = @["ws_#{method}"]
                 ws_method_exec = ws_meta.execute?[method]
                 if ws_method_impl || ws_method_exec
-                    ws_method = (evt) =>
-                        is_message = method == 'message'
-                        if is_message
+                    ws["on#{_.capitalize(method)}"] (evt) =>
+                        if method == 'message'
                             msg = JSON.parse(evt.data)
                             if msg.error then @globals().modal().error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception) else
                                 E2.merge(@, msg)
@@ -215,8 +214,6 @@ angular.module('Engine2')
                         else msg = evt
                         ws_method_impl.bind(@)(msg, ws, evt) if ws_method_impl
                         @scope().$eval(ws_method_exec) if ws_method_exec
-
-                    ws["on#{_.capitalize(method)}"](ws_method)
 
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
