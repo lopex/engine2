@@ -72,8 +72,8 @@ module Engine2
             @meta[:arguments] = args
         end
 
-        def execute time
-            @meta[:execute] = time
+        def execute command
+            (@meta[:execute] ||= []) << command
         end
 
         def dynamic?

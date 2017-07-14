@@ -134,7 +134,7 @@ angular.module('Engine2')
                     E2.merge(prnt, response.data)
 
                 @post_invoke(params)
-                @scope().$eval(@meta.execute) if @meta.execute
+                @execute_commands() if @meta.execute
                 if @meta.repeat
                     @scope().$on "$destroy", => @destroyed = true
                     $timeout (=> @invoke(params)), @meta.repeat unless @destroyed
@@ -211,11 +211,15 @@ angular.module('Engine2')
                             @process_meta()
                     else msg = evt
                     ws_method_impl.bind(@)(msg, ws, evt) if ws_method_impl
-                    @scope().$eval(@meta.execute) if @meta.execute
+                    @execute_commands() if @meta.execute
                     delete @meta.execute
 
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
+
+        execute_commands: ->
+            scope = @scope()
+            _.reduce(@meta.execute, ((pr, cmd) -> pr.then -> scope.$eval(cmd)), $q.when())
 
         console_log: (o) ->
             console.log o
