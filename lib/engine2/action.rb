@@ -54,9 +54,9 @@ module Engine2
         def invoke! handler
             if rmp = @request_action_proc
                 action = self.class.new(node, assets, self)
-                action_result = action.instance_exec(handler, *action.request_action_proc_params(handler), &rmp)
+                result = action.instance_exec(handler, *action.request_action_proc_params(handler), &rmp)
                 action.post_process
-                response = @requestable ? (action_result || {}) : action.invoke(handler)
+                response = @requestable ? (result || {}) : action.invoke(handler)
                 response[:meta] = action.meta
                 response
             else
