@@ -189,11 +189,12 @@ module Engine2
                 @ws_methods.each do |method, blk|
                     ws.on(method) do |evt|
                         begin
-                            if method == :message
-                                blk.(JSON.parse(evt.data, symbolize_names: true), ws, evt)
-                            else
-                                blk.(evt, ws, evt)
-                            end
+                            data = method == :message ? JSON.parse(evt.data, symbolize_names: true) : evt
+                            action = self.class.new(node, assets, self)
+                            result = action.instance_exec(data, ws, evt, &blk)
+                            result = {} unless result.is_a?(Hash)
+                            result[:meta] = action.meta
+                            ws.send! result unless action.meta.empty?
                         rescue Exception => e
                             ws.send! error: {exception: e, method: method}
                         end
