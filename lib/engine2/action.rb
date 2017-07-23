@@ -872,7 +872,7 @@ module Engine2
         end
 
         def validate_and_approve handler, record, parent_id, validate_only = self.class.validate_only
-            if validate_only then
+            if validate_only
                 super(handler, record, parent_id)
             else
                 record.skip_save_refresh = true
@@ -881,7 +881,7 @@ module Engine2
                 assoc = assets[:assoc]
                 new_assoc = record.new? && assoc && assoc[:type]
 
-                save = lambda do|c|
+                save = lambda do |c|
                     if super(handler, record, parent_id)
                         if new_assoc == :one_to_many
                             handler.permit parent_id
