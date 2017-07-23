@@ -812,12 +812,6 @@ angular.module('Engine2')
             @query.changes = @changes
             super()
 
-        sync_entry: ->
-            if entry = @current_entry_is('create') ? @current_entry_is('modify')
-                _.assign(entry, @current_entry())
-            else
-                @changes.modify.push @current_entry()
-
         entry_dropped: (moved_to) ->
             pos_field = @meta.draggable.position_field
             positions = @entries.map (e) -> e[pos_field]
