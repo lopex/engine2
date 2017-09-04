@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
     spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
     spec.require_paths = ["lib"]
 
-    spec.add_dependency "sequel", '~> 4'
+    spec.add_dependency "sequel", '~> 5'
     if defined? JRUBY_VERSION
         spec.add_dependency 'jdbc-sqlite3', '~> 3.8'
     else

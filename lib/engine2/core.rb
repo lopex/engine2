@@ -376,12 +376,12 @@ module E2Model
             end
         end
 
-        def setup! fields
+        def setup_query fields
             joins = {}
             type_info = model.type_info
             model_table_name = model.table_name
 
-            @opts[:select] = @opts[:select].map do |sel|
+            select = @opts[:select].map do |sel|
                 extract_select sel do |table, name, aliaz|
                     info = if table
                         if table == model_table_name
@@ -416,11 +416,9 @@ module E2Model
                         end
                     end
                 end
-            end
+            end.compact
 
-            @opts[:select].compact!.freeze
-
-            joins.reduce(self) do |joined, (table, assoc)|
+            joins.reduce(clone(select: select)) do |joined, (table, assoc)|
                 m = assoc.associated_class
                 case assoc[:type]
                 when :many_to_one

@@ -438,7 +438,7 @@ module Engine2
         def select *args, use_pk: true, &blk
             ds = assets[:model].select(*args, &blk)
             ds = ds.ensure_primary_key if use_pk
-            ds.setup!(@meta[:field_list] = [])
+            ds.setup_query(@meta[:field_list] = [])
         end
     end
 
