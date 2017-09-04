@@ -9,7 +9,7 @@ module Sequel
                 when Sequel::SQL::QualifiedIdentifier
                     sel.column
                 when Sequel::SQL::AliasedExpression
-                    Sequel::SQL::Identifier.new sel.aliaz
+                    Sequel::SQL::Identifier.new sel.alias
                 else
                     sel # symbol ?
                 end
