@@ -30,6 +30,16 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     # $qProvider.errorOnUnhandledRejections(false)
     # $locationProvider.hashPrefix('')
     # $locationProvider.html5Mode(false)
+    $provide.decorator 'ngModelDirective', ($delegate) ->
+        directive = $delegate[0]
+        compile = directive.compile
+        directive.compile = (elem, attrs, trans) ->
+            comp = compile(elem, attrs, trans)
+            pre: comp.pre
+            post: (scope, element, attr, ctrls) ->
+                ctrls[0].$parsers.push (vw) -> if vw == "" then null else vw
+                comp.post(scope, element, attr, ctrls)
+        $delegate
 
 .factory 'PushJS', -> require 'push.js'
 .factory 'MetaCache', ($cacheFactory) -> $cacheFactory('MetaCache')
