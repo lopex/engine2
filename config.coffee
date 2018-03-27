@@ -9,7 +9,7 @@ exports.config =
         "bootstrap-additions": ["dist/bootstrap-additions.css"]
         "angular-motion": ["dist/angular-motion.css"]
         "angular-ui-tree": ["dist/angular-ui-tree.css"]
-        "font-awesome": ["css/font-awesome.css"]
+        "fork-awesome": ["css/fork-awesome.css"]
 
   modules:
     definition: 'commonjs'
@@ -64,7 +64,7 @@ exports.config =
 
     copycat:
       fonts: [
-        "node_modules/font-awesome/fonts"
+        "node_modules/fork-awesome/fonts"
         "node_modules/bootstrap/fonts"
       ]
       verbose: true
