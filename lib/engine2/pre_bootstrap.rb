@@ -30,6 +30,12 @@ module Sequel
         end
     end if defined?(JDBC::AS400)
 
+    class JDBC::AS400::Dataset
+        def supports_where_true?
+            false
+        end
+    end if defined?(JDBC::AS400)
+
     module SchemaCaching
       def load_schema_cache(file)
         @schemas = Marshal.load(File.read(file, mode: 'rb'))
