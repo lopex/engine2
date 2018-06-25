@@ -24,6 +24,10 @@ module Sequel
             rs.getInt(1)
           end
         end
+
+        def valid_connection_sql
+            'select 1 from sysibm.sysdummy1'
+        end
     end if defined?(JDBC::AS400)
 
     module SchemaCaching
