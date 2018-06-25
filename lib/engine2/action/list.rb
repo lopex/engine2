@@ -205,7 +205,7 @@ module Engine2
                 if h.initial? && nd = node.parent.nodes[:decode_entry]
                     action = nd.*
                     rec = action.invoke_decode(h, [[h.params[:parent_id]]]).first
-                    panel_title "#{static.panel[:title]} - #{rec}"
+                    panel_title "#{static.panel[:title]} - #{action.meta[:decode_fields].map{|f|rec[f]}.join(action.meta[:separator])}"
                 end
             end
         end
