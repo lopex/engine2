@@ -39,8 +39,8 @@ module Engine2
                     else
                         query.where(from ? name >= from.to_i : name <= to.to_i)
                     end
-                elsif value.is_a? Integer
-                    query.where(name => value)
+                elsif value.is_a?(Integer) || value.is_a?(String)
+                    query.where(name => value.to_i)
                 elsif value.is_a? Array
                     if !value.empty?
                         case type_info[:type]
