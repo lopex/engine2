@@ -383,7 +383,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     dropdown_sub_tmpl = _.template("<li class='dropdown-submenu' {{show}} {{hide}}><a href=''> {{icon}} {{loc}}</a>{{sub}}</li>")
     dropdown_tmpl = _.template("<li {{clazz}} {{show}} {{hide}} {{active}}> <a {{href}} {{click}}> {{icon}} {{loc}}</a></li>")
 
-    render = (menu, href_attr) ->
+    render = (menu, nav) ->
         out = menu.map (m) ->
             switch
                 when m.divider
@@ -394,14 +394,14 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                         loc: m.menu.loc
                         show: m.menu.show && "ng-show=\"#{m.menu.show}\"" || ''
                         hide: m.menu.hide && "ng-hide=\"#{m.menu.hide}\"" || ''
-                        sub: render(m.menu.entries, href_attr)
+                        sub: render(m.menu.entries, nav)
                 else
                     dropdown_tmpl
                         clazz: E2Snippets.make_ng_class(m)
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
-                        href: m.href && "#{href_attr ? 'href'}=\"#{m.href}\"" || ''
-                        active: href_attr && "ui-sref-active='active'" || ''
+                        href: m.href && "#{if nav then 'ui-sref' else 'href'}=\"#{m.href}\"" || ''
+                        active: nav && "ui-sref-active='active'" || ''
                         click: m.click && "ng-click=\"#{m.click}\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         loc: m.loc
@@ -417,7 +417,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             # event.preventDefault()
             # event.stopPropagation()
             menu = $parse(attrs.e2Dropdown)(scope)
-            dropdown = $dropdown(elem, (scope: scope, template: render(menu, attrs.hrefAttr), animation: attrs.animation || 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
+            dropdown = $dropdown(elem, (scope: scope, template: render(menu, attrs.nav?), animation: attrs.animation || 'am-flip-x', prefixEvent: "#{event_num}.tooltip")) # , delay: 1
             dropdown.$promise.then ->
                 event_hide = scope.$on "#{event_num}.tooltip.hide", (e) ->
                     e.stopPropagation()
