@@ -1200,7 +1200,9 @@ module Engine2
             end
         },
         time: lambda{|action, field, info|
-            action.fields(field)[:render].merge! format: info[:format], model_format: info[:model_format]
+            render = action.fields(field)[:render]
+            render[:type] ||= info[:otype] == :string ? :string : :number
+            render.merge! format: info[:format], model_format: info[:model_format]
         },
         decimal_date: lambda{|action, field, info|
             FormRendererPostProcessors[:date].(action, field, info)

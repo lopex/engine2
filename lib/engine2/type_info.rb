@@ -83,7 +83,13 @@ module Engine2
         end
 
         def time_field field, format, model_format
-            define_field field, :time do |info|
+            define_field field, :time
+            time field
+        end
+
+        def time field, format, model_format
+            modify_field field do |info|
+                info[:type] = :time
                 info[:format] = format
                 info[:model_format] = model_format
                 info[:validations][:time] = true
