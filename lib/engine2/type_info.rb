@@ -70,7 +70,15 @@ module Engine2
         end
 
         def boolean_field field
-            define_field field, :boolean do |info|
+            define_field field, :boolean
+        end
+
+        def boolean field, true_value = 1, false_value = 0
+            modify_field field do |info|
+                info[:type] = :boolean
+                info[:true_value] = true_value
+                info[:false_value] = false_value
+                info[:validations][:boolean] = true
             end
         end
 
@@ -248,15 +256,6 @@ module Engine2
             modify_field date do |info|
                 info[:other_time] = time
                 info[:validations][:date_time] = true
-            end
-        end
-
-        def boolean field, true_value = 1, false_value = 0
-            modify_field field do |info|
-                info[:type] = :boolean
-                info[:true_value] = true_value
-                info[:false_value] = false_value
-                info[:validations][:boolean] = true
             end
         end
 
