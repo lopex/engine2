@@ -272,7 +272,7 @@ module Engine2
         },
         list_select: lambda{|record, field, info|
             value = record.values[field]
-            LOCS[:invalid_list_value] unless info[:list].any?{|a|a.first == value}
+            LOCS[:invalid_list_value] unless info[:values].any?{|a|a.first == value}
         },
         decimal: lambda{|record, field, info|
             value = record.values[field]

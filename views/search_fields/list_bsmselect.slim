@@ -5,7 +5,7 @@
         type="button"
         ng-init="action.query.search[f] = action.query.search[f] || []"
         ng-model="action.query.search[f]"
-        bs-options="v[0] as v[1] for v in field.render.list"
+        bs-options="v[0] as v[1] for v in field.render.values"
         data-html="true"
         ng-change="action.search_field_change(f)"
         ng-class="field.render.class"

@@ -317,12 +317,12 @@ module Engine2
         def list_select name, options
             modify_field name do |info|
                 info[:type] = :list_select
-                list = options[:values]
-                info[:list] = case list
+                values = options[:values]
+                info[:values] = case values
                     when Hash
-                        list.to_a
+                        values.to_a
                     else
-                        raise E2Error.new("type '#{list.class}' not supported for list_select modifier for field #{name}")
+                        raise E2Error.new("type '#{values.class}' not supported for list_select modifier for field #{name}")
                 end
                 info[:validations][:list_select] = true
             end

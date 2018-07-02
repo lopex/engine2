@@ -2,7 +2,7 @@
 div e2-input-cols="{{::field.render.length}}"
   select.btn.btn-default.btn-sm [
     ng-model="action.record[f]"
-    ng-options="v[0] as v[1] for v in field.render.list"
+    ng-options="v[0] as v[1] for v in field.render.values"
     ng-disabled="field.disabled"
     ng-class="field.render.class"
     class="form-control input-sm"

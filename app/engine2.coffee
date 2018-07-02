@@ -224,7 +224,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 when render.false_value then E2Snippets.boolean_false_value
                 else "?"
         list_select: (value, render) ->
-            render.list_hash ||= render.list.reduce(((h, [a, b]) -> h[a] = b; h), {})
+            render.list_hash ||= render.values.reduce(((h, [a, b]) -> h[a] = b; h), {})
             render.list_hash[value] ? value
         datetime: (value, render) ->
             value.split('\.')[0]

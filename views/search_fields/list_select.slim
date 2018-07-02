@@ -3,7 +3,7 @@
     .input-group.input-group-sm
       select.btn.btn-default [
         ng-model="action.query.search[f]"
-        ng-options="v[0] as v[1] for v in field.render.list"
+        ng-options="v[0] as v[1] for v in field.render.values"
         ng-change="action.search_field_change(f)"
         ng-class="field.render.class"
         class="form-control"

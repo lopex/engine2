@@ -3,7 +3,7 @@ div e2-input-cols="{{::field.render.length}}"
   button.btn.btn-default.btn-sm [
     type="button"
     ng-model="action.record[f]"
-    bs-options="v[0] as v[1] for v in field.render.list"
+    bs-options="v[0] as v[1] for v in field.render.values"
     data-html="true"
     ng-disabled="field.disabled"
     ng-class="field.render.class"

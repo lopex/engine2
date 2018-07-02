@@ -1224,7 +1224,7 @@ module Engine2
         #     action.fields[field][:decimal_date] = true if info[:validations][:decimal_date]
         # },
         list_select: lambda{|action, field, info|
-            action.fields(field)[:render].merge! list: info[:list]
+            action.fields(field)[:render].merge! values: info[:values]
         },
         many_to_one: lambda{|action, field, info|
             field_info = action.fields(field)
@@ -1256,7 +1256,7 @@ module Engine2
         list_select: lambda{|action, field, info|
             action.fields! field, type: :list_select
             action.fields(field)[:render] ||= {}
-            action.fields(field)[:render].merge! list: info[:list]
+            action.fields(field)[:render].merge! values: info[:values]
         },
         datetime: lambda{|action, field, info|
             action.fields! field, type: :datetime
@@ -1327,14 +1327,14 @@ module Engine2
         boolean: lambda{|action, info| Templates.checkbox_buttons(optional: !info[:required])},
         currency: lambda{|action, info| Templates.currency},
         list_select: lambda{|action, info|
-            length = info[:list].length
+            length = info[:values].length
             if length <= 3
                 Templates.list_buttons(optional: !info[:required])
             elsif length <= 15
-                max_length = info[:list].max_by{|a|a.last.length}.last.length
+                max_length = info[:values].max_by{|a|a.last.length}.last.length
                 Templates.list_bsselect(max_length, optional: !info[:required])
             else
-                max_length = info[:list].max_by{|a|a.last.length}.last.length
+                max_length = info[:values].max_by{|a|a.last.length}.last.length
                 Templates.list_select(max_length, optional: !info[:required])
             end
         },
@@ -1358,7 +1358,7 @@ module Engine2
         string: lambda{|action, info| SearchTemplates.input_text},
         boolean: lambda{|action, info| SearchTemplates.checkbox_buttons},
         list_select: lambda{|action, info|
-            length = info[:list].length
+            length = info[:values].length
             if length <= 3
                 SearchTemplates.list_buttons
             elsif length <= 15
