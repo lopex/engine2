@@ -70,7 +70,8 @@ module Engine2
         end
 
         def boolean_field field
-            define_field field, :boolean
+            define_field field, :boolean do |info|
+            end
         end
 
         def boolean field, true_value = 1, false_value = 0
@@ -91,8 +92,9 @@ module Engine2
         end
 
         def time_field field, format, model_format
-            define_field field, :time
-            time field
+            define_field field, :time do |info|
+            end
+            time field, format, model_format
         end
 
         def time field, format, model_format
