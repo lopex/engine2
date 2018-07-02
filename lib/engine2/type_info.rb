@@ -314,9 +314,10 @@ module Engine2
             end
         end
 
-        def list_select name, list
+        def list_select name, options
             modify_field name do |info|
                 info[:type] = :list_select
+                list = options[:values]
                 info[:list] = case list
                     when Hash
                         list.to_a
