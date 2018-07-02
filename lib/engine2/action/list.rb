@@ -9,6 +9,8 @@ module Engine2
         (DefaultFilters ||= {}).merge!(
             string: lambda{|query, name, value, type_info, hash|
                 case type_info[:type]
+                when :list_select
+                    query.where(name => value)
                 when :many_to_one
                     query.where(name => value)
                 else
