@@ -317,6 +317,14 @@ module Engine2
         def list_select name, options
             modify_field name do |info|
                 info[:type] = :list_select
+                if options[:multiselect]
+                    info[:multiselect] = true
+                    info[:separator] = options[:separator] || ';'
+                    info[:max_length] = options[:max_length] || 3
+                    info[:max_length_html] = options[:max_length_html] || LOCS[:list_select_selected]
+                    info[:validations].delete(:string_length) # for now
+                end
+
                 values = options[:values]
                 info[:values] = case values
                     when Hash

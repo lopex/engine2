@@ -272,7 +272,14 @@ module Engine2
         },
         list_select: lambda{|record, field, info|
             value = record.values[field]
-            LOCS[:invalid_list_value] unless info[:values].any?{|a|a.first == value}
+            values = info[:values].map(&:first)
+
+            result = if info[:multiselect]
+                value.is_a?(Array) && (values - value).length == values.length - value.length
+            else
+                values.include?(value)
+            end
+            LOCS[:invalid_list_value] unless result
         },
         decimal: lambda{|record, field, info|
             value = record.values[field]
@@ -326,6 +333,9 @@ module Engine2
                 end
                 File.delete("#{upload}/#{value[:rackname]}")
             end
+        },
+        list_select: lambda{|record, field, info|
+            record.values[field] = record.values[field].join(info[:separator]) if info[:multiselect]
         }
     )
 
@@ -359,7 +369,7 @@ module Engine2
                 # record.model.where(id).update(info[:field] => Sequel.blob(open("#{upload}/#{value[:rackname]}", "rb"){|f|f.read}))
                 File.delete("#{upload}/#{value[:rackname]}")
             end
-        }
+        },
     )
 
     (BeforeDestroyProcessors ||= {}).merge!(

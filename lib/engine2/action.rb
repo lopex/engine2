@@ -1224,7 +1224,9 @@ module Engine2
         #     action.fields[field][:decimal_date] = true if info[:validations][:decimal_date]
         # },
         list_select: lambda{|action, field, info|
-            action.fields(field)[:render].merge! values: info[:values]
+            render = action.fields(field)[:render]
+            render.merge! values: info[:values]
+            render.merge! multiselect: true, max_length: info[:max_length], max_length_html: info[:max_length_html], separator: info[:separator] if info[:multiselect]
         },
         many_to_one: lambda{|action, field, info|
             field_info = action.fields(field)
@@ -1328,13 +1330,14 @@ module Engine2
         currency: lambda{|action, info| Templates.currency},
         list_select: lambda{|action, info|
             length = info[:values].length
-            if length <= 3
+            max_length = info[:values].map(&:last).max_by(&:length).length
+            if info[:multiselect]
+                Templates.list_bsmselect(max_length)
+            elsif length <= 3
                 Templates.list_buttons(optional: !info[:required])
             elsif length <= 15
-                max_length = info[:values].max_by{|a|a.last.length}.last.length
                 Templates.list_bsselect(max_length, optional: !info[:required])
             else
-                max_length = info[:values].max_by{|a|a.last.length}.last.length
                 Templates.list_select(max_length, optional: !info[:required])
             end
         },

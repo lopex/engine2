@@ -1,0 +1,20 @@
+/.col-lg-7.col-md-8.col-sm-12
+div e2-input-cols="{{::field.render.length}}"
+  button.btn.btn-default.btn-sm [
+    type="button"
+    ng-model="action.record[f]"
+    bs-options="v[0] as v[1] for v in field.render.values"
+    data-html="true"
+    ng-disabled="field.disabled"
+    ng-class="field.render.class"
+    class="form-control input-sm"
+
+    data-animation="{{::field.render.animation}}"
+    data-placeholder="..."
+    data-multiple="{{::field.render.multiselect}}"
+    data-max-length="{{::field.render.max_length}}"
+    data-max-length-html="{{::field.render.max_length_html}}"
+    bs-select=""
+
+    e2-field=""
+  ]

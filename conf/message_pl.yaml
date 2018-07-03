@@ -8,6 +8,7 @@
 :error:                         Błąd
 :no_entry:                      Wpis nie istnieje
 :decode_selected:               wybranych
+:list_select_selected:          Wybranych
 
 :name:                          Nazwa
 :mime:                          Mime

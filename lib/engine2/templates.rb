@@ -77,6 +77,14 @@ module Engine2
                 })
             end
 
+            def list_bsmselect length, options = {}
+                options.merge({
+                    template: "fields/list_bsmselect",
+                    length: length,
+                    animation: BS_ANIMATION
+                })
+            end
+
             def list_buttons options = {}
                 options.merge({
                     template: options[:optional] ? "fields/list_buttons_opt" : "fields/list_buttons"
