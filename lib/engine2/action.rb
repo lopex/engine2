@@ -1226,7 +1226,7 @@ module Engine2
         list_select: lambda{|action, field, info|
             render = action.fields(field)[:render]
             render.merge! values: info[:values]
-            render.merge! multiselect: true, max_length: info[:max_length], max_length_html: info[:max_length_html], separator: info[:separator] if info[:multiselect]
+            render.merge! max_length: info[:max_length], max_length_html: info[:max_length_html], separator: info[:separator] if info[:multiselect]
         },
         many_to_one: lambda{|action, field, info|
             field_info = action.fields(field)
