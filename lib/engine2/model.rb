@@ -111,7 +111,6 @@ module Engine2
         end
 
         def find_type_info name
-            # model = assets[:model]
             model = self
             info = case name
             when Symbol
