@@ -5,7 +5,7 @@ module Engine2
     module Model
         attr_reader :dummies
         attr_reader :many_to_one_associations, :one_to_many_associations, :many_to_many_associations #, :one_to_one_associations
-        attr_reader :before_save_processors, :after_save_processors, :before_destroy_processors, :after_destroy_processors
+        attr_reader :after_load_processors, :before_save_processors, :after_save_processors, :before_destroy_processors, :after_destroy_processors
         attr_reader :validation_in_transaction
 
         def self.extended cls
@@ -19,6 +19,7 @@ module Engine2
                 @many_to_many_associations = association_reflections.select{|n, a| a[:type] == :many_to_many}
                 # @one_to_one_associations = association_reflections.select{|n, a| a[:type] == :one_to_one}
                 @validation_in_transaction = nil
+                @after_load_processors = nil
                 @before_save_processors = nil
                 @after_save_processors = nil
                 @around_save_processors = nil
@@ -109,9 +110,28 @@ module Engine2
             end
         end
 
+        def find_type_info name
+            # model = assets[:model]
+            model = self
+            info = case name
+            when Symbol
+                model.type_info[name]
+            when Sequel::SQL::QualifiedIdentifier
+                assoc = model.many_to_one_associations[name.table] || model.many_to_many_associations[name.table]
+                raise E2Error.new("Association #{name.table} not found for model #{model}") unless assoc
+                assoc.associated_class.type_info[name.column]
+            else
+                raise E2Error.new("Unknown type info key: #{name} in model #{model}")
+            end
+
+            raise E2Error.new("Type info not found for '#{name}' in model '#{model}'") unless info
+            info
+        end
+
         def synchronize_type_info
             resolve_dependencies
             verify_associations
+            @after_load_processors = install_processors(AfterLoadProcessors)
             @before_save_processors = install_processors(BeforeSaveProcessors)
             @after_save_processors = install_processors(AfterSaveProcessors)
             @around_save_processors = {}
@@ -304,6 +324,12 @@ module Engine2
             else
                 nil
             end
+        }
+    )
+
+    (AfterLoadProcessors ||= {}).merge!(
+        list_select: lambda{|record, field, info|
+            record[field] = record[field].split(info[:separator]) if info[:multiselect]
         }
     )
 

@@ -328,6 +328,30 @@ module E2Model
     end
 
     module DatasetMethods
+        def load *args
+            result = self[*args]
+            model.after_load_processors.each do |name, proc|
+                proc.(result, name, model.type_info.fetch(name))
+            end if model.after_load_processors
+            result
+        end
+
+        def load_all
+            entries = self.all
+            apply_after_load_processors(model, entries) if model.after_load_processors
+            entries
+        end
+
+        def apply_after_load_processors model, entries
+            model.after_load_processors.each do |name, proc|
+                # type_info = model.type_info.fetch(name)
+                type_info = model.find_type_info(name)
+                entries.each do |entry|
+                    proc.(entry, name, type_info)
+                end
+            end
+        end
+
         def ensure_primary_key
             pk = model.primary_keys
             raise Engine2::E2Error.new("No primary key defined for model #{model}") unless pk && pk.all?

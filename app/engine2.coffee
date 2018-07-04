@@ -225,7 +225,10 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 else "?"
         list_select: (value, render) ->
             render.list_hash ||= render.values.reduce(((h, [a, b]) -> h[a] = b; h), {})
-            render.list_hash[value] ? value
+            if render.multiselect && _.isArray(value)
+                value.map((v) -> render.list_hash[v] ? ":#{value}:").join(', ')
+            else
+                render.list_hash[value] ? ":#{value}:"
         datetime: (value, render) ->
             value.split('\.')[0]
             # $dateFormatter.formatDate(value, "yyyy-MM-dd", $dateFormatter.getDefaultLocale())

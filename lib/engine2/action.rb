@@ -322,23 +322,6 @@ module Engine2
             show_fields *assets[:model].primary_keys
         end
 
-        def find_type_info name
-            model = assets[:model]
-            info = case name
-            when Symbol
-                model.type_info[name]
-            when Sequel::SQL::QualifiedIdentifier
-                assoc = model.many_to_one_associations[name.table] || model.many_to_many_associations[name.table]
-                raise E2Error.new("Association #{name.table} not found for model #{model}") unless assoc
-                assoc.associated_class.type_info[name.column]
-            else
-                raise E2Error.new("Unknown type info key: #{name} in model #{model}")
-            end
-
-            raise E2Error.new("Type info not found for '#{name}' in model '#{model}'") unless info
-            info
-        end
-
         # def parent_model_name
         #     model = @assets[:model]
         #     prnt = node.parent
@@ -432,7 +415,7 @@ module Engine2
         end
 
         def find_record handler, id
-            get_query[assets[:model].primary_keys_hash_qualified(split_keys(id))]
+            get_query.load assets[:model].primary_keys_hash_qualified(split_keys(id))
         end
 
         def select *args, use_pk: true, &blk
@@ -699,12 +682,13 @@ module Engine2
         # end
 
         def post_process
+            model = assets[:model]
             if fields = @meta[:search_field_list]
                 fields = fields - static.meta[:search_field_list] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|
-                    type_info = find_type_info(name)
+                    type_info = model.find_type_info(name)
 
                     # render = fields[name][:render]
                     # if not render
@@ -729,7 +713,7 @@ module Engine2
 
                 decorate(fields)
                 fields.each do |name|
-                    type_info = find_type_info(name)
+                    type_info = model.find_type_info(name)
                     proc = ListRendererPostProcessors[type_info[:type]]
                     proc.(self, name, type_info) if proc
                 end
@@ -773,7 +757,7 @@ module Engine2
         end
 
         def filter_case_insensitive name
-            raise E2Error.new("Field '#{name}' needs to be a string one") unless find_type_info(name)[:otype] == :string
+            raise E2Error.new("Field '#{name}' needs to be a string one") unless assets[:model].find_type_info(name)[:otype] == :string
             filter(name){|handler, query, hash| query.where(name.ilike("%#{hash[name]}%")) }
         end
 
@@ -979,12 +963,13 @@ module Engine2
 
         def post_process
             if fields = @meta[:field_list]
+                model = assets[:model]
                 fields = fields - static.meta[:field_list] if dynamic?
 
                 decorate(fields)
 
                 fields.each do |name|
-                    type_info = find_type_info(name)
+                    type_info = model.find_type_info(name)
 
                     fields(name)[:render] ||= begin
                         renderer = DefaultFormRenderers[type_info[:type]] # .merge(default: true)
@@ -1139,11 +1124,12 @@ module Engine2
 
         def post_process
             if fields = @meta[:field_list]
+                model = assets[:model]
                 fields = fields - static.meta[:field_list] if dynamic?
 
                 decorate(fields)
                 fields.each do |name|
-                    type_info = find_type_info(name)
+                    type_info = model.find_type_info(name)
                     proc = ListRendererPostProcessors[type_info[:type]]
                     proc.(self, name, type_info) if proc
                 end
@@ -1257,8 +1243,9 @@ module Engine2
         },
         list_select: lambda{|action, field, info|
             action.fields! field, type: :list_select
-            action.fields(field)[:render] ||= {}
-            action.fields(field)[:render].merge! values: info[:values]
+            render = (action.fields(field)[:render] ||= {})
+            render.merge! values: info[:values]
+            render.merge! multiselect: true if info[:multiselect]
         },
         datetime: lambda{|action, field, info|
             action.fields! field, type: :datetime

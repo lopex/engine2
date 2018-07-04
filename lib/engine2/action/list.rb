@@ -108,7 +108,7 @@ module Engine2
 
             query = query.limit(per_page, page)
 
-            res = {entries: query.all}
+            res = {entries: query.load_all}
             res[:count] = count if count
             res
         end
@@ -121,7 +121,7 @@ module Engine2
             hash.each_pair do |name, value|
                 handler.permit name = sfields.find{|sf|sf.to_sym == name}
 
-                type_info = find_type_info(name)
+                type_info = model.find_type_info(name)
                 query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
                     filter.(handler, query, hash)
                 elsif filter = DefaultFilters[type_info[:otype]]

@@ -55,7 +55,7 @@ module Engine2
         action_type :decode_list
 
         def invoke handler
-            {entries: get_query.limit(200).all}
+            {entries: get_query.limit(200).load_all}
         end
     end
 
@@ -79,7 +79,7 @@ module Engine2
         def invoke handler
             if query = handler.params[:query]
                 condition = @meta[:decode_fields].map{|f|f.send(@like, "%#{query}%")}.reduce{|q, f| q | f}
-                {entries: get_query.where(condition).limit(@limit).all}
+                {entries: get_query.where(condition).limit(@limit).load_all}
             else
                 handler.permit id = handler.params[:id]
                 record = get_query[Hash[assets[:model].primary_keys.zip(split_keys(id))]]
@@ -97,7 +97,7 @@ module Engine2
         end
 
         def invoke_decode handler, ids
-            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys.zip(keys)]}.reduce{|q, c| q | c}).all
+            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys.zip(keys)]}.reduce{|q, c| q | c}).load_all
             # handler.halt_not_found(LOCS[:no_entry]) if records.empty?
             records
         end
