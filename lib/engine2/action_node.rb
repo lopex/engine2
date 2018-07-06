@@ -38,7 +38,7 @@ module Engine2
         end
 
         def check_access! handler
-        	!@access_block || @access_block.(handler)
+            !@access_block || @access_block.(handler)
         end
 
         def run_scheme name, *args, &blk
