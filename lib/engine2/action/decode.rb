@@ -82,7 +82,7 @@ module Engine2
                 {entries: get_query.where(condition).limit(@limit).load_all}
             else
                 handler.permit id = handler.params[:id]
-                record = get_query[Hash[assets[:model].primary_keys.zip(split_keys(id))]]
+                record = get_query.load Hash[assets[:model].primary_keys.zip(split_keys(id))]
                 # handler.halt_not_found(LOCS[:no_entry]) unless record
                 {entry: record}
             end
