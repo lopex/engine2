@@ -331,7 +331,7 @@ module E2Model
         def load *args
             result = self[*args]
             model.after_load_processors.each do |name, proc|
-                proc.(result, name, model.type_info.fetch(name))
+                proc.(result, name, model.type_info.fetch(name)) if result.key?(name)
             end if model.after_load_processors
             result
         end
@@ -347,7 +347,7 @@ module E2Model
                 # type_info = model.type_info.fetch(name)
                 type_info = model.find_type_info(name)
                 entries.each do |entry|
-                    proc.(entry, name, type_info)
+                    proc.(entry, name, type_info) if entry.key?(name)
                 end
             end
         end
