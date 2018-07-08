@@ -223,14 +223,14 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 when render.true_value then E2Snippets.boolean_true_value
                 when render.false_value then E2Snippets.boolean_false_value
                 else "?"
-        list_select: (value, render) ->
+        list_select: (value, render, separator) ->
             render.list_hash ||= render.values.reduce(((h, [a, b]) -> h[a] = b; h), {})
             if render.multiselect && _.isArray(value)
-                value.map((v) -> render.list_hash[v] ? ":#{value}:").join(', ')
+                value.map((v) -> render.list_hash[v] ? ":#{value}:").join(separator)
             else
                 render.list_hash[value] ? ":#{value}:"
         datetime: (value, render) ->
-            value.split('\.')[0]
+            value.split('\.')[0].split(' ', 2).join(' ')
             # $dateFormatter.formatDate(value, "yyyy-MM-dd", $dateFormatter.getDefaultLocale())
         integer: (value, render) -> # ?
             value.toString()
@@ -245,12 +245,12 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             value.toString()
 
 
-    render_field: (entry, name, meta) ->
+    render_field: (entry, name, meta, separator) ->
         value = entry[name]
         if value? && info = meta.fields
             f_info = info[name]
             if f_info? && type = f_info.type
-                @renderers[type](value, f_info.render)
+                @renderers[type](value, f_info.render, separator)
             else
                 if f_info?.escape == false then value else
                     (value + "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")

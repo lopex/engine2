@@ -404,7 +404,7 @@ angular.module('Engine2')
             E2.id_for(@current_entry(), @meta)
 
         list_cell: (e, f) ->
-            E2.render_field(e, f, @meta)
+            E2.render_field(e, f, @meta, "<br>")
 
         invoke: (args = {}) ->
             @save_state()
@@ -493,7 +493,7 @@ angular.module('Engine2')
 
     view: class ViewAction extends Action
         view_cell: (e, f) ->
-            E2.render_field(e, f, @meta)
+            E2.render_field(e, f, @meta, "<br>")
 
     form_base_action: class FormBaseAction extends Action
         initialize: ->
@@ -643,7 +643,7 @@ angular.module('Engine2')
             @parentp().search_field_change?(@decode_field)
 
         decode_description: (entry) ->
-            @meta.decode_fields.map((f) => E2.render_field(entry, f, @meta)).join(@meta.separator)
+            @meta.decode_fields.map((f) => E2.render_field(entry, f, @meta, ', ')).join(@meta.separator)
 
         parentp: ->
             @parent().parent()
