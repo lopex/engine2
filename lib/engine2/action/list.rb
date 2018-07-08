@@ -10,7 +10,11 @@ module Engine2
             string: lambda{|query, name, value, type_info, hash|
                 case type_info[:type]
                 when :list_select
-                    query.where(name => value)
+                    if type_info[:multiselect]
+                        raise E2Error.new("Filter unimplemented for string multi list_select, field: '#{name.to_sym}'") # todo
+                    else
+                        query.where(name => value)
+                    end
                 when :many_to_one
                     query.where(name => value)
                 else
