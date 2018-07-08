@@ -65,7 +65,6 @@ module Engine2
         def pre_run
             super
             @limit = 10
-            @like = :like
         end
 
         def limit lmt
@@ -73,12 +72,12 @@ module Engine2
         end
 
         def case_insensitive
-            @like = :ilike
+            @case_insensitive = true
         end
 
         def invoke handler
             if query = handler.params[:query]
-                condition = @meta[:decode_fields].map{|f|f.send(@like, "%#{query}%")}.reduce{|q, f| q | f}
+                condition = @meta[:decode_fields].map{|f|f.like("%#{query}%", case_insensitive: @case_insensitive)}.reduce{|q, f| q | f}
                 {entries: get_query.where(condition).limit(@limit).load_all}
             else
                 handler.permit id = handler.params[:id]
