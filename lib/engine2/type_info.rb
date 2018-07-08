@@ -314,6 +314,10 @@ module Engine2
             end
         end
 
+        def list_select_bits values
+            values.each_with_index.map{|a, i|[1 << i, a]}.to_h
+        end
+
         def list_select name, options
             modify_field name do |info|
                 info[:type] = :list_select
