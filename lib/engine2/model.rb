@@ -328,7 +328,15 @@ module Engine2
 
     (AfterLoadProcessors ||= {}).merge!(
         list_select: lambda{|record, field, info|
-            record[field] = record[field].split(info[:separator]) if info[:multiselect]
+            value = record[field]
+            record[field] = case info[:otype]
+            when :string
+                 value.split(info[:separator])
+            when :integer
+                arr = []
+                value.bit_length.times{|i| arr << (1 << i) unless value[i].zero?}
+                arr
+            end if value && info[:multiselect]
         }
     )
 
@@ -360,7 +368,13 @@ module Engine2
             end
         },
         list_select: lambda{|record, field, info|
-            record.values[field] = record.values[field].join(info[:separator]) if info[:multiselect]
+            value = record.values[field]
+            record[field] = case info[:otype]
+            when :string
+                value.join(info[:separator]) if info[:multiselect]
+            when :integer
+                value.reduce(0, :|)
+            end if value && info[:multiselect]
         }
     )
 

@@ -54,7 +54,11 @@ module Engine2
                                 query.where(keys.map{|k| hash[k]}.transpose.map{|vals| Hash[keys.zip(vals)]}.reduce{|q, c| q | c})
                             end
                         when :list_select
-                            query.where(name => value) # decode in sql query ?
+                            if type_info[:multiselect]
+                                query.where(~{(Sequel[name] & value.reduce(0, :|)) => 0})
+                            else
+                                query.where(name => value) # decode in sql query ?
+                            end
                         when :integer
                             query
                         else
