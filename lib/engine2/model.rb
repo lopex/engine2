@@ -371,7 +371,7 @@ module Engine2
             value = record.values[field]
             record[field] = case info[:otype]
             when :string
-                value.join(info[:separator]) if info[:multiselect]
+                value.join(info[:separator])
             when :integer
                 value.reduce(0, :|)
             end if value && info[:multiselect]
