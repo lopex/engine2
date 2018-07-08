@@ -344,10 +344,10 @@ module E2Model
 
         def apply_after_load_processors model, entries
             model.after_load_processors.each do |name, proc|
-                # type_info = model.type_info.fetch(name)
                 type_info = model.find_type_info(name)
+                name_sym = name.to_sym
                 entries.each do |entry|
-                    proc.(entry, name, type_info) if entry.key?(name)
+                    proc.(entry, name_sym, type_info) if entry.key?(name_sym)
                 end
             end
         end
