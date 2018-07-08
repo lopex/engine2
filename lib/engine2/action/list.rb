@@ -55,7 +55,7 @@ module Engine2
                             end
                         when :list_select
                             if type_info[:multiselect]
-                                query.where(~{(Sequel[name] & value.reduce(0, :|)) => 0})
+                                query.where(~{(name.sql_number & value.reduce(0, :|)) => 0})
                             else
                                 query.where(name => value) # decode in sql query ?
                             end
