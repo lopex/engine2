@@ -545,7 +545,10 @@ module Engine2
             load 'engine2/models/UserInfo.rb'
             Dir["#{Engine2::SETTINGS.path_for(:model_path)}/*"].each{|m| load m}
             puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
-            Sequel::DATABASES.each &:dump_schema_cache_to_file
+            Sequel::DATABASES.each do |db|
+                db.dump_schema_cache_to_file
+                db.models.each{|n, m|m.synchronize_type_info}
+            end
 
             send(:remove_const, :ROOT) if defined? ROOT
             const_set(:ROOT, ActionNode.new(nil, :api, RootAction, {}))

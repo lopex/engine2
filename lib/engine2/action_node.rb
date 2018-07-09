@@ -162,7 +162,6 @@ module Engine2
             each_node do |node|
                 if model = node.*.assets[:model]
                     model_name = model.name.to_sym
-                    model.synchronize_type_info
                     model_nodes[model_name] = node.to_a_rec{|a| !a.*.assets[:assoc]}
                     node.run_scheme(model_name) if SCHEMES[model_name, false]
                     false
