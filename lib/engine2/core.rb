@@ -329,13 +329,14 @@ module E2Model
 
     module DatasetMethods
         def load *args
-            entry = self[*args]
-            model.after_load_processors.each do |name, proc|
-                type_info = model.find_type_info(name)
-                name_sym = name.to_sym
-                proc.(entry, name_sym, type_info) if entry.key?(name_sym)
-            end if model.after_load_processors
-            entry
+            if entry = self[*args]
+                model.after_load_processors.each do |name, proc|
+                    type_info = model.find_type_info(name)
+                    name_sym = name.to_sym
+                    proc.(entry, name_sym, type_info) if entry.key?(name_sym)
+                end if model.after_load_processors
+                entry
+            end
         end
 
         def load_all
