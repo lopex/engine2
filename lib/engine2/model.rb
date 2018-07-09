@@ -139,18 +139,6 @@ module Engine2
             @type_info_synchronized = true
         end
 
-        def verify_associations
-            one_to_many_associations.each do |name, assoc|
-                other = assoc.associated_class
-                other_type_info = other.type_info
-                if other_keys = assoc[:keys]
-                    other_keys.each do |key|
-                        raise E2Error.new("No key '#{key}' found in model '#{other}' being related from #{self}") unless other_type_info[key]
-                    end
-                end
-            end
-        end
-
         def resolve_dependencies
             resolved = {}
             @type_info.each_pair do |name, info|
@@ -170,6 +158,18 @@ module Engine2
                 end
             end if deps
             resolved[name] = @type_info[name]
+        end
+
+        def verify_associations
+            one_to_many_associations.each do |name, assoc|
+                other = assoc.associated_class
+                other_type_info = other.type_info
+                if other_keys = assoc[:keys]
+                    other_keys.each do |key|
+                        raise E2Error.new("No key '#{key}' found in model '#{other}' being related from #{self}") unless other_type_info[key]
+                    end
+                end
+            end
         end
 
         attr_reader :scheme_name, :scheme_args
