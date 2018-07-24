@@ -8,10 +8,11 @@ require '@uirouter/angularjs'
 require 'ng-file-upload'
 require 'angular-load'
 require 'angular-drag-and-drop-lists'
+require 'ui-select'
 
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router', 'dndLists'])
+angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router', 'dndLists', 'ui.select'])
 .config ($httpProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->
