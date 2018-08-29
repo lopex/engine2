@@ -12,7 +12,11 @@ module Engine2
             },
             string: lambda{|entries, name, value, type_info, hash|
                 if type_info[:type] == :list_select
-                    entries.select{|e|e[name].to_s == value}
+                    if type_info[:multiselect]
+                        entries.select{|e|value.include?(e[name].to_s)}
+                    else
+                        entries.select{|e|e[name].to_s == value}
+                    end
                 else
                     entries.select{|e|e[name].to_s[value]}
                 end
