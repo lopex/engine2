@@ -11,7 +11,12 @@ module Engine2
                 entries.select{|e|e[name] == value}
             },
             string: lambda{|entries, name, value, type_info, hash|
-                entries.select{|e|e[name].to_s[value]}
+                if type_info[:type] == :list_select
+                    entries.select{|e|e[name].to_s == value}
+                else
+                    entries.select{|e|e[name].to_s[value]}
+                end
+
             },
             boolean: lambda{|*args| DefaultFilters[:exact].(*args)},
             integer: lambda{|entries, name, value, type_info, hash|
