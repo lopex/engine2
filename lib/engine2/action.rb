@@ -18,10 +18,13 @@ module Engine2
                 cls.http_method http_method
             end
 
-            def inherit
-                Class.new self do
+            def inherit &blk
+                cls = Class.new self do
                     action_type superclass.action_type
                 end
+
+                cls.instance_eval &blk if block_given?
+                cls
             end
         end
 
