@@ -46,9 +46,19 @@ module Engine2
             raise E2Error.new("Static action required") if dynamic?
         end
 
+        def check_anonymous_action_class name
+            raise E2Error.new("Defining method '#{name}'' for named class '#{self.class}', consider using #inherit") if self.class.name
+        end
+
+        def define_method name, &blk
+            check_anonymous_action_class name
+            self.class.class_eval{define_method name, &blk}
+        end
+
         def define_invoke &blk
             check_static_action
-            self.class.class_eval{define_method :invoke, &blk}
+            define_method :invoke, &blk
+            # self.class.class_eval{define_method :invoke, &blk}
         end
 
         def invoke! handler
