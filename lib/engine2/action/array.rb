@@ -43,6 +43,10 @@ module Engine2
             []
         end
 
+        def page_frame handler, entries
+            entries
+        end
+
         def invoke handler
             params = handler.params
             # if params[:initial] || params[:refresh]
@@ -63,7 +67,8 @@ module Engine2
                 entries = list_search(entries, handler, search)
             end
 
-            {entries: entries.drop(page).take(per_page), count: entries.size}
+            entries = page_frame(handler, entries.drop(page).take(per_page))
+            {entries: entries, count: entries.size}
         end
 
         def list_search entries, handler, search
