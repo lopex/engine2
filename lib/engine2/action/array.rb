@@ -67,8 +67,7 @@ module Engine2
                 entries = list_search(entries, handler, search)
             end
 
-            entries = page_frame(handler, entries.drop(page).take(per_page))
-            {entries: entries, count: entries.size}
+            {entries: page_frame(handler, entries[page, per_page]), count: entries.size}
         end
 
         def list_search entries, handler, search
