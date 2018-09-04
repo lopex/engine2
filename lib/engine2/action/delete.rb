@@ -22,7 +22,7 @@ module Engine2
                             unsupported_association assoc[:type]
                         end
 
-                        if assoc[:cascade] || from_assoc == assoc.associated_class.table_name
+                        if assoc[:delete] == :cascade || from_assoc == assoc.associated_class.table_name
                             ds.delete
                         else
                             raise Sequel::DestroyFailed.new("#{LOCS[:delete_restricted]}: #{name}") unless ds.empty?
