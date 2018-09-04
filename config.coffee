@@ -10,6 +10,7 @@ exports.config =
         "angular-motion": ["dist/angular-motion.css"]
         "angular-ui-tree": ["dist/angular-ui-tree.css"]
         "fork-awesome": ["css/fork-awesome.css"]
+        "ui-select": ["dist/select.css"]
 
   modules:
     definition: 'commonjs'
