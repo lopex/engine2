@@ -33,6 +33,14 @@ module Engine2
     SCHEMES.builtin.clear
     SCHEMES.instance_eval do
 
+        define_scheme :confirm do |name, action, options|
+            define_node :"confirm_#{name}", ConfirmAction do
+                self.*.panel_title options[:title]
+                self.*.message options[:message]
+                define_node name, action
+            end
+        end
+
         define_scheme :view do |name = :view|
             define_node name, ViewAction
         end
@@ -50,19 +58,13 @@ module Engine2
         end
 
         define_scheme :delete do
-            define_node :confirm_delete, ConfirmAction do
-                self.*.message LOCS[:delete_question]
-                self.*.panel_title LOCS[:confirm_delete_title]
-                define_node :delete, DeleteAction
-            end
+            run_scheme :confirm, :delete, DeleteAction,
+                message: LOCS[:delete_question], title: LOCS[:confirm_delete_title]
         end
 
         define_scheme :bulk_delete do
-            define_node :confirm_bulk_delete, ConfirmAction do
-                self.*.message LOCS[:delete_question]
-                self.*.panel_title LOCS[:confirm_bulk_delete_title]
-                define_node :bulk_delete, BulkDeleteAction
-            end
+            run_scheme :confirm, :bulk_delete, BulkDeleteAction,
+                message: LOCS[:delete_question], title: LOCS[:confirm_bulk_delete_title]
         end
 
         define_scheme :default do |name, model, options|
