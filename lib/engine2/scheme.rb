@@ -116,19 +116,13 @@ module Engine2
         # * to Many
         #
         define_scheme :star_to_many_unlink do
-            define_node :confirm_unlink, ConfirmAction do
-                self.*.message LOCS[:unlink_question]
-                self.*.panel_title LOCS[:confirm_unlink_title]
-                define_node :unlink, StarToManyUnlinkAction
-            end
+            run_scheme :confirm, :unlink, StarToManyUnlinkAction,
+                message: LOCS[:unlink_question], title: LOCS[:confirm_unlink_title]
         end
 
         define_scheme :star_to_many_bulk_unlink do
-            define_node :confirm_bulk_unlink, ConfirmAction do
-                self.*.message LOCS[:unlink_question]
-                self.*.panel_title LOCS[:confirm_bulk_unlink_title]
-                define_node :bulk_unlink, StarToManyBulkUnlinkAction
-            end
+            run_scheme :confirm, :bulk_unlink, StarToManyBulkUnlinkAction,
+                message: LOCS[:unlink_question], title: LOCS[:confirm_bulk_unlink_title]
         end
 
         define_scheme :star_to_many_link do
