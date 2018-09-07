@@ -208,13 +208,14 @@ module Engine2
 
         def post_run
             super
+            nd = node.parent.nodes[:decode_entry]
             request do |h|
-                if h.initial? && nd = node.parent.nodes[:decode_entry]
+                if h.initial?
                     action = nd.*
                     rec = action.invoke_decode(h, [split_keys(h.params[:parent_id])]).first
                     panel_title "#{static.panel[:title]} - #{action.meta[:decode_fields].map{|f|rec[f]}.join(action.meta[:separator])}"
                 end
-            end
+            end if nd
         end
     end
 
