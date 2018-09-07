@@ -167,6 +167,10 @@ module Engine2
         def split_keys id
             Sequel::split_keys(id)
         end
+
+        def join_keys id
+            Sequel::join_keys(id)
+        end
     end
 
     module ActionWebSocketSupport
@@ -914,7 +918,7 @@ module Engine2
             records = hash[node_name].to_a
             unless records.empty?
                 action = node.parent[:"#{assoc_name}!"][node_name].approve.*
-                parent_id = Sequel::join_keys(record.primary_key_values)
+                parent_id = join_keys(record.primary_key_values)
                 records.each do |arec|
                     rec = action.allocate_record(handler, arec)
                     action.validate_and_approve(handler, rec, parent_id, false)

@@ -241,7 +241,7 @@ module Engine2
         def list_context query, handler
             changes = handler.param_to_json(:changes)
             model = assets[:model]
-            unlinked = changes[:unlink].to_a + changes[:delete].to_a + changes[:modify].to_a.map{|m|Sequel::join_keys(model.primary_keys.map{|k|m[k]})}
+            unlinked = changes[:unlink].to_a + changes[:delete].to_a + changes[:modify].to_a.map{|m|join_keys(model.primary_keys.map{|k|m[k]})}
             linked = changes[:link]
             query = super(query, handler)
 
