@@ -15,6 +15,7 @@ exports.config =
   modules:
     definition: 'commonjs'
     wrapper: false
+    nameCleaner: (path) -> path
 
   paths:
     public: 'public'
