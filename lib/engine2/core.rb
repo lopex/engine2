@@ -199,6 +199,10 @@ module E2Model
     module InstanceMethods
         attr_accessor :skip_save_refresh, :validate_fields
 
+        def key? key
+            @values.key? key
+        end
+
         def has_primary_key?
             pk = self.pk
             pk.is_a?(Array) ? !pk.all?{|k|k.nil?} : !pk.nil?
