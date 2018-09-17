@@ -36,11 +36,4 @@ module Sequel
         end
     end if defined?(JDBC::AS400)
 
-    module SchemaCaching
-      def load_schema_cache(file)
-        @schemas = Marshal.load(File.read(file, mode: 'rb'))
-        nil
-      end
-    end
-
 end if defined? JRUBY_VERSION
