@@ -141,6 +141,10 @@ class Symbol
     def q col
         col.qualify self
     end
+
+    def loc
+        Engine2::LOCS[self]
+    end
 end
 
 module Faye
