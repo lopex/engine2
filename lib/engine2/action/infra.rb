@@ -251,7 +251,7 @@ module Engine2
             panel_title "#{:wrench.icon} Inspect"
             panel_class "modal-huge"
             panel[:backdrop] = true
-            menu(:panel_menu).option :cancel, icon: "remove"
+            menu(:panel_menu).option :close, icon: "remove"
         end
     end
 

@@ -1116,7 +1116,7 @@ module Engine2
             panel_title "#{LOCS[:view_title]} - #{LOCS[assets[:model].table_name]}"
             panel[:backdrop] = true
 
-            menu(:panel_menu).option :cancel, icon: "remove"
+            menu(:panel_menu).option :close, icon: "remove"
             node.parent.*.menu(:item_menu).option node.name, icon: "file", button_loc: false
         end
 

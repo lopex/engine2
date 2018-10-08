@@ -52,6 +52,7 @@
 :save:                          Save
 :approve:                       Approve
 :cancel:                        Cancel
+:close:                         Close
 
 :inspect_modal:                 Inspect
 

@@ -164,7 +164,7 @@ module Engine2
         action_type :star_to_many_list
         def pre_run
             super
-            menu(:panel_menu).option_at 0, :cancel, icon: "remove"
+            menu(:panel_menu).option_at 0, :close, icon: "remove"
             panel_title "#{:list.icon} #{LOCS[assets[:assoc][:name]]}"
         end
 

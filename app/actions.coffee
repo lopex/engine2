@@ -197,6 +197,9 @@ angular.module('Engine2')
         panel_menu_cancel: ->
             @panel_close()
 
+        panel_menu_close: ->
+            @panel_close()
+
         websocket_connect: ->
             l = $location
             ws_meta = @meta.websocket
