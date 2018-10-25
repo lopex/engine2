@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module Engine2
-    MAJOR, MINOR, TINY = [1, 0, 6]
+    MAJOR, MINOR, TINY = [1, 0, 7]
     VERSION = [MAJOR, MINOR, TINY].join('.').freeze
     def self.version
         VERSION
