@@ -9,7 +9,7 @@
     "build": "brunch build --production"
   },
   "dependencies": {
-    "@uirouter/angularjs": "^1.0.21",
+    "@uirouter/angularjs": "^1.0.22",
     "angular": "^1.7.6",
     "angular-animate": "^1.7.6",
     "angular-cookies": "^1.7.6",
