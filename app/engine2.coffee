@@ -354,9 +354,10 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                     title = if info.title then "title=\"#{info.title}\"" else ""
                     if info.sort
                         thead += "<a ng-click=\"action.order('#{f}')\" #{title}><strong>#{info.loc}</strong></a>"
-                        if action.ui.order == f
-                            cls = if action.ui.asc then "glyphicon-chevron-up" else "glyphicon-chevron-down"
-                            thead += " <span class=\"glyphicon #{cls}\"></span>"
+                        thead += if action.ui.order == f
+                            " <span class=\"fa fa-arrow-#{if action.ui.asc then "up" else "down"}\"></span>"
+                        else
+                            " <span class=\"fa fa-sort\"></span>"
                     else
                         thead += "<span #{title}>#{info.loc}</span>"
                     thead += "</th>"
