@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
     spec.add_dependency 'slim', '~> 4.0'
     spec.add_dependency 'faye-websocket', '~> 0.10'
 
-    spec.add_development_dependency "bundler", "~> 1.11"
+    spec.add_development_dependency "bundler", "~> 2.00"
     spec.add_development_dependency "rake", "~> 12"
 end
