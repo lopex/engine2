@@ -171,6 +171,7 @@ module Engine2
             end
 
             thefts = 0
+            panels = 0
             each_node do |node|
                 action = node.*
                 model = action.assets[:model]
@@ -193,12 +194,14 @@ module Engine2
             end
 
             each_node do |node|
-                node.*.post_run
-                node.*.freeze_action
+                meta = node.*
+                meta.post_run
+                meta.freeze_action
+                panels += 1 if node.*.is_a? ActionPanelSupport
                 true
             end
 
-            ::Kernel::puts "ACTION NODES: #{ActionNode.count}, Time: #{::Time.now - time}, Thefts: #{thefts}"
+            ::Kernel::puts "ACTION NODES: #{ActionNode.count}, Panels: #{panels},  Time: #{::Time.now - time}, Thefts: #{thefts}"
         end
 
         def p *args
