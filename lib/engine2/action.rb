@@ -907,6 +907,7 @@ module Engine2
                                 nd.confirm_unlink.unlink.*.invoke_unlink_db(handler, record.primary_key_values, hash[:unlink].to_a) unless hash[:unlink].to_a.empty?
                             end
                         end
+                        after_save(handler, record)
                         result
                     end
                 end
@@ -927,6 +928,9 @@ module Engine2
                     end unless rec.errors.empty?
                 end
             end
+        end
+
+        def after_save handler, record
         end
     end
 
