@@ -378,12 +378,8 @@ module Engine2
 
             case at
             when :list #, :star_to_many_list, :many_to_one_list # list dropdowns
-                divider = false
                 model.one_to_many_associations.merge(model.many_to_many_associations).each do |assoc_name, assoc|
                     unless assoc[:propagate] == false
-                        menu(:item_menu).divider unless divider
-                        divider ||= true
-                        menu(:item_menu).option :"#{assoc_name}!", icon: "list" # , click: "action.show_assoc($index, \"#{assoc_name}!\")"
                         node.run_scheme :star_to_many, :"#{assoc_name}!", assoc
                     end
                 end
