@@ -119,8 +119,10 @@ module Engine2
             slim name.to_sym
         end
 
-        set :slim, pretty: true, sort_attrs: false
-        set :sessions, expire_after: 3600 # , :httponly => true, :secure => production?
+        production = environment == :production
+
+        set :slim, pretty: !production, sort_attrs: false
+        set :sessions, expire_after: 3600, httponly: production # , secure: production
 
         helpers do
             def find_template(views, name, engine, &block)
