@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
     spec.homepage      = "http://none.for.now"
     spec.license       = 'MIT'
 
-    spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
+    spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR) rescue []
     spec.require_paths = ["lib"]
 
     spec.add_dependency "sequel", '~> 5'
