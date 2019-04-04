@@ -174,7 +174,7 @@ class Sequel::Database
     attr_accessor :models, :default_schema
 
     def cache_file
-        "#{Engine2::SETTINGS.path_for(:db_path)}/#{opts[:orig_opts][:name]}.dump"
+        "#{Engine2::SETTINGS.path_for(:db_path)}/#{opts[:orig_opts][:name]}.schema_cache"
     end
 
     def load_schema_cache_from_file
