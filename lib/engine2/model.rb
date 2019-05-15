@@ -54,12 +54,12 @@ module Engine2
                     when :integer
                         integer_field name
                     when :string
-                        if db_info[:db_type] == 'text'
-                            string_field name, 10
+                        string_field name, case db_info[:db_type]
+                        when 'text', 'character varying'
+                            100
                         else
-                            string_field name, Integer(db_info[:column_size] || db_info[:db_type][/\((\d+)\)/, 1])
+                            Integer(db_info[:column_size] || db_info[:db_type][/\((\d+)\)/, 1])
                         end
-
                     when :time
                         time_field name, LOCS[:default_time_format], LOCS[:default_time_model_format]
                     when :date

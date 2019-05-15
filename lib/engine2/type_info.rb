@@ -244,6 +244,12 @@ module Engine2
             end
         end
 
+        def length field, len
+            modify_field field do |info|
+                info[:length] = len
+            end
+        end
+
         def date_range from, to
             depends_on(from, to)
             modify_field from do |info|
