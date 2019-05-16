@@ -6,12 +6,12 @@ task :compile_slim do
         Dir["views/#{view_dir}/*.slim"].map do |slim_file|
             slim = Slim::Template.new(slim_file).render.gsub('"', '\"')
             tpl_name =  slim_file.sub("views/", "").sub(".slim", "")
-            "$templateCache.put('#{tpl_name}', \"#{slim}\");"
+            "c.put('#{tpl_name}', \"#{slim}\");"
         end
     end
 
     open("app/templates.js", "wb") << <<-EOF
-angular.module('Engine2').run(['$templateCache', function($templateCache) {
+angular.module('Engine2').run(['$templateCache', function(c) {
 #{slims.join("\n")}
 }]);
 EOF
