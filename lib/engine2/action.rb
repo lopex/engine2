@@ -642,7 +642,7 @@ module Engine2
             config.merge!(per_page: 10, use_count: false, selectable: true) # search_active: false,
 
             panel_template 'scaffold/list'
-            panel_title "#{:list.icon} #{LOCS[assets[:model].name.to_sym]}"
+            panel_title "#{assets[:model].model_icon.icon} #{LOCS[assets[:model].name.to_sym]}"
             loc! LOCS[:list_locs]
             menu :menu do
                 properties break: 2, group_class: "btn-group-xs"
