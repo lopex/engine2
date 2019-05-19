@@ -20,7 +20,7 @@
                 e2-include template="field.render.template"
 
       .btn-group.btn-group-sm.pull-right
-        button.btn.btn-default ng-click="action.load_new()" ng-if="::!action.meta.disable_search_button"
+        button.btn.btn-default ng-click="action.load_new()" ng-hide="::action.meta.disable_search_button"
           span ng-bind="::action.meta.loc.search"
           span.glyphicon.glyphicon-zoom-in<
         button.btn.btn-default ng-click="action.search_reset()" title="Reset"
