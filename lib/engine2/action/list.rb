@@ -165,7 +165,7 @@ module Engine2
         def pre_run
             super
             menu(:panel_menu).option_at 0, :close, icon: "remove"
-            panel_title "#{:list.icon} #{LOCS[assets[:assoc][:name]]}"
+            panel_title "#{assets[:model].model_icon.icon} #{LOCS[assets[:assoc][:name]]}"
         end
 
         def list_context query, handler

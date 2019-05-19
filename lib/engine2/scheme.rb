@@ -133,7 +133,7 @@ module Engine2
         end
 
         define_scheme :star_to_many do |assoc_name, assoc, model|
-            action.menu(:item_menu).option assoc_name, icon: "list" # , click: "action.show_assoc($index, \"#{assoc_name}!\")"
+            action.menu(:item_menu).option assoc_name, icon: Kernel::const_get(assoc[:class_name]).model_icon # , click: "action.show_assoc($index, \"#{assoc_name}!\")"
             options = assoc[:options] || Schemes::LINK
             define_node assoc_name, StarToManyListAction, model: model, assoc: assoc do
                 options.each{|k, v| run_scheme(k) if v}

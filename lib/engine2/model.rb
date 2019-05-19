@@ -26,6 +26,7 @@ module Engine2
                 @before_destroy_processors = nil
                 @after_destroy_processors = nil
                 @type_info_synchronized = nil
+                @model_icon = :"list"
             end
             cls.setup_schema
         end
@@ -180,6 +181,9 @@ module Engine2
             SCHEMES::define_scheme name.to_sym, &blk
         end
 
+        def model_icon icn = nil
+            icn ? @model_icon = icn : @model_icon
+        end
     end
 
     # def define_dummy_model
