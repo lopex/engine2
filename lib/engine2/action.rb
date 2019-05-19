@@ -745,7 +745,10 @@ module Engine2
         end
 
         def search_live *flds
-            flds = @meta[:search_field_list] if flds.empty?
+            if flds.empty?
+                flds = @meta[:search_field_list]
+                @meta[:disable_search_button] = true
+            end
             fields! *flds, search_live: true
         end
 
