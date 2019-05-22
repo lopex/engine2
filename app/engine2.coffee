@@ -516,7 +516,9 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             when "decimal_date"
                 match = value.match(/^(\d{4}|\d{2})(\d{2})(\d{2})$/)
                 if match then match.slice(1, 4).join('-') else value
-            else value
+            else
+                match = value.match(/(.*)(?:\s[-+]\d+)$/)
+                if match then match[1] else value
 
     scope: true
     require: 'ngModel'
