@@ -501,7 +501,8 @@ module Engine2
         model_path: 'models',
         view_path: 'views',
         asset_path: 'assets',
-        conf_path: 'conf'
+        conf_path: 'conf',
+        log_path: 'log'
     }
 
     def SETTINGS.path_for path
