@@ -62,7 +62,8 @@ tr.tr_hover {
 }
 
 textarea {
-  white-space: nowrap;
+  /*white-space: nowrap;*/
+  white-space: pre-wrap;
 }
 
 /*.modal-backdrop{
