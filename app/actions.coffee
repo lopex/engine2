@@ -203,7 +203,7 @@ angular.module('Engine2')
         websocket_connect: ->
             l = $location
             ws_meta = @meta.websocket
-            ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}#{window.location.pathname}#{@action_info().action_resource}", undefined, ws_meta.options
+            ws = $websocket "ws#{l.protocol().slice(4, 5)}://#{l.host()}:#{l.port()}#{'/'}#{@action_info().action_resource}", undefined, ws_meta.options
             _.each @globals().ws_methods, (method) =>
                 ws_method_impl = @["ws_#{method}"]
                 ws["on#{_.capitalize(method)}"] (evt) =>
