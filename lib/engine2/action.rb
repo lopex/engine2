@@ -676,6 +676,8 @@ module Engine2
         end
 
         def post_run
+            super
+
             unless panel[:class]
                 panel_class case @meta[:field_list].size
                 when 1..3; ''
@@ -684,7 +686,6 @@ module Engine2
                 end
             end
 
-            super
             @meta[:primary_fields] = assets[:model].primary_keys
         end
 
