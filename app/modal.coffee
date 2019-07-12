@@ -97,10 +97,15 @@ angular.module('Engine2')
                     modal.show()
                     modal
 
-        error: (title, msg, html) ->
-            body = if html then msg else "<div class='alert alert-danger'>#{msg}</div>"
-            clazz = if html then "modal-huge" else "modal-large"
+        show_modal: (title, msg, options = {html: false, alert_class: 'alert-danger', modal_class: 'modal-large'}) ->
+            body = if options.html then msg else "<div class='alert alert-#{options.alert_class}'>#{msg}</div>"
+            clazz = if options.html then "modal-huge" else options.modal_class
             @show meta: panel: (panel_template: "close_m", template_string: body, title: title, class: clazz, footer: true) # message: msg,
+
+
+        info: (title, msg, options = {alert_class: 'info', modal_class: 'modal-large'}) -> @show_modal(title, msg, options)
+        warning: (title, msg, options = {alert_class: 'warning', modal_class: 'modal-large'}) -> @show_modal(title, msg, options)
+        error: (title, msg, options = {alert_class: 'danger', modal_class: 'modal-huge'}) -> @show_modal(title, msg, options)
 
         confirm: (title, msg, action) ->
             body = "<div class='alert alert-warning'>#{msg}</div>"
