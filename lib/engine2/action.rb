@@ -645,7 +645,7 @@ module Engine2
             panel_title "#{assets[:model].model_icon.icon} #{LOCS[assets[:model].name.to_sym]}"
             loc! LOCS[:list_locs]
             menu :menu do
-                properties break: 2, group_class: "btn-group-xs"
+                properties break: 2, group_class: "btn-group-sm"
                 option :search_toggle, icon: "search", show: "action.meta.search_field_list", active: "action.ui_state.search_active", button_loc: false
                 # divider
                 option :refresh, icon: "refresh", button_loc: false
@@ -657,7 +657,7 @@ module Engine2
             end
 
             menu :item_menu do
-                properties break: 1, group_class: "btn-group-xs"
+                properties break: 1, group_class: "btn-group-sm"
             end
 
             @meta[:state] = [:query, :ui_state]
