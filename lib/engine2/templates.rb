@@ -171,6 +171,13 @@ module Engine2
                 })
             end
 
+            def date_picker options = {}
+                options.merge({
+                    template: "search_fields/date",
+                    animation: BS_ANIMATION
+                })
+            end
+
             def integer_range
                 {template: "search_fields/integer_range"}
             end
