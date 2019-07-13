@@ -525,20 +525,26 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     link: (scope, element, attr, controller) ->
         action = scope.action
         mode = attr.e2Datepicker
+        has_mode = !_.isEmpty(mode)
         field = scope.other_date ? scope.other_time ? scope.f
         info = action.meta.fields[field]
 
         if action.query
-            scope.value[mode] = parse(action.query.search[scope.f][mode], info)
-            scope.$on "search_reset", -> scope.value[mode] = null
+            f = action.query.search[scope.f]
+            if has_mode
+                scope.value[mode] = parse(f[mode], info)
+                scope.$on "search_reset", -> scope.value[mode] = null
+            else
+                scope.value = parse(f, info)
+                scope.$on "search_reset", -> scope.value = null
         else
             value = parse(action.record[field], info)
-            if mode then scope.value[mode] = value else scope.value = value
+            if has_mode then scope.value[mode] = value else scope.value = value
 
         scope.$watch attr.ngModel, (model, o) -> if model != o
             date = format(model, attr.e2ModelFormat)
             if action.query
-                action.query.search[scope.f][mode] = date
+                if has_mode then action.query.search[scope.f][mode] = date else action.query.search[scope.f] = date
                 scope.action.search_field_change(scope.f) if date?
             else
                 action.record[field] = date
