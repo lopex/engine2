@@ -22,7 +22,7 @@ module Engine2
                 end
 
             },
-            boolean: (lambda &DefaultFilters[:exact]),
+            boolean: lambda{|*args| DefaultFilters[:exact].(*args)},
             integer: lambda{|entries, name, value, type_info, hash|
                 if value.is_a? Hash
                     from, to = value[:from], value[:to]
