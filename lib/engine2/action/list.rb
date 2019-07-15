@@ -34,6 +34,13 @@ module Engine2
                     query.where(name => Sequel.string_to_date(value))
                 end
             },
+            datetime: lambda{|query, name, value, type_info, hash|
+                if value.is_a? Hash
+                    DefaultFilters[:date].(query, name, value, type_info, hash)
+                else
+                    query.where(:date.sql_function(name) => Sequel.string_to_date(value))
+                end
+            },
             integer: lambda{|query, name, value, type_info, hash|
                 if value.is_a? Hash
                     from, to = value[:from], value[:to]

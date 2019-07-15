@@ -1310,6 +1310,10 @@ module Engine2
             action.fields(field)[:render] ||= {}
             action.fields(field)[:render].merge! format: info[:format], model_format: info[:model_format] # Model::DEFAULT_DATE_FORMAT
         },
+        datetime: lambda{|action, field, info|
+            action.fields(field)[:render] ||= {}
+            action.fields(field)[:render].merge! format: info[:date_format], model_format: info[:date_model_format] # Model::DEFAULT_DATE_FORMAT
+        },
         decimal_date: lambda{|action, field, info|
             SearchRendererPostProcessors[:date].(action, field, info)
         }
@@ -1365,6 +1369,7 @@ module Engine2
 
     (DefaultSearchRenderers ||= {}).merge!(
         date: lambda{|action, info| SearchTemplates.date_range},
+        datetime: lambda{|action, info| SearchTemplates.date_range},
         decimal_date: lambda{|action, info| SearchTemplates.date_range},
         integer: lambda{|action, info| SearchTemplates.integer_range},
         string: lambda{|action, info| SearchTemplates.input_text},
