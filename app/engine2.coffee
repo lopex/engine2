@@ -535,8 +535,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 scope.value[mode] = parse(f[mode], info)
                 scope.$on "search_reset", -> scope.value[mode] = null
             else
-                scope.value = parse(f, info)
-                scope.$on "search_reset", -> scope.value = null
+                scope.value.at = parse(f, info)
+                scope.$on "search_reset", -> scope.value.at = null
         else
             value = parse(action.record[field], info)
             if has_mode then scope.value[mode] = value else scope.value = value
