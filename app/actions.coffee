@@ -215,7 +215,6 @@ angular.module('Engine2')
                     else msg = evt
                     ws_method_impl.bind(@)(msg, ws, evt) if ws_method_impl
                     @execute_commands() if @meta.execute
-                    delete @meta.execute
 
             @web_socket = -> ws
             @scope().$on "$destroy", -> ws.close()
@@ -223,6 +222,8 @@ angular.module('Engine2')
         execute_commands: ->
             scope = @scope()
             _.reduce(@meta.execute, ((pr, cmd) -> pr.then -> scope.$eval(cmd)), $q.when())
+            @meta.execute.splice(0, @meta.execute.length)
+            delete @meta.execute
 
         console_log: (o) ->
             console.log o
