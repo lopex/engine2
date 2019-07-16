@@ -93,4 +93,99 @@ module Engine2
             entries
         end
     end
+
+    class ArrayViewAction < Action
+        include ActionViewSupport
+
+        def find_record handler, id
+            node.parent.*.data_source(handler)[id.to_i]
+        end
+    end
+
+    class ArrayFormAction < Action
+    end
+
+    class ArrayCreateAction < ArrayFormAction
+        include ActionCreateSupport
+    end
+
+    class ArrayModifyAction < ArrayFormAction
+        include ActionModifySupport
+
+        def find_record handler, id
+            node.parent.*.data_source(handler)[id.to_i]
+        end
+    end
+
+    class ArrayDeleteAction < Action
+        include ActionDeleteSupport
+
+        def invoke handler
+            handler.permit id = handler.params[:id]
+            node.parent.parent.*.data_source(handler).delete_at(id.to_i)
+        end
+    end
+
+    class ArraySaveAction < Action
+        include ActionApproveSupport
+    end
+
+    class ArrayInsertAction < ArraySaveAction
+        include ActionInsertSupport
+        action_type :approve
+
+        def after_approve handler, record
+            # handler.permit id = record[:id]
+            # ds = node.parent.parent.*.data_source(handler)
+        end
+    end
+
+    class ArrayUpdateAction < ArraySaveAction
+        include ActionUpdateSupport
+        action_type :approve
+
+        def after_approve handler, record
+            handler.permit id = record[:id]
+            node.parent.parent.*.data_source(handler)[id].merge!(record.values)
+        end
+    end
+
+    class Schemes
+        Schemes::ARRAY_CRUD ||= {array_create: true, array_view: true, array_modify: true, array_delete: true}.freeze
+        Schemes::ARRAY_VIEW ||= {array_view: true}
+    end
+
+
+    SCHEMES.instance_eval do
+        define_scheme :array_view do |name = :view|
+            define_node name, ArrayViewAction
+        end
+
+        define_scheme :array_modify do |name = :modify|
+            define_node name, ArrayModifyAction do
+                define_node :approve, ArrayUpdateAction
+            end
+        end
+
+        define_scheme :array_create do |name = :create|
+            define_node name, ArrayCreateAction do
+                define_node :approve, ArrayInsertAction
+            end
+        end
+
+        define_scheme :array_delete do
+            run_scheme :confirm, :delete, ArrayDeleteAction,
+                message: LOCS[:delete_question], title: LOCS[:confirm_delete_title]
+        end
+
+        define_scheme :array do |name, model|
+            options ||= Schemes::ARRAY_CRUD
+            define_node name, ArrayListAction, model: model do
+                options.each{|k, v| run_scheme(k) if v}
+
+                define_node_bundle :form, :create, :modify if options[:array_create] && options[:array_modify]
+            end
+        end
+    end
+
 end

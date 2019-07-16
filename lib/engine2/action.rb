@@ -1042,7 +1042,7 @@ module Engine2
         def pre_run
             super
             panel_title "#{LOCS[:create_title]} - #{LOCS[assets[:model].table_name]}"
-            node.parent.*.menu(:menu).option_at 0, node.name, icon: "plus-sign", button_loc: false if node.parent.*.is_a?(ListAction)
+            node.parent.*.menu(:menu).option_at 0, node.name, icon: "plus-sign", button_loc: false if node.parent.*.is_a?(ActionListSupport)
 
             hide_pk unless assets[:model].natural_key
         end

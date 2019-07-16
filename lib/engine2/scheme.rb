@@ -236,10 +236,5 @@ module Engine2
                 end
             end
         end
-
-        define_scheme :array do |name, model|
-            define_node name, ArrayListAction, model: model do
-            end
-        end
     end
 end
