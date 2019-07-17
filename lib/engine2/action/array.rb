@@ -151,8 +151,8 @@ module Engine2
     end
 
     class Schemes
-        Schemes::ARRAY_CRUD ||= {array_create: true, array_view: true, array_modify: true, array_delete: true}.freeze
-        Schemes::ARRAY_VIEW ||= {array_view: true}
+        ARRAY_CRUD ||= {array_create: true, array_view: true, array_modify: true, array_delete: true}.freeze
+        ARRAY_VIEW ||= {array_view: true}
     end
 
 
