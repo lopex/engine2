@@ -24,7 +24,7 @@ module Engine2
 
             define_node :inspect_modal, InspectModalAction do
                 access! &:logged_in?
-                define_node :inspect, WebSocketAction.inherit do
+                define_node :"inspect_#{SETTINGS[:name]}", WebSocketAction.inherit do
                     self.* do
                         @action_type = :inspect
 
