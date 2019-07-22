@@ -44,7 +44,7 @@ exports.config =
     on: ["ng-annotate-brunch"]
 
     uglify:
-      mangle: false
+      mangle: true
       compress:
         global_defs:
           DEBUG: false
