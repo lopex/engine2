@@ -24,8 +24,8 @@ exports.config =
   files:
     javascripts:
       joinTo:
-        'engine2vendor.js': /^node_modules|bower_components/
-        'engine2.js': /^app/
+        'assets/engine2vendor.js': /^node_modules|bower_components/
+        'assets/engine2.js': /^app/
       order:
         before: [
           "app/engine2.coffee"
@@ -33,9 +33,9 @@ exports.config =
 
     stylesheets:
       joinTo:
-        'engine2vendor.css': /^node_modules\/(?!(bootstrap))/
-        'bootstrap.css': /^node_modules\/(bootstrap)/
-        'engine2.css': /^app/
+        'assets/engine2vendor.css': /^node_modules\/(?!(bootstrap))/
+        'assets/bootstrap.css': /^node_modules\/(bootstrap)/
+        'assets/engine2.css': /^app/
       order:
         before: [
           /bootstrap\.css$/
@@ -57,12 +57,12 @@ exports.config =
             fix = "$modal.$element = compileData.link(modalScope, function(clonedElement, scope) {});"
             find: fix.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
             replace: "#{fix}$modal.$backdrop = backdropElement;"
-        ),
-        files: [/\.css$/]
-        match: (
-            find: "../fonts"
-            replace: "fonts"
         )
+        # files: [/\.css$/]
+        # match: (
+        #     find: "../fonts"
+        #     replace: "fonts"
+        # )
       ]
 
     copycat:
