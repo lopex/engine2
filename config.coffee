@@ -33,11 +33,12 @@ exports.config =
 
     stylesheets:
       joinTo:
-        'engine2vendor.css': /^node_modules/
+        'engine2vendor.css': /^node_modules\/(?!(bootstrap))/
+        'bootstrap.css': /^node_modules\/(bootstrap)/
         'engine2.css': /^app/
       order:
         before: [
-          /bootstrap.css$/
+          /bootstrap\.css$/
         ]
 
   plugins:
@@ -51,13 +52,13 @@ exports.config =
 
     replacement:
       replacements: [
-        files: [/vendor.js$/]
+        files: [/vendor\.js$/]
         match: (
             fix = "$modal.$element = compileData.link(modalScope, function(clonedElement, scope) {});"
             find: fix.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
             replace: "#{fix}$modal.$backdrop = backdropElement;"
         ),
-        files: [/vendor\.css$/]
+        files: [/\.css$/]
         match: (
             find: "../fonts"
             replace: "fonts"
