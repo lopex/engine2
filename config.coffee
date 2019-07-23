@@ -36,10 +36,10 @@ exports.config =
         'assets/engine2vendor.css': /^node_modules\/(?!(bootstrap))/
         'assets/bootstrap.css': /^node_modules\/(bootstrap)/
         'assets/engine2.css': /^app/
-      order:
-        before: [
-          /bootstrap\.css$/
-        ]
+      # order:
+      #   before: [
+      #     /bootstrap\.css$/
+      #   ]
 
   plugins:
     on: ["ng-annotate-brunch"]
