@@ -33,8 +33,8 @@ exports.config =
 
     stylesheets:
       joinTo:
-        'assets/engine2vendor.css': /^node_modules\/(?!(bootstrap))/
-        'assets/bootstrap.css': /^node_modules\/(bootstrap)/
+        'assets/engine2vendor.css': /^node_modules\/(?!(bootstrap\/))/
+        'assets/bootstrap.css': /^node_modules\/(bootstrap\/)/
         'assets/engine2.css': /^app/
       # order:
       #   before: [
