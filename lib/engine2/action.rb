@@ -459,7 +459,7 @@ module Engine2
 
     module ActionAngularSupport
         def ng_execute expr
-            (@meta[:execute] ||= "") << expr + ";"
+            (@meta[:execute] ||= String.new) << expr + ";"
         end
 
         def ng_record! name, value
