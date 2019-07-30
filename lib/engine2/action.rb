@@ -588,7 +588,7 @@ module Engine2
     module ActionOnChangeSupport
         def on_change field, &blk
             node_name = :"#{field}_on_change"
-            nd = node.define_node node_name, (blk.arity > 2 ? OnChangeGetAction : OnChangePostAction)
+            nd = node.define_node node_name, (blk.arity <= 2 ? OnChangeGetAction : OnChangePostAction)
             nd.*{request &blk}
 
             fields! field, remote_onchange: node_name
