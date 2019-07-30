@@ -1,7 +1,7 @@
 /.col-lg-7.col-md-8.col-sm-12
 div e2-input-cols="{{::field.render.length}}"
   select.btn.btn-default.btn-sm [
-    multiple="false"
+    multiple="true"
     size="{{field.render.size}}"
     ng-model="action.record[f]"
     ng-options="v[0] as v[1] for v in field.render.values"
