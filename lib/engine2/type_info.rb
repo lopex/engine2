@@ -344,7 +344,7 @@ module Engine2
 
                 raise E2Error.new("type '#{values.class}' not supported for list_select modifier for field #{name}") unless values.is_a?(Hash)
                 info[:values] = values.to_a
-                info[:validations][:list_select] = true
+                info[:validations][:list_select] = true unless values.empty?
             end
         end
 
