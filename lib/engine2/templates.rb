@@ -63,8 +63,13 @@ module Engine2
             end
 
             def list_select length, options = {}
+                template = if options[:multiple]
+                    "fields/list_mselect"
+                else
+                    options[:optional] ? "fields/list_select_opt" : "fields/list_select"
+                end
                 options.merge({
-                    template: options[:optional] ? "fields/list_select_opt" : "fields/list_select",
+                    template: template,
                     length: length
                 })
             end
