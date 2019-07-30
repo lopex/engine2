@@ -74,7 +74,7 @@ module Engine2
             end
         end
 
-        def boolean field, true_value = 1, false_value = 0
+        def boolean field, true_value = true, false_value = false
             modify_field field do |info|
                 info[:type] = :boolean
                 info[:true_value] = true_value
