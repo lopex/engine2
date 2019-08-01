@@ -44,6 +44,9 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         $delegate
 
 .factory 'PushJS', -> require 'push.js'
+.factory 'YAMLJS', -> require 'yamljs'
+.filter 'yaml', (YAMLJS) -> (input) -> YAML.stringify(input, 4)
+
 .factory 'MetaCache', ($cacheFactory) -> $cacheFactory('MetaCache')
 .factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->
     loaderToggle = (toggle) -> angular.element(document.querySelectorAll('.loader')).eq(-1).css("visibility", toggle)
