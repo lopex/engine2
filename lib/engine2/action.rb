@@ -69,7 +69,7 @@ module Engine2
                 action = self.class.new(node, assets, self)
                 result = action.instance_exec(handler, *action.request_action_proc_params(handler), &rmp)
                 action.post_process
-                response = @requestable ? (result || {}) : action.invoke(handler)
+                response = @requestable ? (result.is_a?(Hash) ? result : {}) : action.invoke(handler)
                 response[:meta] = action.meta
                 response
             else
@@ -608,9 +608,9 @@ module Engine2
                 end
             end
 
-            def invoke handler
-                {}
-            end
+            # def invoke handler
+            #     {}
+            # end
         end
 
         class OnChangeGetAction < OnChangeAction
