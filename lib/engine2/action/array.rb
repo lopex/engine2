@@ -178,7 +178,7 @@ module Engine2
                 message: LOCS[:delete_question], title: LOCS[:confirm_delete_title]
         end
 
-        define_scheme :array do |name, model|
+        define_scheme :array do |name, model, options|
             options ||= Schemes::ARRAY_CRUD
             define_node name, ArrayListAction, model: model do
                 options.each{|k, v| run_scheme(k) if v}
