@@ -44,8 +44,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         $delegate
 
 .factory 'PushJS', -> require 'push.js'
-.factory 'YAMLJS', -> require 'yamljs'
-.filter 'yaml', (YAMLJS) -> (input) -> YAML.stringify(input, 4)
+.factory 'PrettyYAML', -> require 'json-to-pretty-yaml'
+.filter 'yaml', (PrettyYAML) -> (input) -> PrettyYAML.stringify(input, 4)
 
 .factory 'MetaCache', ($cacheFactory) -> $cacheFactory('MetaCache')
 .factory 'e2HttpInterceptor', ($q, $injector, E2Snippets) ->

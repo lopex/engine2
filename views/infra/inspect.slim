@@ -24,13 +24,13 @@ e2-action action="'inspect_' + action.globals().application"
               div bs-tabs="" bs-active-pane="actionTab" ng-init="actionTab = 0"
                 div title="Action" bs-pane=""
                   br
-                  pre ng-bind="action.action_json | json"
+                  pre ng-bind="action.action_json | yaml"
                 div title="Meta" bs-pane=""
                   br
-                  pre ng-bind="action.meta_json | json"
+                  pre ng-bind="action.meta_json | yaml"
                 div title="State" bs-pane=""
                   br
-                  pre ng-bind="action.action_state | json"
+                  pre ng-bind="action.action_state | yaml"
 
     div title="Model" bs-pane=""
       .row
@@ -58,13 +58,13 @@ e2-action action="'inspect_' + action.globals().application"
               div bs-tabs="" bs-active-pane="modelTab" ng-init="modelTab = 0"
                 div title="Model" bs-pane=""
                   br
-                  pre ng-bind="action.model.info | json"
+                  pre ng-bind="action.model.info | yaml"
                 div title="Schema" bs-pane=""
                   br
-                  pre ng-bind="action.model.schema | json"
+                  pre ng-bind="action.model.schema | yaml"
                 div title="Type info" bs-pane=""
                   br
-                  pre ng-bind="action.model.type_info | json"
+                  pre ng-bind="action.model.type_info | yaml"
                 div title="Associations" bs-pane="" ng-if="action.model && action.has_assoc(action.model)"
                   br
                   .row
@@ -78,22 +78,22 @@ e2-action action="'inspect_' + action.globals().application"
                   br
                   .row
                     .col-lg-12
-                      pre ng-bind="action.activeAssoc | json"
+                      pre ng-bind="action.activeAssoc | yaml"
     div title="Globals" bs-pane=""
       .panel.panel-default
         .panel-body
-          pre ng-bind="action.globals() | json"
+          pre ng-bind="action.globals() | yaml"
 
     div title="Environment" bs-pane=""
       .panel.panel-default
         .panel-body
-          pre ng-bind="action.environment | json"
+          pre ng-bind="action.environment | yaml"
 
     div title="Local storage" bs-pane=""
       .panel.panel-default
         .panel-body
-          pre ng-bind="action.local_storage | json"
-          pre ng-bind="action.local_storage.keys() | json"
+          pre ng-bind="action.local_storage | yaml"
+          pre ng-bind="action.local_storage.keys() | yaml"
           a.btn.btn-default ng-click="action.local_storage.clearAll()"
             | Clear
 
@@ -108,6 +108,6 @@ e2-action action="'inspect_' + action.globals().application"
           | {{action.number}}
           br
           | Event
-          pre ng-bind="action.event | json"
+          pre ng-bind="action.event | yaml"
           | Socket
           pre ng-bind="action.web_socket() | json"
