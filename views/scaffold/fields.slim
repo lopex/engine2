@@ -9,4 +9,4 @@ div
           small.text-muted ng-bind="::field.description"
         .col-sm-12
           small.text-danger ng-repeat="e in action.errors[f] track by $index" ng-bind="e"
-      div ng-if="field.hr": hr
+      div ng-if="::field.hr": hr
