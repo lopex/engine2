@@ -505,7 +505,7 @@ angular.module('Engine2')
             super()
             _.each @meta.fields, (info, name) =>
                 if info.remote_onchange
-                    @scope().$watch (=> @record?[name]), (n) => if n? #if typeof(n) != "undefined"
+                    @scope().$watch (=> @record?[name]), (n) => if typeof(n) != "undefined" # if n?
                         params = value: @record[name]
                         params.record = @record if info.remote_onchange_record
                         @invoke_action(info.remote_onchange, params)
