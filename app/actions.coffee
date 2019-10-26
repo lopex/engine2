@@ -511,7 +511,7 @@ angular.module('Engine2')
                         @invoke_action(info.remote_onchange, params)
 
                 if info.onchange
-                    @scope().$watch (=> @record?[name]), (n) => if n?
+                    @scope().$watch (=> @record?[name]), (n) => if typeof(n) != "undefined" # if n?
                         @scope().$eval(info.onchange)
 
             if @meta.tab_list
