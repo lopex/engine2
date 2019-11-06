@@ -89,6 +89,10 @@ module Engine2
             super
         end
 
+        def page_frame handler, entries
+            entries
+        end
+
         def invoke handler
             params = handler.params
             model = assets[:model]
@@ -120,7 +124,7 @@ module Engine2
 
             query = query.limit(per_page, page)
 
-            res = {entries: query.load_all}
+            res = {entries: page_frame(handler, query.load_all)}
             res[:count] = count if count
             res
         end
