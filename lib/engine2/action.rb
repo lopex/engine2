@@ -586,13 +586,12 @@ module Engine2
     end
 
     module ActionOnChangeSupport
-        def on_change field, &blk
+        def on_change field, trigger_on_start = false, &blk
             node_name = :"#{field}_on_change"
             nd = node.define_node node_name, (blk.arity <= 2 ? OnChangeGetAction : OnChangePostAction)
             nd.*{request &blk}
 
-            fields! field, remote_onchange: node_name
-            fields! field, remote_onchange_record: :true if blk.arity > 2
+            fields! field, remote_onchange: {action: node_name, record: blk.arity > 2, trigger_on_start: trigger_on_start}
         end
 
         class OnChangeAction < Action
