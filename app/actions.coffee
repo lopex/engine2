@@ -38,6 +38,9 @@ angular.module('Engine2')
             @action_info = -> action_info
             @parent = -> parent
 
+            if scope && @meta.invokable != false
+                scope.$on action_info.action_resource, (e, args) => @invoke(args)
+
             if @meta.panel
                 @default_action_name = _(response.actions).find((o) -> o.default)?.name
 
@@ -53,6 +56,9 @@ angular.module('Engine2')
 
             @websocket_connect() if @meta.websocket
             @initialize()
+
+        broadcast: (sub_action, args) ->
+            @scope().$broadcast(@action_info().action_resource + '/' + sub_action, args)
 
         initialize: ->
             @process_static_meta()
@@ -503,17 +509,6 @@ angular.module('Engine2')
     form_base_action: class FormBaseAction extends Action
         initialize: ->
             super()
-            _.each @meta.fields, (info, name) =>
-                if info.remote_onchange
-                    @scope().$watch (=> @record?[name]), (n) => if typeof(n) != "undefined" # if n?
-                        params = value: @record[name]
-                        params.record = @record if info.remote_onchange_record
-                        @invoke_action(info.remote_onchange, params)
-
-                if info.onchange
-                    @scope().$watch (=> @record?[name]), (n) => if typeof(n) != "undefined" # if n?
-                        @scope().$eval(info.onchange)
-
             if @meta.tab_list
                 @scope().$watch "action.activeTab", (tab) => if tab? # && tab >= 0
                     @panel_shown()
@@ -525,6 +520,16 @@ angular.module('Engine2')
             _.each @meta.fields, (info, name) =>
                 if _.isString(@record[name]) && !info.dont_strip
                     @record[name] = @record[name].trim()
+
+                if info.remote_onchange
+                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" # if n?
+                        params = value: @record[name]
+                        params.record = @record if info.remote_onchange_record
+                        @invoke_action(info.remote_onchange, params)
+
+                if info.onchange
+                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" # if n?
+                        @scope().$eval(info.onchange)
 
         panel_menu_default_action: ->
             _.each @meta.fields, (v, n) =>
