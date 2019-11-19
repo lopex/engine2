@@ -522,13 +522,13 @@ angular.module('Engine2')
                     @record[name] = @record[name].trim()
 
                 if info.remote_onchange
-                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" # if n?
+                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
                         params = value: @record[name]
                         params.record = @record if info.remote_onchange_record
                         @invoke_action(info.remote_onchange, params)
 
                 if info.onchange
-                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" # if n?
+                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
                         @scope().$eval(info.onchange)
 
         panel_menu_default_action: ->
