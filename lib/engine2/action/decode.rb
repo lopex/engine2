@@ -57,6 +57,10 @@ module Engine2
         def invoke handler
             {entries: get_query.limit(200).load_all}
         end
+
+        def order *fields
+            @query = get_query.order *fields
+        end
     end
 
     class TypeAheadAction < DecodeAction
