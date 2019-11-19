@@ -522,17 +522,18 @@ angular.module('Engine2')
                     @record[name] = @record[name].trim()
 
                 if info.remote_onchange
+                    @record[name] = null if @record[name] is undefined
                     onchange = =>
                         params = value: @record[name]
                         params.record = @record if info.remote_onchange.record
                         @invoke_action(info.remote_onchange.action, params)
 
-                    @scope().$watch (=> @record[name]), (n, o) => onchange() if n != o && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
+                    @scope().$watch (=> @record[name]), (n, o) => onchange() if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
                     onchange() if info.remote_onchange.trigger_on_start
 
                 if info.onchange
-                    @scope().$watch (=> @record[name]), (n, o) => if n != o && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
-                        @scope().$eval(info.onchange)
+                    @record[name] = null if @record[name] is undefined
+                    @scope().$watch (=> @record[name]), (n, o) => @scope().$eval(info.onchange) if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
 
         panel_menu_default_action: ->
             _.each @meta.fields, (v, n) =>
