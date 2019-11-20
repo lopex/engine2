@@ -104,19 +104,8 @@ module Engine2
 
             count = query.count if lookup(:config, :use_count)
 
-            if order_str = params[:order]
-                order = order_str.to_sym
-                handler.permit lookup(:fields, order, :sort)
-
-                if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
-                    query = order_blk.(handler, query)
-                else
-                    order = model.table_name.q(order) if model.type_info[order]
-                    query = query.order(order)
-                end
-
-                query = query.reverse if params[:asc] == "true"
-            end
+            order = params[:order] || (@default_order_field || static.default_order_field)
+            query = list_order(query, handler, order) if order
 
             per_page = lookup(:config, :per_page)
             page = params[:page].to_i
@@ -150,6 +139,21 @@ module Engine2
                 handler.permit query
             end
             query
+        end
+
+        def list_order query, handler, order
+            order = order.to_sym
+            model = assets[:model]
+            handler.permit lookup(:fields, order, :sort)
+
+            query = if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
+                order_blk.(handler, query)
+            else
+                order = model.table_name.q(order) if model.type_info[order]
+                query.order(order)
+            end
+
+            handler.params[:asc] == "true" ? query.reverse : query
         end
 
         def list_context query, handler

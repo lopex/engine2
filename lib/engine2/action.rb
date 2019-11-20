@@ -634,7 +634,7 @@ module Engine2
 
     module ActionListSupport
         include ActionModelSupport, ActionAPISupport, ActionTabSupport, ActionPanelSupport, ActionMenuSupport, ActionOnChangeSupport, ActionDraggableSupport
-        attr_reader :filters, :orders
+        attr_reader :filters, :orders, :default_order_field
 
         def pre_run
             super
@@ -742,6 +742,10 @@ module Engine2
         def sortable *flds
             flds = @meta[:field_list] if flds.empty?
             fields! *flds, sort: true
+        end
+
+        def default_order order
+            @default_order_field = order
         end
 
         def search_live *flds
