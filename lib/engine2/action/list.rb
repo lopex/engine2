@@ -104,9 +104,8 @@ module Engine2
 
             count = query.count if lookup(:config, :use_count)
 
-            order = params[:order] || (@default_order_field || static.default_order_field)
-            if order
-                asc = params[:asc] == "true" if params[:asc]
+            if order = params[:order] || (@default_order_field || static.default_order_field)
+                asc = params[:asc] == "true" if params[:asc] # nil implicit
                 query = list_order(query, handler, order, asc)
             end
 
