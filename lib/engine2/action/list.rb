@@ -105,7 +105,10 @@ module Engine2
             count = query.count if lookup(:config, :use_count)
 
             order = params[:order] || (@default_order_field || static.default_order_field)
-            query = list_order(query, handler, order) if order
+            if order
+                asc = params[:asc] == "true" if params[:asc]
+                query = list_order(query, handler, order, asc)
+            end
 
             per_page = lookup(:config, :per_page)
             page = params[:page].to_i
@@ -141,7 +144,7 @@ module Engine2
             query
         end
 
-        def list_order query, handler, order
+        def list_order query, handler, order, asc
             order = order.to_sym
             model = assets[:model]
             handler.permit lookup(:fields, order, :sort)
@@ -153,7 +156,7 @@ module Engine2
                 query.order(order)
             end
 
-            handler.params[:asc] == "true" ? query.reverse : query
+            asc ? query : query.reverse
         end
 
         def list_context query, handler
