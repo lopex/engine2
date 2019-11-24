@@ -13,7 +13,7 @@ require 'angular-drag-and-drop-lists'
 
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router', 'dndLists']) # 'ui.select'
+angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStrap', 'ngFileUpload', 'ui.tree', 'LocalStorageModule', 'angularLoad', 'ngWebSocket', 'ui.router', 'dndLists', 'toastr']) # 'ui.select'
 .config ($httpProvider, $compileProvider, localStorageServiceProvider, $logProvider, $qProvider, $locationProvider, $provide) ->
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->
@@ -100,7 +100,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         _.each(o.class, (v, k) -> out.push "'#{k}': #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
-.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse, PushJS, $state, $e2Modal) ->
+.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse, PushJS, $state, $e2Modal, toastr) ->
     globals:
         element: (id) ->
             element = document.querySelector(id)
@@ -110,6 +110,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         notification: (name, body, icon, timeoutx, on_close) ->
             PushJS.create name, body: body, icon: icon, timeout: timeoutx, onClick: on_close
 
+        toastr: -> toastr
         state: -> $state
         modal: -> $e2Modal
 

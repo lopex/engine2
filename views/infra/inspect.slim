@@ -100,8 +100,11 @@ e2-action action="'inspect_' + action.globals().application"
     div title="Diagnostics" bs-pane=""
       .panel.panel-default
         .panel-body
-          a.btn.btn-default ng-click="action.globals().notification('Name', 'Body', undefined, 2000)"
-            | Push
+          .btn-group
+            a.btn.btn-default ng-click="action.globals().notification('Name', 'Body', undefined, 2000)"
+              | Push
+            a.btn.btn-default ng-click="action.globals().toastr().success('Name', 'Body')"
+              | Toastr
           hr
           a.btn.btn-default> ng-click="action.web_socket().send({number: action.number})"
             | Websocket
