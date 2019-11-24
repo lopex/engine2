@@ -518,11 +518,12 @@ angular.module('Engine2')
         post_invoke: (args) ->
             super()
             _.each @meta.fields, (info, name) =>
-                if _.isString(@record[name]) && !info.dont_strip
+                if @record[name] is undefined
+                    @record[name] = null
+                else if _.isString(@record[name]) && !info.dont_strip
                     @record[name] = @record[name].trim()
 
                 if info.remote_onchange
-                    @record[name] = null if @record[name] is undefined
                     onchange = =>
                         params = value: @record[name]
                         params.record = @record if info.remote_onchange.record
@@ -532,12 +533,9 @@ angular.module('Engine2')
                     onchange() if info.remote_onchange.trigger_on_start
 
                 if info.onchange
-                    @record[name] = null if @record[name] is undefined
                     @scope().$watch (=> @record[name]), (n, o) => @scope().$eval(info.onchange) if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
 
         panel_menu_default_action: ->
-            _.each @meta.fields, (v, n) =>
-                @record[n] = null if @record[n] is undefined
             params = record: @record
             params.parent_id ?= @parent().query?.parent_id # and StarToManyList ?
             @invoke_action(@default_action_name, params).then =>
