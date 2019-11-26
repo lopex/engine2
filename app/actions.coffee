@@ -38,9 +38,6 @@ angular.module('Engine2')
             @action_info = -> action_info
             @parent = -> parent
 
-            if scope && @meta.invokable != false
-                scope.$on action_info.action_resource, (e, args) => @invoke(args)
-
             if @meta.panel
                 @default_action_name = _(response.actions).find((o) -> o.default)?.name
 
@@ -53,6 +50,10 @@ angular.module('Engine2')
                 unless act # no modal for top level panels
                     @meta.panel.modal_action = false
                     @meta.panel.footer = true unless @meta.panel.footer == false
+
+
+            if scope && @meta.invokable != false
+                scope.$on action_info.action_resource, (e, args) => @invoke(args)
 
             @websocket_connect() if @meta.websocket
             @initialize()
