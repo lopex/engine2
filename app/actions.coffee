@@ -541,7 +541,9 @@ angular.module('Engine2')
                     onchange() if info.remote_onchange.trigger_on_start
 
                 if info.onchange
-                    @scope().$watch (=> @record[name]), (n, o) => @scope().$eval(info.onchange) if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
+                    onchange = => @scope().$eval(info.onchange.command)
+                    @scope().$watch (=> @record[name]), (n, o) => onchange() if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
+                    onchange() if info.onchange.trigger_on_start
 
         panel_menu_default_action: ->
             params = record: @record
