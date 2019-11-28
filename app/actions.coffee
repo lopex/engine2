@@ -107,19 +107,24 @@ angular.module('Engine2')
 
         create_action_path: (action_names, sc, elem) ->
             last_name = action_names.pop()
-            _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) ->
+            _.reduce(action_names, ((pr, nm) -> pr.then (act) -> act.create_action(nm)), $q.when(@)).then (act) -> # self = @
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
         globals: -> globals
+        current: -> @globals().current_action
         action_pending: -> globals.action_pending == @
         pre_invoke: ->
         post_invoke: ->
 
         invoke: (params) ->
+            @globals().current_action = @
             params ?= {}
             @globals().action_pending = if @meta.panel then @ else @parent()
             @pre_invoke(params)
-            _.merge(params, @meta.arguments) if @meta.arguments
+            if @meta.arguments # _.merge(params, @meta.arguments)
+                _.each @meta.arguments, (v, k) =>
+                    if _.endsWith(k, '!') then params[k.slice(0, -1)] = @scope().$eval(v) else params[k] = v
+
 
             info = @action_info()
             get_invoke = if @meta.invokable == false then $q.when(data: (response: {})) else
@@ -148,10 +153,12 @@ angular.module('Engine2')
                     delete @meta.repeat
 
                 @globals().action_pending = false
+                @globals().current_action = null
                 promise
             ,
             (err) =>
                 @globals().action_pending = false
+                @globals().current_action = null
                 @handle_error(err, info, @element())
 
         panel_render: ->
