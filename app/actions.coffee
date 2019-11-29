@@ -531,19 +531,19 @@ angular.module('Engine2')
                 else if _.isString(@record[name]) && !info.dont_strip
                     @record[name] = @record[name].trim()
 
-                if info.remote_onchange
-                    onchange = =>
+                if info.onchange || info.remote_onchange
+                    onchange = => @scope().$eval(info.onchange.action)
+                    remote_onchange = =>
                         params = value: @record[name]
                         params.record = @record if info.remote_onchange.record
                         @invoke_action(info.remote_onchange.action, params)
 
-                    @scope().$watch (=> @record[name]), (n, o) => onchange() if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
-                    onchange() if info.remote_onchange.trigger_on_start
+                    @scope().$watch (=> @record[name]), (n, o) => if n != o
+                        onchange() if info.onchange
+                        remote_onchange() if info.remote_onchange
 
-                if info.onchange
-                    onchange = => @scope().$eval(info.onchange.command)
-                    @scope().$watch (=> @record[name]), (n, o) => onchange() if n != o # && typeof(n) != "undefined" && typeof(o) != "undefined" # if n?
-                    onchange() if info.onchange.trigger_on_start
+                    onchange() if info.onchange?.trigger_on_start
+                    remote_onchange() if info.remote_onchange?.trigger_on_start
 
         panel_menu_default_action: ->
             params = record: @record
