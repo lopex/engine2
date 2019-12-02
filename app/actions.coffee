@@ -133,7 +133,7 @@ angular.module('Engine2')
 
             get_invoke.then (response) =>
                 @arguments = _.keys(response.data)
-                E2.merge(@, response.data)
+                E2.merge_meta(@, response.data)
                 @process_meta()
 
                 promise = if @meta.panel # persistent action
@@ -143,7 +143,7 @@ angular.module('Engine2')
                 else
                     prnt = @parent()
                     throw "Attempted parent merge for root action: #{info.name}" unless prnt
-                    E2.merge(prnt, response.data)
+                    E2.merge_meta(prnt, response.data)
 
                 @post_invoke(params)
                 @execute_commands() if @meta.execute
@@ -224,7 +224,7 @@ angular.module('Engine2')
                     if method == 'message'
                         msg = JSON.parse(evt.data)
                         if msg.error then @globals().modal().error("WebSocket [#{evt.origin}] - #{msg.error.method}", msg.error.exception) else
-                            E2.merge(@, msg)
+                            E2.merge_meta(@, msg)
                             @process_meta()
                     else msg = evt
                     ws_method_impl.bind(@)(msg, ws, evt) if ws_method_impl

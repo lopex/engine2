@@ -132,7 +132,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 # delete o[k]
                 o[k] = null
 
-    merge: (dst, src) ->
+    merge_meta: (dst, src) ->
         for k, v of src
             throw "Attempted to override function '#{k}'" if _.isFunction(dst[k])
             if k == 'execute' && dst[k] && src[k]
@@ -140,7 +140,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             else
                 insn = k.slice(-1)
                 if _.isObject(v) && !_.isArray(v)
-                    if insn == '!' then dst[k.slice(0, -1)] = v else dst[k] = @merge(dst[k] ? {}, v)
+                    if insn == '!' then dst[k.slice(0, -1)] = v else dst[k] = @merge_meta(dst[k] ? {}, v)
                 else
                     if insn == '?' then dst[k.slice(0, -1)] ?= v else dst[k] = v
         dst
