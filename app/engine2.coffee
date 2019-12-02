@@ -137,7 +137,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             throw "Attempted to override function '#{k}'" if _.isFunction(dst[k])
             if k == 'execute' && dst[k] && src[k]
                 dst[k] = dst[k].concat(src[k])
-                console.log dst[k]
             else
                 insn = k.slice(-1)
                 if _.isObject(v) && !_.isArray(v)
