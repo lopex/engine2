@@ -135,11 +135,15 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     merge: (dst, src) ->
         for k, v of src
             throw "Attempted to override function '#{k}'" if _.isFunction(dst[k])
-            insn = k.slice(-1)
-            if _.isObject(v) && !_.isArray(v)
-                if insn == '!' then dst[k.slice(0, -1)] = v else dst[k] = @merge(dst[k] ? {}, v)
+            if k == 'execute' && dst[k] && src[k]
+                dst[k] = dst[k].concat(src[k])
+                console.log dst[k]
             else
-                if insn == '?' then dst[k.slice(0, -1)] ?= v else dst[k] = v
+                insn = k.slice(-1)
+                if _.isObject(v) && !_.isArray(v)
+                    if insn == '!' then dst[k.slice(0, -1)] = v else dst[k] = @merge(dst[k] ? {}, v)
+                else
+                    if insn == '?' then dst[k.slice(0, -1)] ?= v else dst[k] = v
         dst
 
     transpose: (a) ->
