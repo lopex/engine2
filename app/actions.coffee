@@ -131,6 +131,7 @@ angular.module('Engine2')
                 params.initial = true if @meta.panel && !@action_invoked && info.method == 'get'
                 $http[info.method](info.action_resource, if info.method == 'post' then params else (params: params))
 
+            @execute_commands('pre_execute')
             get_invoke.then (response) =>
                 @arguments = _.keys(response.data)
                 E2.merge_meta(@, response.data)
@@ -237,7 +238,7 @@ angular.module('Engine2')
             if @meta[execute]
                 scope = @scope()
                 _.reduce(@meta[execute], ((pr, cmd) -> pr.then -> scope.$eval(cmd)), $q.when())
-                @meta.execute.splice(0, @meta[execute].length)
+                @meta[execute].splice(0, @meta[execute].length)
                 delete @meta[execute]
 
         console_log: (o) ->
