@@ -100,6 +100,11 @@ module Engine2
 
             if search = params[:search]
                 query = list_search(query, handler, search)
+            elsif @filters || static.filters
+                static.filters.to_h.merge(@filters.to_h).each do |name, filter|
+                    query = filter.(handler, query, {})
+                    handler.permit query
+                end
             end
 
             count = query.count if lookup(:config, :use_count)
@@ -128,21 +133,45 @@ module Engine2
             model = assets[:model]
             sfields = lookup(:search_field_list)
             handler.permit sfields
-            hash.each_pair do |name, value|
-                handler.permit name = sfields.find{|sf|sf.to_sym == name}
 
+            filters = @filters || static.filters ? static.filters.to_h.merge(@filters.to_h) : {}
+
+            sfields.each do |name|
                 type_info = model.find_type_info(name)
-                query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
-                    filter.(handler, query, hash)
-                elsif filter = DefaultFilters[type_info[:otype]]
-                    name = model.type_info[name] ? model.table_name.q(name) : Sequel.expr(name)
-                    filter.(query, name, value, type_info, hash)
+                name = name.to_sym
+                filter = filters[name]
+                if value = hash[name]
+                    query = if filter
+                        filter.(handler, query, hash)
+                    elsif filter = DefaultFilters[type_info[:otype]]
+                        name = model.type_info[name] ? model.table_name.q(name) : Sequel.expr(name)
+                        filter.(query, name, value, type_info, hash)
+                    else
+                        raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
+                    end
+                    handler.permit query
                 else
-                    raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
+                    if filter
+                        query = filter.(handler, query, hash)
+                        handler.permit query
+                    end
                 end
-
-                handler.permit query
             end
+
+            # hash.each_pair do |name, value|
+            #     handler.permit name = sfields.find{|sf|sf.to_sym == name}
+            #     type_info = model.find_type_info(name)
+            #     query = if filter = (@filters && @filters[name]) || (dynamic? && (static.filters && static.filters[name]))
+            #         filter.(handler, query, hash)
+            #     elsif filter = DefaultFilters[type_info[:otype]]
+            #         name = model.type_info[name] ? model.table_name.q(name) : Sequel.expr(name)
+            #         filter.(query, name, value, type_info, hash)
+            #     else
+            #         raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
+            #     end
+            #     handler.permit query
+            # end
+
             query
         end
 
