@@ -474,8 +474,8 @@ angular.module('Engine2')
 
             if remote_onchange = info.remote_onchange
                 params = value: @query.search[f]
-                params.record = @query.search if info.remote_onchange_record
-                @invoke_action(remote_onchange, params).then =>
+                params.record = @query.search if remote_onchange.record
+                @invoke_action(remote_onchange.action, params).then =>
                     @load_new() if info.search_live
             else
                 @load_new() if info.search_live
