@@ -344,9 +344,13 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     scope: false
     restrict: 'A'
     link: (scope, elem, attrs) ->
+        table_scope = null
         scope.$on 'render_table', (a, ev) ->
             # ev.stopPropagation()
-            action = scope.action
+            table_scope.$destroy() if table_scope
+            table_scope = scope.$new()
+
+            action = table_scope.action
             meta = action.meta
             draggable = meta.draggable
             position = meta.menus.item_menu.properties.position ? 0
@@ -389,7 +393,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
 
             tbody_attrs = if draggable then 'dnd-list=\"action.entries\" dnd-drop=\"action.entry_dropped(index, external, type)\"' else ''
             elem.empty()
-            elem.append($compile(table_tmpl thead: thead, tbody: tbody, tbody_attrs: tbody_attrs)(scope))
+            elem.append($compile(table_tmpl thead: thead, tbody: tbody, tbody_attrs: tbody_attrs)(table_scope))
 
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
