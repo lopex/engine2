@@ -348,7 +348,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         scope.$on 'render_table', (a, ev) ->
             # ev.stopPropagation()
             table_scope.$destroy() if table_scope
-            table_scope = scope.$new()
+            table_scope = scope.$new(false)
 
             action = table_scope.action
             meta = action.meta
