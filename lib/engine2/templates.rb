@@ -249,7 +249,7 @@ module Engine2
             end
 
             def list_mbuttons
-                {template: "search_fields/list_buttons"}
+                {template: "search_fields/list_mbuttons"}
             end
 
             def decimal_date
