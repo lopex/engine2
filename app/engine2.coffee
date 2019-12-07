@@ -135,7 +135,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     merge_meta: (dst, src) ->
         for k, v of src
             throw "Attempted to override function '#{k}'" if _.isFunction(dst[k])
-            if k == 'execute' && dst[k] && src[k]
+            if (k == 'execute' || k == 'pre_execute') && dst[k] && src[k]
                 dst[k] = dst[k].concat(src[k])
             else
                 insn = k.slice(-1)
