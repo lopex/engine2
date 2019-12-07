@@ -1346,7 +1346,7 @@ module Engine2
         currency: lambda{|action, info| Templates.currency},
         list_select: lambda{|action, info|
             length = info[:values].length
-            max_length = info[:values].map(&:last).max_by(&:length).length
+            max_length = length > 0 ? info[:values].map(&:last).max_by(&:length).length : 0
             if info[:multiselect]
                 Templates.list_bsmselect(max_length)
             elsif length <= 3

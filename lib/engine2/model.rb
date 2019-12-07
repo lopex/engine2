@@ -378,7 +378,7 @@ module Engine2
                 value.join(info[:separator])
             when :integer
                 value.reduce(0, :|)
-            end if value && info[:multiselect]
+            end if value && info[:multiselect] && !info[:dummy]
         }
     )
 
