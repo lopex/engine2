@@ -111,6 +111,7 @@ angular.module('Engine2')
                 act.create_action(last_name, sc, elem).then (act) -> sc.action = act
 
         globals: -> globals
+        _ : -> _
         current: -> @globals().current_action
         action_pending: -> globals.action_pending == @
         pre_invoke: ->
