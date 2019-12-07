@@ -96,6 +96,12 @@ module Engine2
                 })
             end
 
+            def list_mbuttons options = {}
+                options.merge({
+                    template: options[:optional] ? "fields/list_mbuttons_opt" : "fields/list_mbuttons"
+                })
+            end
+
             def select_picker options = {}
                 options.merge({
                     template: options[:optional] ? "fields/select_picker_opt" : "fields/select_picker"
@@ -239,6 +245,10 @@ module Engine2
             end
 
             def list_buttons
+                {template: "search_fields/list_buttons"}
+            end
+
+            def list_mbuttons
                 {template: "search_fields/list_buttons"}
             end
 
