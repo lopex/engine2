@@ -31,12 +31,12 @@
 :select_toggle:                 Zaznacz
 :confirm_delete:                Usuń
 :confirm_delete_title:          <span class='glyphicon glyphicon-trash'></span> Potwierdzenie
-:confirm_bulk_delete:           Usuń zaznacznone
+:confirm_bulk_delete:           Usuń zaznaczone
 :delete_restricted:             Blokujące relacje
 :confirm_bulk_delete_title:     <span class='glyphicon glyphicon-trash'></span> Potwierdzenie
 :confirm_unlink:                Odłącz
 :confirm_unlink_title:          <span class='glyphicon glyphicon-minus'></span> Potwierdzenie
-:confirm_bulk_unlink:           Odłącz zaznacznone
+:confirm_bulk_unlink:           Odłącz zaznaczone
 :confirm_bulk_unlink_title:     <span class='glyphicon glyphicon-minus'></span> Potwierdzenie
 :debug_info:                    Debug info
 :show_meta:                     Metainfo
