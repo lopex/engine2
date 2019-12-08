@@ -825,7 +825,10 @@ module Engine2
             model = assets[:model]
             handler.permit json_rec.is_a?(Hash)
             val_fields = (dynamic? ? static.validate_fields : @validate_fields) || model.type_info.keys
-            handler.permit (json_rec.keys - val_fields).empty?
+            left_fields = (json_rec.keys - val_fields)
+
+            puts "Left: #{left_fields.inspect}" unless left_fields.empty?
+            handler.permit left_fields.empty?
 
             record = model.call(json_rec)
             record.validate_fields = val_fields
