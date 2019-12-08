@@ -82,7 +82,7 @@ module Engine2
         end
 
         def arguments args
-            @meta[:arguments] = args
+            (@meta[:arguments] ||= {}).merge! args
         end
 
         def execute command
@@ -1032,6 +1032,14 @@ module Engine2
 
         def hr_after field, message = '-'
             fields! field, hr: message
+        end
+
+        def create?
+            @action_type == :create
+        end
+
+        def modify?
+            @action_type == :modify
         end
     end
 
