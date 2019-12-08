@@ -471,7 +471,7 @@ angular.module('Engine2')
         search_field_change: (f) ->
             info = @meta.fields[f]
 
-            @scope().$eval(info.onchange) if info.onchange
+            @scope().$eval(info.onchange.action) if info.onchange
 
             if remote_onchange = info.remote_onchange
                 params = value: @query.search[f]
