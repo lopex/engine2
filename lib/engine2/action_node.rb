@@ -201,14 +201,13 @@ module Engine2
                 true
             end
 
-            ::Kernel::puts "ACTION NODES: #{ActionNode.count}, Panels: #{panels},  Time: #{::Time.now - time}, Thefts: #{thefts}"
+            ::Kernel::puts "ACTION NODES: #{ActionNode.count}, Panels: #{panels}, Time: #{::Time.now - time}, Thefts: #{thefts}"
         end
 
         def p *args
             ::Kernel::p *args
         end
     end
-
 
     class ActionNodeBundle
         def initialize node, node_names

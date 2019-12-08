@@ -129,8 +129,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             else if _.isObject(v) && !_.isDate(v)
                 @clean(v)
             else
-                # delete o[k]
-                o[k] = null
+                o[k] = null # delete o[k]
 
     merge_meta: (dst, src) ->
         for k, v of src
