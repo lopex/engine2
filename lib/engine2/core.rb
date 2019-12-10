@@ -138,6 +138,10 @@ class Symbol
         end
     end
 
+    def para text
+        "<p class='#{self}'>#{text}</p>"
+    end
+
     def q col
         col.qualify self
     end
