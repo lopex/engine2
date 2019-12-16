@@ -138,16 +138,18 @@ class Symbol
         end
     end
 
-    def para text
-        "<p class='#{self}'>#{text}</p>"
+    def loc
+        Engine2::LOCS[self]
     end
 
     def q col
         col.qualify self
     end
 
-    def loc
-        Engine2::LOCS[self]
+    def html body = '', attrs = {}
+        element = self.to_s
+        attrs = attrs.map{|k, v| "#{k}=\"#{v}\""}.join(" ")
+        "<#{element} #{attrs}>#{body}</#{element}>"
     end
 end
 
