@@ -75,7 +75,13 @@ angular.module('Engine2')
                 if action_info.access
                     $rootScope.$broadcast "relogin", element?, create
                 else
-                    @globals().modal().error("#{err.status}: #{err.data.message}", err.data.cause || err.data.message)
+                    tle = "#{err.status}: #{err.data.message}"
+                    msg = err.data.cause || err.data.message
+                    if msg.length > 500
+                        @globals().modal().error(tle, msg)
+                    else
+                        @globals().toastr().error(tle, msg, extendedTimeOut: 5000, closeButton: true)
+
             $q.reject(err)
 
         save_state: () ->
