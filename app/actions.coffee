@@ -327,7 +327,7 @@ angular.module('Engine2')
                     $urlRouter.otherwise(otherwise)
                     @register(menu.entries)
                     @scope().routes = menu.entries
-                    out = if _.size(menu.entries) == 0 then angular.element("<div></div>") else $compile(@traverse(menu.entries))(@scope())
+                    out = $compile(@traverse(menu.entries))(@scope())
                     @element().replaceWith(out)
                     @element = -> out
                     loc = $location.path().slice(1)
@@ -372,7 +372,8 @@ angular.module('Engine2')
                         show: route.show && "ng-show=\"#{route.show}\"" || ''
                         hide: route.hide && "ng-hide=\"#{route.hide}\"" || ''
                         icon: route.icon && E2.icon(route.icon) || ''
-            out.join('')
+            out = out.join('')
+            if _.size(out) == 0 then "<div></div>" else out
 
     list: class ListAction extends Action
         initialize: ->
