@@ -8,7 +8,7 @@ e2-action action="'inspect_' + action.globals().application"
             .panel-body
               script type="text/ng-template" id="nodes_renderer.html"
                 div data-nodrag="" ng-init="stack = stack.concat([$index])"
-                  span.glyphicon.glyphicon-cog ng-if="node.terminal"
+                  span.glyphicon ng-class="{'glyphicon-cog': node.access, 'glyphicon-exclamation-sign': !node.access}" ng-if="node.terminal"
                   a ng-click="action.open(stack, node, collapsed, true); toggle(this)" ng-if="!node.terminal"
                     span.glyphicon ng-class="{'glyphicon-play-circle': collapsed && node.access, 'glyphicon-download': !collapsed, 'glyphicon-exclamation-sign': collapsed && !node.access}"
                   span< ng-bind="node.name + ' ' + node.number" ng-click="action.open(stack, node, collapsed, false)" style="cursor: pointer; {{action.number == node.number && 'font-weight: bold;'}}"
