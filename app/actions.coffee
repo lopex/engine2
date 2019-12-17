@@ -355,7 +355,9 @@ angular.module('Engine2')
             menu_sub_tmpl = _.template("<li {{show}} {{hide}} e2-dropdown='{{dropdown}}' nav='true' data-animation='{{animation}}'><a href='javascript://'>{{icon}} {{loc}}<span class='caret'></span></a></li>")
             animation = @meta.menus.menu.properties.animation
             out = routes.map (route, i) ->
-                if route.menu
+                if route.render == false
+                    ''
+                else if route.menu
                     menu_sub_tmpl
                         dropdown: "routes[#{i}].menu.entries"
                         animation: animation
