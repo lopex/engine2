@@ -233,9 +233,9 @@ module Engine2
             {user: user ? user.to_hash : nil}
         end
 
-        def login_meta show_login_otion = 'false', &blk
+        def login_meta menu_properties = {show: 'false'}, &blk
             node.login_form.* &blk
-            menu(:menu).modify_option :login_form, show: show_login_otion
+            menu(:menu).modify_option :login_form, menu_properties
             node.parent.login_form.* &blk
         end
     end
