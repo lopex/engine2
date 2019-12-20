@@ -128,8 +128,10 @@ module Engine2
                 })
             end
 
-            def typeahead_picker
-                {template: "fields/typeahead_picker", animation: BS_ANIMATION}
+            def typeahead_picker options = {length: 20}
+                options.merge({
+                    template: "fields/typeahead_picker", animation: BS_ANIMATION
+                })
             end
 
             def email length

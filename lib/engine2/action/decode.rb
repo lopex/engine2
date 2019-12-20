@@ -79,13 +79,19 @@ module Engine2
             @case_insensitive = true
         end
 
+        def order *fields
+            @query = get_query.order *fields
+        end
+
         def invoke handler
+            model = assets[:model]
             if query = handler.params[:query]
-                condition = @meta[:decode_fields].map{|f|f.like("%#{query}%", case_insensitive: @case_insensitive)}.reduce{|q, f| q | f}
+                fields = @meta[:decode_fields] || static.meta[:decode_fields]
+                condition = fields.map{|f|f.like("%#{query}%", case_insensitive: @case_insensitive)}.reduce{|q, f| q | f}
                 {entries: get_query.where(condition).limit(@limit).load_all}
             else
                 handler.permit id = handler.params[:id]
-                record = get_query.load Hash[assets[:model].primary_keys.zip(split_keys(id))]
+                record = get_query.load Hash[model.primary_keys_qualified.zip(split_keys(id))]
                 # handler.halt_not_found(LOCS[:no_entry]) unless record
                 {entry: record}
             end
