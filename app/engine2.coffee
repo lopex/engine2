@@ -476,7 +476,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                         hide: m.hide && "ng-hide=\"#{m.hide}\"" || ''
                         icon: m.icon && E2Snippets.icon(m.icon) || ''
                         loc: !(m.button_loc == false) && m.loc || ''
-                        title: (m.button_loc == false) && "title=\"#{m.loc}\"" || ''
+                        title: if m.title then "title=\"#{m.title}\"" else ((m.button_loc == false) && "title=\"#{m.loc}\"" || '')
 
             if menu.entries.length > brk
                 out += button_set_arr_tmpl
