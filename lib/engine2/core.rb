@@ -398,7 +398,6 @@ module E2Model
             else
                 select(*pk.map{|k| model.table_name.q(k)})
             end
-
         end
 
         def extract_select sel, al = nil, &blk
@@ -494,7 +493,6 @@ module Sequel
             @error = error
         end
     end
-
 end
 
 module Engine2

@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 module Engine2
-
     class ActionNode < BasicObject
         ACCESS_FORBIDDEN ||= ->h{false}
         attr_reader :parent, :name, :number, :nodes, :recheck_access

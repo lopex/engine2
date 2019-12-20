@@ -155,7 +155,6 @@ module Engine2
         ARRAY_VIEW ||= {array_view: true}
     end
 
-
     SCHEMES.instance_eval do
         define_scheme :array_view do |name = :view|
             define_node name, ArrayViewAction
@@ -187,5 +186,4 @@ module Engine2
             end
         end
     end
-
 end

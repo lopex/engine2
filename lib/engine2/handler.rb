@@ -129,6 +129,5 @@ module Engine2
                 views.each{|v| super(v, name, engine, &block)}
             end
         end
-
     end
 end

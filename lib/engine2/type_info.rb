@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 module Engine2
-
     class TypeInfo
         def initialize model
             @model = model
@@ -370,6 +369,5 @@ module Engine2
                 info[:sequence] = seq_name
             end
         end
-
     end
 end

@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 module Engine2
-
     class SaveAction < Action
         include ActionSaveSupport
     end
@@ -26,5 +25,4 @@ module Engine2
         self.validate_only = true
         action_type :star_to_many_field_approve
     end
-
 end

@@ -61,5 +61,4 @@ module Engine2
             invoke_delete_db(handler, ids)
         end
     end
-
 end
