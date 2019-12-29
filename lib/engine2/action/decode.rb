@@ -87,8 +87,15 @@ module Engine2
             model = assets[:model]
             if query = handler.params[:query]
                 fields = @meta[:decode_fields] || static.meta[:decode_fields]
-                condition = fields.map{|f|f.like("%#{query}%", case_insensitive: @case_insensitive)}.reduce{|q, f| q | f}
-                {entries: get_query.where(condition).limit(@limit).load_all}
+
+                entries = if query.to_s.empty?
+                    get_query
+                else
+                    condition = fields.map{|f|f.like("%#{query}%", case_insensitive: @case_insensitive)}.reduce{|q, f| q | f}
+                    get_query.where(condition)
+                end.limit(@limit).load_all
+
+                {entries: entries}
             else
                 handler.permit id = handler.params[:id]
                 record = get_query.load Hash[model.primary_keys_qualified.zip(split_keys(id))]
