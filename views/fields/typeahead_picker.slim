@@ -5,8 +5,7 @@ e2-action action="[field.assoc, 'typeahead']"
       input.btn.btn-default [
         type="text"
         ng-model="action.decode"
-        bs-options="v.value for v in action.load($viewValue)"
-        ng-keypress="action.key_pressed = true"
+        bs-options="v.value for v in action.load(action.decode)"
 
         ng-disabled="field.disabled"
         ng-class="field.render.class"
@@ -15,11 +14,13 @@ e2-action action="[field.assoc, 'typeahead']"
         data-animation="{{::field.render.animation}}"
         placeholder="..."
         data-html="true"
-        data-limit="10"
+        data-limit="{{::field.render.limit}}"
+        data-min-length="{{::field.render.min_length}}"
+        data-trigger="focus"
         bs-typeahead=""
         e2-field=""
       ]
       span.input-group-addon: span.glyphicon.glyphicon-font
       .input-group-btn
-        a.btn.btn-default ng-disabled="field.disabled || action.decode == null" ng-click="!field.disabled && action.reset()"
+        a.btn.btn-default ng-disabled="field.disabled || !action.decode" ng-click="!field.disabled && action.reset()"
           span.glyphicon.glyphicon-off

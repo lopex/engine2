@@ -764,29 +764,30 @@ angular.module('Engine2')
     typeahead: class TypeAheadAction extends DecodeAction
         initialize: ->
             super()
-            @if_fk_values (fk_values) =>
-                @invoke(id: E2.join_keys(fk_values)).then =>
-                    if @entry
-                        @decode = id: E2.id_for(@entry, @meta), value: @decode_description(@entry)
-
             @scope().$on "$typeahead.select", (e, v, index) =>
                 e.stopPropagation()
                 _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.fields[fk])).value
                 @parentp().search_field_change?(@decode_field)
 
-            @scope().$watch "action.decode", (e) => if e?
-                @reset() if e.length == 0
+            @scope().$watch "action.decode", (e) => @reset() if e == null
+
+            @if_fk_values (fk_values) =>
+                @invoke(id: E2.join_keys(fk_values)).then =>
+                    if @entry
+                        @decode = id: E2.id_for(@entry, @meta), value: @decode_description(@entry)
+
+            @decode = '' unless @decode?
+            # @dinfo.render.min_length == 0
 
         load: (value) ->
-            if value? && value.length > 0 && @key_pressed # check again after strap updates ?
-                @invoke(query: value).then =>
-                    if @entries # ?
-                        @values = @entries.map (e) => id: E2.id_for(e, @meta), value: @decode_description(e)
-                        delete @entries
-                        @values
+            if _.isString(value)
+                @invoke(query: value).then => if @entries # ?
+                    @values = @entries.map (e) => id: E2.id_for(e, @meta), value: @decode_description(e)
+                    delete @entries
+                    @values
 
         clean: ->
-            delete @decode
+            @decode = ''
             @clear_record()
 
     many_to_one_list: class ManyToOneListAction extends ListAction

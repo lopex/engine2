@@ -128,10 +128,8 @@ module Engine2
                 })
             end
 
-            def typeahead_picker options = {length: 20}
-                options.merge({
-                    template: "fields/typeahead_picker", animation: BS_ANIMATION
-                })
+            def typeahead_picker options = {}
+                {template: "fields/typeahead_picker", length: 20, limit: 10, min_length: 0, animation: BS_ANIMATION}.merge(options)
             end
 
             def email length
@@ -219,8 +217,8 @@ module Engine2
                 })
             end
 
-            def typeahead_picker
-                {template: "search_fields/typeahead_picker", animation: BS_ANIMATION}
+            def typeahead_picker options = {}
+                {template: "search_fields/typeahead_picker", limit: 10, min_length: 0, animation: BS_ANIMATION}.merge(options)
             end
 
             # def checkbox_search true_v = "1", false_v = "0"
