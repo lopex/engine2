@@ -1,7 +1,7 @@
 desc "Compile SLIM"
 task :compile_slim do
     require 'slim'
-    view_dirs = ["fields", "scaffold", "search_fields", "modals"]
+    view_dirs = ["fields", "scaffold", "search_fields", "modals", "panels"]
     slims = view_dirs.each.map do |view_dir|
         Dir["views/#{view_dir}/*.slim"].map do |slim_file|
             slim = Slim::Template.new(slim_file).render.gsub('"', '\"')
