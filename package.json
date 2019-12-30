@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@uirouter/angularjs": "^1.0.23",
-    "@uirouter/core": "^6.0.1",
+    "@uirouter/core": "6.0.1",
     "angular": "^1.7.9",
     "angular-animate": "^1.7.9",
     "angular-cookies": "^1.7.9",
