@@ -106,7 +106,7 @@ module Engine2
                 {entries: entries}
             else
                 handler.permit id = handler.params[:id]
-                record = get_query.load Hash[model.primary_keys_qualified.zip(split_keys(id))]
+                record = get_query.unordered.load Hash[model.primary_keys_qualified.zip(split_keys(id))]
                 # handler.halt_not_found(LOCS[:no_entry]) unless record
                 {entry: record}
             end
