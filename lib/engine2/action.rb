@@ -235,7 +235,8 @@ module Engine2
     class RootAction < Action
         def initialize *args
             super
-            @meta.merge! environment: Handler::environment, application: Engine2::SETTINGS[:name], key_separator: Engine2::SETTINGS[:key_separator], ws_methods: ActionWebSocketSupport::WS_METHODS
+            @meta.merge! environment: Handler::environment, application: Engine2::SETTINGS[:name], uuid: SecureRandom.uuid,
+                key_separator: Engine2::SETTINGS[:key_separator], ws_methods: ActionWebSocketSupport::WS_METHODS
         end
     end
 
