@@ -3,6 +3,7 @@ e2-action action="[field.assoc, 'typeahead']"
   div e2-input-cols="{{::field.render.length}}"
     .input-group.input-group-sm
       input.btn.btn-default [
+        style="text-align:left"
         type="text"
         ng-model="action.decode"
         bs-options="v.value for v in action.load(action.decode)"
