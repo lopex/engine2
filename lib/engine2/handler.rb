@@ -119,8 +119,11 @@ module Engine2
             slim name.to_sym
         end
 
-        production = environment == :production
-        set :slim, pretty: !production, sort_attrs: false
+        set :slim, pretty: !production?, sort_attrs: false
+        unless production?
+            set :sessions, expire_after: 3600
+            # set :session_store, Rack::Session::Pool
+        end
 
         helpers do
             def find_template(views, name, engine, &block)
