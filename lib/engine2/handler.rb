@@ -120,9 +120,7 @@ module Engine2
         end
 
         production = environment == :production
-
         set :slim, pretty: !production, sort_attrs: false
-        set :sessions, expire_after: 3600, httponly: production # , secure: production
 
         helpers do
             def find_template(views, name, engine, &block)
