@@ -126,6 +126,10 @@ class String
             s
         end
     end
+
+    def escape_html
+        Rack::Utils.escape_html(self)
+    end
 end
 
 class Symbol
