@@ -120,7 +120,7 @@ module Engine2
         end
 
         set :slim, pretty: !production?, sort_attrs: false
-        unless production?
+        unless production? # use Engine2::SETTINGS[:reloading] ?
             set :sessions, expire_after: 3600
             # set :session_store, Rack::Session::Pool
         end
