@@ -422,43 +422,44 @@ module E2Model
 
         def setup_query fields
             joins = {}
-            type_info = model.type_info
             model_table_name = model.table_name
 
             select = @opts[:select].map do |sel|
                 extract_select sel do |table, name, aliaz|
-                    info = if table
+                    mdl = if table
                         if table == model_table_name
                             model
                         else
                             assoc = model.many_to_one_associations[table] || model.many_to_many_associations[table]
                             raise Engine2::E2Error.new("Association #{table} not found for model #{model}") unless assoc
                             assoc.associated_class
-                        end.type_info
+                        end
                     else
-                        type_info
+                        model
                     end
 
-                    table ||= model_table_name
-                    if table == model_table_name
+                    mdl_table_name = mdl.table_name
+                    table ||= mdl_table_name
+                    if mdl_table_name == model_table_name
                         fields << name
                     else
                         fields << table.q(name)
-                        joins[table] ||= model.many_to_one_associations[table] || model.many_to_many_associations[table]
+                        joins[mdl_table_name] ||= model.many_to_one_associations[table] || model.many_to_many_associations[table]
                     end
 
-                    f_info = info[name]
-                    raise Engine2::E2Error.new("Column #{name} not found for table #{table || model_table_name}") unless f_info
+                    f_info = mdl.type_info[name]
+                    raise Engine2::E2Error.new("Column #{name} not found for table #{table}") unless f_info
                     if f_info[:dummy]
                         nil
                     else
-                        qname = table.q(name)
+                        qname = mdl_table_name.q(name)
                         if table != model_table_name
                             Sequel.alias_columns_in_joins ? qname.as(:"#{table}__#{name}") : qname
                         else
                             qname
                         end
                     end
+
                 end
             end.compact
 
