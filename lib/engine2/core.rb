@@ -453,13 +453,12 @@ module E2Model
                         nil
                     else
                         qname = mdl_table_name.q(name)
-                        if table != model_table_name
-                            Sequel.alias_columns_in_joins ? qname.as(:"#{table}__#{name}") : qname
-                        else
+                        if table == model_table_name
                             qname
+                        else
+                            Sequel.alias_columns_in_joins ? qname.as(:"#{table}__#{name}") : qname
                         end
                     end
-
                 end
             end.compact
 
