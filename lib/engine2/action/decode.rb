@@ -93,13 +93,14 @@ module Engine2
 
         def invoke handler
             model = assets[:model]
+            table_name = model.table_name
             if query = handler.params[:query]
                 fields = @meta[:decode_fields] || static.meta[:decode_fields]
 
                 entries = if query.to_s.empty?
                     get_query
                 else
-                    condition = fields.map{|f|f.like("%#{query}%", case_insensitive: @case_insensitive || static.get_case_insensitive)}.reduce{|q, f| q | f}
+                    condition = fields.map{|f|table_name.q(f).like("%#{query}%", case_insensitive: @case_insensitive || static.get_case_insensitive)}.reduce{|q, f| q | f}
                     get_query.where(condition)
                 end.limit(@limit || static.get_limit).load_all
 
