@@ -295,7 +295,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         if elem[0].type in ['text', 'password']
             elem.on 'keypress', (ev) ->
                 scope.$apply ->
-                    scope.action.panel_menu_default_action() if ev.keyCode == 13
+                    scope.action.panel_menu_default_action?() if ev.keyCode == 13
 
                 ev.stopPropagation()
 

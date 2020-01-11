@@ -767,6 +767,7 @@ angular.module('Engine2')
             @scope().$on "$typeahead.select", (e, v, index) =>
                 e.stopPropagation()
                 _(@dinfo.fields).zip(E2.split_keys(@values[index].id)).each(([fk, k]) => @record()[fk] = E2.parse_entry(k, @parentp().meta.fields[fk])).value
+                @parentp().scope().$digest()
                 @parentp().search_field_change?(@decode_field)
 
             @scope().$watch "action.decode", (e) => @reset() if e == null
