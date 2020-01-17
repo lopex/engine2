@@ -892,7 +892,7 @@ angular.module('Engine2')
                     else
                         pparent.changes.modify.push @parent().record
                 else # CreateAction
-                    _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid(5)
+                    _(@parent().meta.primary_fields).each (k) => @parent().record[k] = E2.uuid()
                     if draggable = pparent.meta.draggable
                         max = _.maxBy(pparent.entries, (e) -> e.position)
                         @parent().record[draggable.position_field] = if max then max[draggable.position_field] + 1 else 1

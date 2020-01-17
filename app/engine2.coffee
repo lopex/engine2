@@ -115,7 +115,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         modal: -> $e2Modal
 
     uuid: (length) ->
-        Math.random().toString(36).substring(length)
+        Math.random().toString(10).substr(2, 8)
 
     compact: (o) ->
         _.each o, (v, k) =>
