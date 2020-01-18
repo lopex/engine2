@@ -10,11 +10,14 @@
 :decode_selected:               selected
 :list_select_selected:          Selected
 
+:Files:                         Files
+:files:                         File
 :name:                          Name
 :mime:                          Mime
 :owner:                         Owner
 :model:                         Model
 :field:                         Field
+:uploaded:                      Uploaded
 :updated:                       Updated
 
 :ok:                            Ok
