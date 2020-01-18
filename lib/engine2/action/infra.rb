@@ -112,7 +112,8 @@ module Engine2
             temp.close
             rackname = File.basename(temp.path)
             info = node.parent.*.model.type_info[node.parent.*.field]
-            File.rename(temp.path, "#{info[:store][:upload]}/#{rackname}")
+            FileUtils.cp(temp.path, "#{info[:store][:upload]}/#{rackname}") # File.rename(temp.path, "#{info[:store][:upload]}/#{rackname}")
+            FileUtils.rm(temp.path)
             {rackname: rackname}
         end
     end
