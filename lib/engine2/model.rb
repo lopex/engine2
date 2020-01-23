@@ -27,6 +27,7 @@ module Engine2
                 @after_destroy_processors = nil
                 @type_info_synchronized = nil
                 @model_icon = :"list"
+                @model_route = cls.name.to_sym
             end
             cls.setup_schema
         end
@@ -183,6 +184,10 @@ module Engine2
 
         def model_icon icn = nil
             icn ? @model_icon = icn : @model_icon
+        end
+
+        def model_route rt = nil
+            rt ? @model_route = rt : @model_route
         end
     end
 
