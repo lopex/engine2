@@ -14,6 +14,8 @@ module Engine2
 
     class E2Files < Sequel::Model(E2DB[:files])
         extend Engine2::Model
+        model_icon :'file'
+        model_route :E2Files
 
         type_info do
             # list_select :model, Hash[@model.db.models.keys.map{|m| [m, m]}]
