@@ -158,6 +158,10 @@ module Engine2
                 })
             end
 
+            def checkbox_button options = {}
+                {template: "fields/checkbox_button"}.merge(options)
+            end
+
             def radio_checkbox
                 {template: "fields/radio_checkbox"}
             end

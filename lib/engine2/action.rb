@@ -1354,7 +1354,7 @@ module Engine2
         email: lambda{|action, info| Templates.email(info[:length])},
         password: lambda{|action, info| Templates.password(info[:length])},
         # date_range: lambda{|action, info| Templates.date_range},
-        boolean: lambda{|action, info| Templates.checkbox_buttons(optional: !info[:required])},
+        boolean: lambda{|action, info| Templates.checkbox_button},
         currency: lambda{|action, info| Templates.currency},
         list_select: lambda{|action, info|
             length = info[:values].length
