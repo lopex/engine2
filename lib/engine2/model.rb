@@ -178,8 +178,8 @@ module Engine2
 
         def scheme s_name = :default, opts = nil, &blk
             @scheme_name = s_name
-            @scheme_args = [name.to_sym, self, opts]
-            SCHEMES::define_scheme name.to_sym, &blk
+            @scheme_args = [model_route, self, opts]
+            SCHEMES::define_scheme model_route, &blk
         end
 
         def model_icon icn = nil
