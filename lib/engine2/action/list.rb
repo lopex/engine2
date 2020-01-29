@@ -119,7 +119,7 @@ module Engine2
 
             per_page = lookup(:config, :per_page)
             page = params[:page].to_i
-            handler.permit page >= 0 && page < 1000
+            handler.permit page >= 0 && page < 1000000
 
             query = query.limit(per_page, page)
 
