@@ -391,7 +391,7 @@ module Engine2
         file_store: lambda{|m, v, info|
             value = m.values[v]
             files = E2Files.db[:files]
-            owner = m.primary_key_values.join('|')
+            owner = Sequel::join_keys(m.primary_key_values)
             upload = info[:store][:upload]
             files_dir = info[:store][:files]
             value.each do |entry|
@@ -435,7 +435,7 @@ module Engine2
         file_store: lambda{|m, v, info|
             files = E2Files.db[:files]
             files_dir = info[:store][:files]
-            owner = m.primary_key_values.join('|')
+            owner = Sequel::join_keys(m.primary_key_values)
             files.select(:id, :name).where(owner: owner, model: m.model.name, field: v.to_s).all.each do |entry|
                 File.delete("#{files_dir}/#{entry[:name]}_#{entry[:id]}")
             end
