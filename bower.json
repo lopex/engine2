@@ -2,7 +2,7 @@
   "name": "engine2",
   "version": "1.0.0",
   "dependencies": {
-    "angular-strap": "^2.3.10",
+    "angular-strap": "^2.3.12",
     "angular": "^1.5.8",
     "angular-websocket": "^2.0.0",
     "angular-toastr": "^2.1.1"
