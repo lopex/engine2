@@ -140,7 +140,7 @@ module Engine2
                 type_info = model.find_type_info(name)
                 name = name.to_sym
                 filter = filters[name]
-                if value = hash[name]
+                if !(value = hash[name]).nil? # use key?
                     query = if filter
                         filter.(handler, query, hash)
                     elsif filter = DefaultFilters[type_info[:otype]]
