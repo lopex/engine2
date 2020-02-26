@@ -200,7 +200,7 @@ module Engine2
                 true
             end
 
-            ::Kernel::puts "ACTION NODES: #{ActionNode.count}, Panels: #{panels}, Time: #{::Time.now - time}, Thefts: #{thefts}"
+            ::Kernel::puts "ACTION NODES: #{ActionNode.count}, Panels: #{panels}, Thefts: #{thefts}, Time: #{::Time.now - time}"
         end
 
         def p *args
