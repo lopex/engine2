@@ -780,7 +780,10 @@ module Engine2
         def filter_case_insensitive name
             model = assets[:model]
             raise E2Error.new("Field '#{name}' needs to be a string") unless model.find_type_info(name)[:otype] == :string
-            filter(name){|handler, query, hash| query.where(model.table_name.q(name).ilike("%#{hash[name]}%")) }
+            filter name do |handler, query, hash|
+                value = hash[name]
+                value ? query.where(model.table_name.q(name).ilike("%#{value}%")) : query
+            end
         end
 
         def order name, &blk
