@@ -517,6 +517,11 @@ angular.module('Engine2')
         entry_moved: (index) ->
             @moved_from = index
 
+        list_parent_action: ->
+            parent = @parent()
+            parent = parent.parent() until parent instanceof ListAction
+            parent
+
     bulk_delete: class BulkDeleteAction extends Action
         invoke: ->
             super(ids: [_.keys(@parent().parent().selection)]).then =>
@@ -812,7 +817,7 @@ angular.module('Engine2')
     star_to_many_list: class StarToManyList extends ListAction
         initialize: ->
             super()
-            @query.parent_id = @parent().current_id()
+            @query.parent_id = @list_parent_action().current_id()
 
         # link_list: implicit
         item_menu_confirm_unlink: (args) ->
