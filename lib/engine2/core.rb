@@ -292,7 +292,7 @@ module E2Model
                 next if info[:primary_key] && !model.natural_key
 
                 value = values[name].to_s
-                value.strip! unless info[:dont_strip]
+                value.strip! unless value.empty? || info[:dont_strip]
                 if value.empty?
                     if req = info[:required]
                         errors.add(name, req[:message]) if !req[:if] || req[:if].(self)
