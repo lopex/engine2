@@ -230,7 +230,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             switch value
                 when render.true_value then E2Snippets.boolean_true_value
                 when render.false_value then E2Snippets.boolean_false_value
-                else "?"
+                else value
         list_select: (value, render, separator) ->
             render.list_hash ||= render.values.reduce(((h, [a, b]) -> h[a] = b; h), {})
             if render.multiselect && _.isArray(value)
