@@ -1,6 +1,6 @@
 .col-lg-12
   .div ng-init="(action.record[f] === null || action.record[f] === undefined) && (action.record[f] = field.render.false_value)" ng-model="action.record[f]" e2-field=""
-    a.btn.btn-default.btn-sm ng-show="action.record[f] === field.render.true_value" ng-class="action.record[f] === field.render.true_value && 'active'" ng-click="action.record[f] = field.render.false_value" ng-disabled="field.disabled"
+    a.btn.btn-default.btn-sm ng-show="action.record[f] === field.render.true_value" ng-class="action.record[f] === field.render.true_value && 'btn-primary'" ng-click="action.record[f] = field.render.false_value" ng-disabled="field.disabled"
       span.glyphicon.glyphicon-check
     a.btn.btn-default.btn-sm ng-show="action.record[f] === field.render.false_value" ng-click="action.record[f] = field.render.true_value" ng-disabled="field.disabled"
       span.glyphicon.glyphicon-unchecked
