@@ -24,7 +24,7 @@
     "bootstrap-additions": "0.3.1",
     "fork-awesome": "^1.1.7",
     "json-to-pretty-yaml": "1.2.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.17",
     "ng-file-upload": "^12.2.0",
     "push.js": "^1.0.12"
   },
