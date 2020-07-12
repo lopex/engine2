@@ -234,6 +234,7 @@ module Engine2
                 info[:store][:upload] ||= "#{Engine2::SETTINGS[:path]}/store/upload"
                 info[:store][:files] ||= "#{Engine2::SETTINGS[:path]}/store/files"
                 info[:transaction] = true
+                info[:validations][:file_store] = true
             end
         end
 
@@ -316,6 +317,7 @@ module Engine2
                 info[:keys] = assoc[:keys]
                 info[:assoc_name] = assoc_name
                 info[:transaction] = true
+                info[:validations][:star_to_many_field] = true
             end
         end
 

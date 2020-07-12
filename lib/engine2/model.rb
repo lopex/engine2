@@ -332,6 +332,10 @@ module Engine2
             else
                 nil
             end
+        },
+        star_to_many_field: lambda{|record, field, info|
+        },
+        file_store: lambda{|record, field, info|
         }
     )
 
