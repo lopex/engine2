@@ -334,6 +334,18 @@ module Engine2
             end
         },
         star_to_many_field: lambda{|record, field, info|
+            if info[:required]
+                if info[:schemes][:star_to_many_field_link]
+                    # p info[:assoc_name]
+
+                    # p record.test_dataset.count
+                    p record[field]
+                    # p record.test_dataset.where
+                    # nil
+                elsif info[:schemes][:star_to_many_field_create]
+                end
+
+            end
         },
         file_store: lambda{|record, field, info|
         }

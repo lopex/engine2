@@ -846,11 +846,11 @@ angular.module('Engine2')
         initialize: ->
             super()
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
-            @changes = (@parent().record[@scope().$parent.f] ?= (link: [], unlink: [], create: [], modify: [], delete: []))
+            @changes = (link: [], unlink: [], create: [], modify: [], delete: [])
             @invoke()
 
         invoke: ->
-            @query.changes = @changes
+            @query.changes = @parent().record[@scope().$parent.f] = @changes
             super()
 
         entry_dropped: (moved_to) ->
