@@ -344,6 +344,13 @@ module Engine2
             end
         },
         file_store: lambda{|record, field, info|
+            if info[:required]
+                files = record[field]
+                added = files.count{|f|f[:new]}
+                removed = files.count{|f|f[:deleted]}
+                referenced = E2Files.db[:files].where(model: record.model.name, field: field.to_s, owner: Sequel::join_keys(record.primary_key_values)).count
+                info[:required][:message] if (record.new? ? added : referenced - removed + added) == 0
+            end
         }
     )
 
