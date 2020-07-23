@@ -335,16 +335,12 @@ module Engine2
         },
         star_to_many_field: lambda{|record, field, info|
             if info[:required]
-                if info[:schemes][:star_to_many_field_link]
-                    # p info[:assoc_name]
-
-                    # p record.test_dataset.count
-                    p record[field]
-                    # p record.test_dataset.where
-                    # nil
-                elsif info[:schemes][:star_to_many_field_create]
+                if info[:schemes][:star_to_many_field_link] || info[:schemes][:star_to_many_field_create]
+                    changes = record[field]
+                    added = changes[:link].to_a.length + changes[:create].to_a.length
+                    removed = changes[:unlink].to_a.length + changes[:delete].to_a.length
+                    info[:required][:message] if (record.new? ? added : (record.send(:"#{field}_dataset").count - removed + added)) == 0
                 end
-
             end
         },
         file_store: lambda{|record, field, info|
