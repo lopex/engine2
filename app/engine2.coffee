@@ -284,7 +284,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         meta = scope.action.meta
         info = meta.fields[name]
         scope.$on "focus_field", (event, n, mode) ->
-            if n == name
+            if n == name && !info.dont_focus
                 elem[0].focus()
 
         if info.onfocus
