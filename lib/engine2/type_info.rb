@@ -214,7 +214,7 @@ module Engine2
             modify_field field do |info|
                 info[:type] = :email
             end
-            format field, /\w+\@\w+\.\w+/, message
+            format field, /\w+\@\w+|-\.\w+/, message
         end
 
         def password field
