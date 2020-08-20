@@ -68,6 +68,12 @@ module Engine2
             end
         end
 
+        def float_field field
+            define_field field, :float do |info|
+                info[:validations][:float] = true
+            end
+        end
+
         def boolean_field field
             define_field field, :boolean do |info|
             end

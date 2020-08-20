@@ -80,6 +80,8 @@ module Engine2
                         blob_field name, 100000
                     when :boolean
                         boolean_field name
+                    when :float
+                        float_field name
                     when nil
                         # ignore nil type
                     else
@@ -294,6 +296,10 @@ module Engine2
         integer: lambda{|record, field, info|
             value = record.values[field]
             LOCS[:invalid_number_value] unless value.is_a?(Integer) || value.to_s =~ /^\-?\d+$/
+        },
+        float: lambda{|record, field, info|
+            value = record.values[field]
+            LOCS[:invalid_number_value] unless value.is_a?(Float) # || value.to_s =~ /^\-?\d+$/
         },
         positive_integer: lambda{|record, field, info|
             LOCS[:number_negative] if record.values[field] < 0

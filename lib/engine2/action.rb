@@ -1351,6 +1351,7 @@ module Engine2
         string: lambda{|action, info| Templates.input_text(info[:length])},
         text: lambda{|action, info| Templates.text},
         integer: lambda{|action, info| Templates.integer},
+        float: lambda{|action, info| Templates.integer},
         decimal: lambda{|action, info| Templates.decimal},
         decimal_date: lambda{|action, info| DefaultFormRenderers[:date].(action, info)},
         decimal_time: lambda{|action, info| Templates.time_picker},
