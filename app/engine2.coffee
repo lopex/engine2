@@ -260,8 +260,10 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             if f_info? && type = f_info.type
                 @renderers[type](value, f_info.render, separator)
             else
-                if f_info?.escape == false then value else
-                    (value + "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                value = (value + "")
+                value = value.replace("\n", "<br>") if f_info?.html_br
+                value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") unless f_info?.escape == false
+                value
         else
             value
 
