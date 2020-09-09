@@ -261,8 +261,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 @renderers[type](value, f_info.render, separator)
             else
                 value = (value + "")
-                value = value.replaceAll("\n", "<br>") if f_info?.html_br
-                value = value.replaceAll(/&/g, "&amp;").replaceAll(/</g, "&lt;").replaceAll(/>/g, "&gt;") unless f_info?.escape == false
+                value = value.replace(/\n/g, "<br>") if f_info?.html_br
+                value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") unless f_info?.escape == false
                 value
         else
             value
