@@ -68,8 +68,14 @@ module Engine2
         end
 
         define_scheme :default do |name, model, options|
-            options ||= Schemes::CRUD
-            define_node name, ListAction, model: model do
+            list_action = if options
+                options.delete(:list_action) || ListAction
+            else
+                options = Schemes::CRUD
+                ListAction
+            end
+
+            define_node name, list_action, model: model do
                 options.each{|k, v| run_scheme(k) if v}
 
                 define_node_bundle :form, :create, :modify if options[:create] && options[:modify]
