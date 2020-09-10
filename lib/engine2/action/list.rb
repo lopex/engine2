@@ -14,8 +14,14 @@ module Engine2
                     query.where(name => value)
                 when :many_to_one
                     query.where(name => value)
-                else
+                when :string
                     query.where(name.like("%#{value}%"))
+                when :star_to_many_field
+                    p "!!!!"
+                    p type_info
+                    query.where(name.like("%#{value}%"))
+                else
+                    raise "unsupported_association"
                 end
             },
             date: lambda{|query, name, value, type_info, hash|
@@ -221,6 +227,10 @@ module Engine2
             parent_keys = split_keys(parent)
             case assoc[:type]
             when :one_to_many
+                p "@@@@@@@@@@@@@@@@"
+                p model
+                p assoc
+                p assoc.associated_class.association_reflections # [assoc[:name]]
                 keys = assoc[:keys]
                 condition = parent_keys.all?(&:empty?) ? false : Hash[keys.map{|k| model.table_name.q(k)}.zip(parent_keys)]
                 if handler.params[:negate]

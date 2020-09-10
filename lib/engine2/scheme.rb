@@ -68,11 +68,11 @@ module Engine2
         end
 
         define_scheme :default do |name, model, options|
-            list_action = if options
-                options.delete(:list_action) || ListAction
-            else
-                options = Schemes::CRUD
+            options ||= Schemes::CRUD
+            list_action = if options.frozen?
                 ListAction
+            else
+                options.delete(:list_action) || ListAction
             end
 
             define_node name, list_action, model: model do
