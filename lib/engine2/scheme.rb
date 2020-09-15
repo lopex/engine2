@@ -9,6 +9,7 @@ module Engine2
         STMF_CRUD ||= {star_to_many_field_create: true, star_to_many_field_view: true, star_to_many_field_modify: true, star_to_many_field_delete: true}.freeze
         STMF_VIEW ||= {star_to_many_field_view: true}.freeze
         STMF_LINK ||= {star_to_many_field_view: true, star_to_many_field_link: true, star_to_many_field_unlink: true, star_to_many_field_link_list: true}.freeze
+        DECODE_DEFAULT ||= {decode_entry: true, decode_list: true, typeahead: true}
 
         attr_reader :builtin, :user
         def initialize
