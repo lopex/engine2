@@ -8,7 +8,7 @@ module Engine2
         LINK ||= {star_to_many_link: true, view: true, star_to_many_unlink: true}.freeze # star_to_many_bulk_unlink: true
         STMF_CRUD ||= {star_to_many_field_create: true, star_to_many_field_view: true, star_to_many_field_modify: true, star_to_many_field_delete: true}.freeze
         STMF_VIEW ||= {star_to_many_field_view: true}.freeze
-        STMF_LINK ||= {star_to_many_field_view: true, star_to_many_field_link: true ,star_to_many_field_unlink: true, star_to_many_field_link_list: true}.freeze
+        STMF_LINK ||= {star_to_many_field_view: true, star_to_many_field_link: true, star_to_many_field_unlink: true, star_to_many_field_link_list: true}.freeze
 
         attr_reader :builtin, :user
         def initialize
@@ -68,19 +68,13 @@ module Engine2
         end
 
         define_scheme :default do |name, model, options|
-            options ||= Schemes::CRUD
-            list_action = if options.frozen?
-                ListAction
-            else
-                options.delete(:list_action) || ListAction
-            end
+            settings = options[:settings] || {}
 
-            define_node name, list_action, model: model do
-                options.each{|k, v| run_scheme(k) if v}
-
-                define_node_bundle :form, :create, :modify if options[:create] && options[:modify]
+            define_node name, settings[:list_action] || ListAction, model: model do
+                schemes = options[:schemes] || Schemes::CRUD
+                schemes.each{|k, v| run_scheme(k) if v}
+                define_node_bundle :form, :create, :modify if (schemes[:create] && schemes[:modify])
                 # define_node_bundle :decode, :decode_entry, :decode_list, :typahead
-
                 # if ?
                 define_node :decode_entry, DecodeEntryAction
                 define_node :decode_list, DecodeListAction

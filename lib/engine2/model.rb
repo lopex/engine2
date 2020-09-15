@@ -178,7 +178,7 @@ module Engine2
 
         attr_reader :scheme_name, :scheme_args
 
-        def scheme s_name = :default, opts = nil, &blk
+        def scheme s_name = :default, opts = {}, &blk
             @scheme_name = s_name
             @scheme_args = [model_route, self, opts]
             SCHEMES::define_scheme model_route, &blk

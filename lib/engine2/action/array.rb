@@ -178,11 +178,12 @@ module Engine2
         end
 
         define_scheme :array do |name, model, options|
-            options ||= Schemes::ARRAY_CRUD
-            define_node name, ArrayListAction, model: model do
-                options.each{|k, v| run_scheme(k) if v}
+            settings = options[:settings] || {}
 
-                define_node_bundle :form, :create, :modify if options[:array_create] && options[:array_modify]
+            define_node name, settings[:list_action] || ArrayListAction, model: model do
+                schemes = options[:schemes] || Schemes::ARRAY_CRUD
+                schemes.each{|k, v| run_scheme(k) if v}
+                define_node_bundle :form, :create, :modify if schemes[:array_create] && schemes[:array_modify]
             end
         end
     end
