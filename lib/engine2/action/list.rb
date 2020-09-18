@@ -16,6 +16,10 @@ module Engine2
                     query.where(name => value)
                 else
                     query.where(name.like("%#{value}%"))
+                # when :star_to_many_field
+                #     query.association_join(type_info[:name]).where(type_info[:name].q(:name).like("%#{value}%"))
+                # else
+                #     raise "Unsupported search type"
                 end
             },
             date: lambda{|query, name, value, type_info, hash|
