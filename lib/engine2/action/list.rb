@@ -141,15 +141,16 @@ module Engine2
             filters = @filters || static.filters ? static.filters.to_h.merge(@filters.to_h) : {}
 
             sfields.each do |name|
-                type_info = model.find_type_info(name)
-                name = name.to_sym
-                filter = filters[name]
-                if !(value = hash[name]).nil? # use key?
+                info = model.find_type_info(name)
+                name_sym = name.to_sym
+
+                filter = filters[name_sym]
+                if !(value = hash[name_sym]).nil? # use key?
                     query = if filter
                         filter.(handler, query, hash)
-                    elsif filter = DefaultFilters[type_info[:otype]]
-                        name = model.type_info[name] ? model.table_name.q(name) : Sequel.expr(name)
-                        filter.(query, name, value, type_info, hash)
+                    elsif filter = DefaultFilters[info[:otype]]
+                        name = model.table_name.q(name) if name.is_a?(Symbol)
+                        filter.(query, name, value, info, hash)
                     else
                         raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
                     end
