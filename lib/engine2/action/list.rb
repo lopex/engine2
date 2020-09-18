@@ -149,7 +149,13 @@ module Engine2
                     query = if filter
                         filter.(handler, query, hash)
                     elsif filter = DefaultFilters[info[:otype]]
-                        name = model.table_name.q(name) if name.is_a?(Symbol)
+                        if name.is_a?(Symbol)
+                            name = model.table_name.q(name)
+                        else
+                            joins = query.opts[:join]
+                            query = query.association_join(name.table) unless (joins && joins.any?{|j|j.table == name.table})
+                        end
+
                         filter.(query, name, value, info, hash)
                     else
                         raise E2Error.new("Filter not found for field '#{name}' in model '#{model}'") unless filter
