@@ -14,12 +14,11 @@ module Engine2
                     query.where(name => value)
                 when :many_to_one
                     query.where(name => value)
+                when :many_to_many
+                    table = query.model.many_to_many_associations[type_info[:assoc_name]].associated_class.table_name
+                    query.association_join(:group).where(table.q(type_info[:column]).like("%#{value}%")).group(query.model.primary_keys_qualified)
                 else
                     query.where(name.like("%#{value}%"))
-                # when :star_to_many_field
-                #     query.association_join(type_info[:name]).where(type_info[:name].q(:name).like("%#{value}%"))
-                # else
-                #     raise "Unsupported search type"
                 end
             },
             date: lambda{|query, name, value, type_info, hash|
@@ -72,7 +71,8 @@ module Engine2
                                 query.where(name => value) # decode in sql query ?
                             end
                         when :integer
-                            query
+                            query = query.where(name => value)
+                            query.opts[:join].any?{|j|j.table == type_info[:owner].table_name} ? query.group(query.model.primary_keys_qualified) : query
                         else
                             nil
                         end

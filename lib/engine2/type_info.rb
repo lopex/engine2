@@ -18,6 +18,7 @@ module Engine2
             end
 
             info.merge!({
+                owner: @model,
                 name: field,
                 otype: type,
                 type: type,
@@ -324,6 +325,20 @@ module Engine2
                 info[:assoc_name] = assoc_name
                 info[:transaction] = true
                 info[:validations][:star_to_many_field] = true
+            end
+        end
+
+        def many_to_many_field assoc_name, name, *opts
+            assoc = @model.many_to_many_associations[assoc_name]
+            raise E2Error.new("'many_to_many' association '#{assoc_name}' not found for model '#{@model}'") unless assoc
+
+            q_name = :"#{assoc_name}__#{name}"
+            type, *args = opts
+            send :"#{type}_field", q_name, *args
+            modify_field q_name do |info|
+                info[:type] = :many_to_many
+                info[:assoc_name] = assoc_name
+                info[:column] = name
             end
         end
 
