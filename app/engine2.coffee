@@ -394,7 +394,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
 
             tbody_attrs = if draggable then 'dnd-list=\"action.entries\" dnd-drop=\"action.entry_dropped(index, external, type)\"' else ''
             elem.empty()
-            elem.append($compile(table_tmpl thead: thead, tbody: tbody, tbody_attrs: tbody_attrs, tfoot: "<e2-include template=\"'scaffold/pager'\"></e2-includex>")(table_scope))
+            elem.append($compile(table_tmpl thead: thead, tbody: tbody, tbody_attrs: tbody_attrs, tfoot: "<e2-include template=\"'scaffold/pager'\"></e2-include>")(table_scope))
 
 .directive 'e2Dropdown', ($parse, $dropdown, $timeout, E2Snippets) ->
     event_num = 0
