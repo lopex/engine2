@@ -388,7 +388,8 @@ module Engine2
 
             case at
             when :modify, :create
-                model.type_info.each do |field, info|
+                model.dummies.each do |field|
+                    info = model.type_info[field]
                     case info[:type]
                     when :blob_store
                         node.run_scheme :blob_store, model, field
