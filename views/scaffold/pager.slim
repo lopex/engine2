@@ -1,0 +1,12 @@
+span ng-if="action.ui.pagination_active"
+  ul.pagination.pagination-md
+    li ng-class="!action.prev_active() && 'disabled'"
+      a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
+    li ng-class="!action.next_active() && 'disabled'"
+      a href="" ng-click="action.next()": span.glyphicon.glyphicon-forward
+    |&nbsp;
+  .badge
+    span< ng-bind="action.page_info()"
+  |&nbsp;
+.badge ng-if="action.selection"
+  span< ng-bind="action.selected_info()"

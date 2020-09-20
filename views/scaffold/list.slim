@@ -3,17 +3,5 @@ div
   .panel.panel-default
     .panel-body
       table.table.table-striped.table-condensed.table-hover e2-table-body=""
-      span ng-if="action.ui.pagination_active"
-        ul.pagination.pagination-md
-          li ng-class="!action.prev_active() && 'disabled'"
-            a href="" ng-click="action.prev()": span.glyphicon.glyphicon-backward
-          li ng-class="!action.next_active() && 'disabled'"
-            a href="" ng-click="action.next()": span.glyphicon.glyphicon-forward
-          |&nbsp;
-        .badge
-          span< ng-bind="action.page_info()"
-        |&nbsp;
-      .badge ng-if="action.selection"
-        span< ng-bind="action.selected_info()"
-
+      e2-include template="'scaffold/pager'"
       span ng-if="action.alert": .alert.alert-danger ng-bind="action.alert"
