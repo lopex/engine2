@@ -55,7 +55,7 @@ module Engine2
                     end
 
                     define_invoke :environment do |handler|
-                        {environment: handler.env}
+                        {environment: handler.env, system: {ruby_version: RUBY_VERSION, ruby_platform: RUBY_PLATFORM}}
                     end
                 end
             end

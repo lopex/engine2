@@ -88,6 +88,10 @@ e2-action action="'inspect_' + action.globals().application"
       .panel.panel-default
         .panel-body
           pre ng-bind="action.environment | yaml"
+      .panel.panel-default
+        .panel-body
+          pre ng-bind="action.system | yaml"
+
 
     div title="Local storage" bs-pane=""
       .panel.panel-default
