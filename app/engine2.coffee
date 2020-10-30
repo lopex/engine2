@@ -363,7 +363,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             _.each fields, (f) ->
                 if f
                     info = meta.fields[f]
-                    thead += "<th>"
+                    thead += if col_cls = meta.fields[f].column_class then "<th class=\"#{col_cls}\">" else "<th>"
                     title = if info.title then "title=\"#{info.title}\"" else ""
                     if info.sort
                         thead += "<a ng-click=\"action.order('#{f}')\" #{title}><strong>#{info.loc}</strong></a>"
@@ -385,7 +385,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                     if row_cls then "<tr class=\"#{row_cls}\" #{tr_attrs}>" else "<tr #{tr_attrs}>"
                 _.each fields, (f) ->
                     if f
-                        tbody += if col_cls = meta.fields[f].column_class then "<td class=\"#{col_cls}\">" else "<td>"
+                        tbody += if col_cls = meta.fields[f].column_td_class then "<td class=\"#{col_cls}\">" else "<td>"
                         tbody += action.list_cell(e, f) ? ''
                         tbody += "</td>"
                     else
