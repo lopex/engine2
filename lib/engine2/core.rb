@@ -560,7 +560,7 @@ module Engine2
             Sequel::DATABASES.each &:load_schema_cache_from_file
             load 'engine2/models/Files.rb'
             load 'engine2/models/UserInfo.rb'
-            Dir["#{Engine2::SETTINGS.path_for(:model_path)}/*"].each{|m| load m}
+            Dir["#{Engine2::SETTINGS.path_for(:model_path)}/*.rb"].each{|m| load m}
             @model_boot_blk.() if @model_boot_blk
             puts "MODELS: #{Sequel::DATABASES.reduce(0){|s, d|s + d.models.size}}, Time: #{Time.now - t}"
             Sequel::DATABASES.each do |db|
