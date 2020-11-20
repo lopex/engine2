@@ -23,7 +23,7 @@ module Engine2
                 fields = fields - static.meta[:field_list] if dynamic?
                 # no decorate here
                 fields.each do |name|
-                    type_info = assets[:model].type_info[name] # foreign keys ?
+                    type_info = assets[:model].find_type_info(name) # foreign keys!
                     proc = ListRendererPostProcessors[type_info[:type]] # like... checkboxes, list_selects
                     proc.(self, name, type_info) if proc
                 end
@@ -122,7 +122,7 @@ module Engine2
         end
 
         def invoke_decode handler, ids
-            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys.zip(keys)]}.reduce{|q, c| q | c}).load_all
+            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys_qualified.zip(keys)]}.reduce{|q, c| q | c}).load_all
             # handler.halt_not_found(LOCS[:no_entry]) if records.empty?
             records
         end

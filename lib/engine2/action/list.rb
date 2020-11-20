@@ -270,7 +270,7 @@ module Engine2
                 if h.initial?
                     action = nd.*
                     rec = action.invoke_decode(h, [split_keys(h.params[:parent_id])]).first
-                    panel_title "#{static.panel[:title]} - #{action.meta[:decode_fields].map{|f|rec[f]}.join(action.meta[:separator])}"
+                    panel_title "#{static.panel[:title]} - #{action.meta[:decode_fields].map{|f|rec[f.to_sym]}.join(action.meta[:separator])}"
                 end
             end if nd
         end
