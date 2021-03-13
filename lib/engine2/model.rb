@@ -7,6 +7,7 @@ module Engine2
         attr_reader :many_to_one_associations, :one_to_many_associations, :many_to_many_associations #, :one_to_one_associations
         attr_reader :after_load_processors, :before_save_processors, :after_save_processors, :before_destroy_processors, :after_destroy_processors
         attr_reader :validation_in_transaction
+        attr_reader :properties
 
         def self.extended cls
             models = cls.db.models
@@ -28,6 +29,7 @@ module Engine2
                 @type_info_synchronized = nil
                 @model_icon = :"list"
                 @model_route = cls.name.to_sym
+                @properties = {}
             end
             cls.setup_schema
         end
