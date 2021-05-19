@@ -781,9 +781,18 @@ module Engine2
         def filter_case_insensitive name
             model = assets[:model]
             raise E2Error.new("Field '#{name}' needs to be a string") unless model.find_type_info(name)[:otype] == :string
+
+            case name
+            when Symbol
+                q_name = model.table_name.q(name)
+            when Sequel::SQL::QualifiedIdentifier
+                q_name = name
+                name = name.to_sym
+            end
+
             filter name do |handler, query, hash|
                 value = hash[name]
-                value ? query.where(model.table_name.q(name).ilike("%#{value}%")) : query
+                value ? query.where(q_name.ilike("%#{value}%")) : query
             end
         end
 
