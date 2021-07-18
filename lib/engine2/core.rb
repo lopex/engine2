@@ -117,6 +117,10 @@ class Hash
 
 end
 
+class Array
+    include PrettyJSON
+end
+
 class String
     def limit_length num
         s = self.strip
