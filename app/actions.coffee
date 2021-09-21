@@ -319,7 +319,7 @@ angular.module('Engine2')
 
         initialize: ->
             super()
-            $stateRegistry.load_routes = (init) =>
+            globals.load_routes = $stateRegistry.load_routes = (init) =>
                 @invoke().then =>
                     menu = @meta.menus.menu
                     _.each $stateRegistry.get(), (s) -> $stateRegistry.deregister(s.name) unless _.isEmpty(s.name)
