@@ -87,6 +87,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     icon = (name) ->
         if name.slice(0, 3) == 'fa_'
             "<i class='fa fa-#{name.slice(3)}'></i>"
+        else if (idx = name.indexOf('.')) != -1
+            "<img src=#{name}></img>"
         else
             "<span class='glyphicon glyphicon-#{name}'></span>"
 

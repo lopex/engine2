@@ -138,9 +138,11 @@ end
 
 class Symbol
     def icon
-        s = self
+        s = self.to_s
         if s[0, 3] == 'fa_'
             "<i class='fa fa-#{s[3 .. -1]}'></i>"
+        elsif idx = s.index('.')
+            "<img src='#{s}'></img>"
         else
             "<span class='glyphicon glyphicon-#{s}'></span>"
         end
