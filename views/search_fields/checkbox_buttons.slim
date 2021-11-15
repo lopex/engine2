@@ -6,5 +6,5 @@
       a.btn.btn-default ng-class="action.query.search[f] == field.render.false_value && 'btn-primary'" ng-click="action.query.search[f] = field.render.false_value; action.search_field_change(f)"
         span.glyphicon.glyphicon-unchecked
       a.btn.btn-default ng-disabled="action.query.search[f] == null" ng-click="action.query.search[f] = null; action.search_field_change(f)"
-        span ng-bind="::field.loc"
+        span> ng-bind="::field.loc"
         span ng-bind-html="::action.meta.search_reset_icon"<
