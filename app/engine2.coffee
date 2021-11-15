@@ -370,7 +370,11 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                     if info.sort
                         thead += "<a ng-click=\"action.order('#{f}')\" #{title}><strong>#{info.loc}</strong></a>"
                         thead += if action.ui.order == f
-                            " <span class=\"fa fa-arrow-#{if action.ui.asc then "up" else "down"}\"></span>"
+                            up_down = if action.ui.asc then "up" else "down"
+                            if action.meta.sort_icon_up && action.meta.sort_icon_down
+                                " #{action.meta['sort_icon_' + up_down]}"
+                            else
+                                " <span class=\"fa fa-arrow-#{up_down}\"></span>"
                         else
                             " <span class=\"fa fa-sort\"></span>"
                     else
