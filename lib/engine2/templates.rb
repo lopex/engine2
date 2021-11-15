@@ -10,8 +10,8 @@ module Engine2
                 {template: "fields/input_text"}
             end
 
-            def text_area cols, rows
-                {template: "fields/text_area", cols: cols, rows: rows}
+            def text_area cols, rows, autoheight = false
+                {template: autoheight ? "fields/text_area_autoheight" : "fields/text_area", cols: cols, rows: rows}
             end
 
             def input_text length

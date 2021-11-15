@@ -24,4 +24,4 @@
           span ng-bind="::action.meta.loc.search"
           span.glyphicon.glyphicon-zoom-in<
         button.btn.btn-default ng-click="action.search_reset()" title="Reset"
-          span.glyphicon.glyphicon-asterisk
+          span ng-bind-html="::action.meta.search_reset_icon"
