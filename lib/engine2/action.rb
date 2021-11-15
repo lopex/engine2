@@ -663,6 +663,7 @@ module Engine2
 
             @meta[:state] = [:query, :ui_state]
             @meta[:search_reset_icon] = :off.icon
+            @meta[:search_calendar_icon] = :calendar.icon
         end
 
         def field_tabs hash
