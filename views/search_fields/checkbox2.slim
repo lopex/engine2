@@ -6,7 +6,8 @@
   ]
     button.btn.btn-default type="button" value="{{field.render.true_value}}": span.glyphicon.glyphicon-ok
     button.btn.btn-default type="button" value="{{field.render.false_value}}": span.glyphicon.glyphicon-remove
-    button.btn.btn-default type="button" ng-disabled="!action.query.search[f]": span.glyphicon.glyphicon-off
+    button.btn.btn-default type="button" ng-disabled="!action.query.search[f]"
+      span ng-bind-html="::action.meta.search_reset_icon"
   span ng-bind="::field.loc"
 
 /input type="checkbox" id="{{f}}" ng-model="action.query.search[f]" ng-true-value="{{field.render.true_value}}" ng-false-value="{{field.render.false_value}}"

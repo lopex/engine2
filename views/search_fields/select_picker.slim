@@ -13,4 +13,4 @@ e2-action action="[field.assoc, 'list']"
           option value="" ng-bind="::field.loc"
         .input-group-btn
           a.btn.btn-default ng-disabled="!action.selected" ng-click="action.reset()"
-            span.glyphicon.glyphicon-off
+            span ng-bind-html="::action.meta.search_reset_icon"

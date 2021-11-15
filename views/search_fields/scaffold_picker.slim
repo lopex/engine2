@@ -10,7 +10,8 @@ e2-action action="[field.assoc, 'decode']"
           span ng-bind-html="action.decode || field.loc"
         .input-group-btn
           a.btn.btn-default ng-click="action.open()": span.glyphicon.glyphicon-list
-          a.btn.btn-default ng-disabled="!action.decode" ng-click="action.reset()": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.decode" ng-click="action.reset()"
+            span ng-bind-html="::action.meta.search_reset_icon"
 
     input [
       type="hidden"

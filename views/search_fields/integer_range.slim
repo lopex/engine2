@@ -11,7 +11,8 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
           e2-integer=""
         ]
         .input-group-btn
-          a.btn.btn-default ng-disabled="!action.query.search[f].from" ng-click="action.query.search[f].from = null; action.search_field_change(f)": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.query.search[f].from" ng-click="action.query.search[f].from = null; action.search_field_change(f)"
+            span ng-bind-html="::action.meta.search_reset_icon"
   .col-lg-2.col-md-3.col-sm-4
     .form-group
       .input-group.input-group-sm
@@ -24,4 +25,5 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
           e2-integer=""
         ]
         .input-group-btn
-          a.btn.btn-default ng-disabled="!action.query.search[f].to" ng-click="action.query.search[f].to = null; action.search_field_change(f)": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.query.search[f].to" ng-click="action.query.search[f].to = null; action.search_field_change(f)"
+            span ng-bind-html="::action.meta.search_reset_icon"

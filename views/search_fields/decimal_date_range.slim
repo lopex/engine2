@@ -20,7 +20,8 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
         ]
         .input-group-btn
           a.btn.btn-default.disabled data-toggle="datepicker": span.glyphicon.glyphicon-calendar
-          a.btn.btn-default ng-disabled="!action.query.search[f].from" ng-click="action.query.search[f].from = null; action.search_field_change(f)": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.query.search[f].from" ng-click="action.query.search[f].from = null; action.search_field_change(f)"
+            span ng-bind-html="::action.meta.search_reset_icon"
 
   .col-lg-3.col-md-4.col-sm-4
     .form-group
@@ -44,4 +45,5 @@ span ng-init="action.query.search[f] = action.query.search[f] || {}"
         ]
         .input-group-btn
           a.btn.btn-default.disabled data-toggle="datepicker": span.glyphicon.glyphicon-calendar
-          a.btn.btn-default ng-disabled="!action.query.search[f].to" ng-click="action.query.search[f].to = null; action.search_field_change(f)": span.glyphicon.glyphicon-off
+          a.btn.btn-default ng-disabled="!action.query.search[f].to" ng-click="action.query.search[f].to = null; action.search_field_change(f)"
+            span ng-bind-html="::action.meta.search_reset_icon"
