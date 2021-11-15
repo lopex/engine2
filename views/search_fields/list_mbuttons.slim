@@ -8,5 +8,5 @@
         ng-bind-html="v[1]"
       ]
       a.btn.btn-default ng-disabled="action.query.search[f].length == 0" ng-click="action.query.search[f] = []; action.search_field_change(f)"
-        span ng-bind="::field.loc"
+        span> ng-bind="::field.loc"
         span ng-bind-html="::action.meta.search_reset_icon"<
