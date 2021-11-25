@@ -89,6 +89,10 @@ module Engine2
             (@meta[:execute] ||= []) << command
         end
 
+        def redirect to
+            execute "action.globals().window().location.href = '#{to}'"
+        end
+
         def dynamic?
             self != @static
         end

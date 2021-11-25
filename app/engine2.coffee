@@ -102,7 +102,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         _.each(o.class, (v, k) -> out.push "'#{k}': #{v}") if o.class?
         if out.length > 0 then "ng-class=\"{#{out.join(',')}}\"" else ""
 
-.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse, PushJS, $state, $e2Modal, toastr) ->
+.factory 'E2', ($templateCache, $http, E2Snippets, $q, $dateFormatter, $parse, PushJS, $state, $e2Modal, toastr, $window) ->
     globals:
         element: (id) ->
             element = document.querySelector(id)
@@ -115,6 +115,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         toastr: -> toastr
         state: -> $state
         modal: -> $e2Modal
+        window: -> $window
 
     uuid: (length) ->
         Math.random().toString(10).substr(2, 8)
