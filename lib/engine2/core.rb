@@ -137,14 +137,14 @@ class String
 end
 
 class Symbol
-    def icon
+    def icon extra_class = ''
         s = self.to_s
         if s[0, 3] == 'fa_'
-            "<i class='fa fa-#{s[3 .. -1]}'></i>"
+            "<i class='fa fa-#{s[3 .. -1]} #{extra_class}'></i>"
         elsif idx = s.index('.')
             "<img src='#{s}'></img>"
         else
-            "<span class='glyphicon glyphicon-#{s}'></span>"
+            "<span class='glyphicon glyphicon-#{s} #{extra_class}'></span>"
         end
     end
 
