@@ -55,7 +55,9 @@ module Engine2
         action_type :decode_list
 
         def invoke handler
-            {entries: get_query.limit(200).load_all}
+            entries = get_query.limit(200).load_all
+            IdEncoder::instance.encode_list(entries, assets[:model])
+            {entries: entries}
         end
 
         def order *fields
@@ -103,13 +105,14 @@ module Engine2
                     condition = fields.map{|f|table_name.q(f).like("%#{query}%", case_insensitive: @case_insensitive || static.get_case_insensitive)}.reduce{|q, f| q | f}
                     get_query.where(condition)
                 end.limit(@limit || static.get_limit).load_all
-
+                IdEncoder::instance.encode_list(entries, model)
                 {entries: entries}
             else
                 handler.permit id = handler.params[:id]
-                record = get_query.unordered.load Hash[model.primary_keys_qualified.zip(split_keys(id))]
-                # handler.halt_not_found(LOCS[:no_entry]) unless record
-                {entry: record}
+                entry = get_query.unordered.load Hash[model.primary_keys_qualified.zip(split_keys(id))]
+                # handler.halt_not_found(LOCS[:no_entry]) unless entry
+                IdEncoder::instance.encode_entry(entry, model)
+                {entry: entry}
             end
         end
     end
@@ -118,13 +121,15 @@ module Engine2
         action_type :decode_entry
 
         def invoke handler
-            {entries: invoke_decode(handler, handler.param_to_json(:ids))}
+            ids = IdEncoder::instance.decode_ids(handler.param_to_json(:ids), assets[:model])
+            {entries: invoke_decode(handler, ids)}
         end
 
         def invoke_decode handler, ids
-            records = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys_qualified.zip(keys)]}.reduce{|q, c| q | c}).load_all
-            # handler.halt_not_found(LOCS[:no_entry]) if records.empty?
-            records
+            entries = get_query.where(ids.map{|keys| Hash[assets[:model].primary_keys_qualified.zip(keys)]}.reduce{|q, c| q | c}).load_all
+            # handler.halt_not_found(LOCS[:no_entry]) if entries.empty?
+            IdEncoder::instance.encode_list(entries, assets[:model])
+            entries
         end
 
         def post_run

@@ -38,6 +38,10 @@ module Engine2
             params[:initial]
         end
 
+        def decode_id id
+            IdEncoder.split_keys(params[id])
+        end
+
         def logged_in?
             !user.nil?
         end

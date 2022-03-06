@@ -176,14 +176,6 @@ end
 
 class << Sequel
     attr_accessor :alias_columns_in_joins
-
-    def split_keys id
-        id.split(Engine2::SETTINGS[:key_separator])
-    end
-
-    def join_keys keys
-        keys.join(Engine2::SETTINGS[:key_separator])
-    end
 end
 
 class Sequel::Database
@@ -590,6 +582,8 @@ module Engine2
             Handler.set :public_folder, "public"
             Handler.set :views, [SETTINGS.path_for(:view_path), "#{Engine2::PATH}/views"]
             bootstrap_e2db
+            IdEncoder.instance = IdEncoder.new
+            IdEncoder.key_separator = SETTINGS[:key_separator]
 
             require 'engine2/pre_bootstrap'
             reload
@@ -686,4 +680,128 @@ module Engine2
             super
         end
     end
+
+    class IdEncoder
+        class << self
+            attr_accessor :instance, :key_separator
+
+            def join_keys keys
+                @instance.encode_id(keys).join(@key_separator)
+            end
+
+            def split_keys id
+                @instance.decode_id(id.split(@key_separator))
+            end
+        end
+
+        def initialize *args
+        end
+
+        def encode_id ids
+            ids
+        end
+
+        def decode_id ids
+            ids
+        end
+
+        def decode_ids ids, model
+            ids
+        end
+
+        def encode_entry entry, model
+        end
+
+        def decode_entry entry, model
+        end
+
+        def encode_list list, model
+        end
+
+        def decode_associations entry, model
+        end
+    end
+
+    class AIdEncoder < IdEncoder
+        def initialize *args
+            super
+        end
+
+        def encode_id ids
+            ids.map{|id| encode!(id)} # TODO: specialize
+        end
+
+        def decode_id ids
+            ids.map{|id| decode!(id)} # TODO: specialize
+        end
+
+        def decode_ids ids, model
+            ids.map{|id| id.map{|idi| decode!(idi)}}
+        end
+
+        def encode_entry entry, model
+            model.primary_keys.each do |k|
+                value = entry[k]
+                entry[k] = encode!(value) if value && model.type_info[k][:type] == :integer
+            end
+            encode_associations(entry, model)
+        end
+
+        def decode_entry entry, model
+            model.primary_keys.each do |k|
+                value = entry[k]
+                entry[k] = decode!(value) if value && model.type_info[k][:type] == :integer
+            end
+            decode_associations(entry, model)
+        end
+
+        def encode_list list, model
+            list.each do |entry|
+                encode_entry(entry, model)
+            end
+        end
+
+        def encode_associations entry, model
+            model.many_to_one_associations.each do |name, assoc|
+                assoc[:keys].each do |key|
+                    value = entry[key]
+                    entry[key] = encode!(value) if value # entry.key?(key)
+                end
+            end
+        end
+
+        def decode_associations entry, model
+            # TODO: handle cases like: model__assoc_id in search
+            model.many_to_one_associations.each do |name, assoc|
+                assoc[:keys].each do |key|
+                    value = entry[key]
+                    entry[key] = decode!(value) if value # entry.key?(key)
+                end
+            end
+        end
+    end
+
+    class HashIdEncoder < AIdEncoder
+        def initialize *args
+            super
+            @hashids = Hashids.new *args
+        end
+
+        private
+
+        def encode! id
+            @hashids.encode(id)
+        end
+
+        def decode! id
+            @hashids.decode(id).first
+        end
+    end
+
+    class RandomHashIdEncoder < HashIdEncoder
+        def initialize *args
+            super
+        end
+    end
+
 end

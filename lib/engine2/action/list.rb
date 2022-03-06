@@ -127,7 +127,9 @@ module Engine2
 
             query = query.limit(per_page, page)
 
-            res = {entries: page_frame(handler, query.load_all)}
+            entries = page_frame(handler, query.load_all)
+            IdEncoder::instance.encode_list(entries, model)
+            res = {entries: entries}
             res[:count] = count if count
             res
         end
@@ -135,6 +137,8 @@ module Engine2
         def list_search query, handler, search
             hash = JSON.parse(search, symbolize_names: true) rescue handler.halt_forbidden
             model = assets[:model]
+            IdEncoder::instance.decode_associations(hash, model)
+
             sfields = lookup(:search_field_list)
             handler.permit sfields
 
@@ -233,7 +237,7 @@ module Engine2
             case assoc[:type]
             when :one_to_many
                 keys = assoc[:keys]
-                condition = parent_keys.all?(&:empty?) ? false : Hash[keys.map{|k| model.table_name.q(k)}.zip(parent_keys)]
+                condition = parent_keys.all?{|k|k.to_s.empty?} ? false : Hash[keys.map{|k| model.table_name.q(k)}.zip(parent_keys)]
                 if handler.params[:negate]
                     query = query.exclude(condition)
                     query = query.or(Hash[keys.zip([nil])]) if keys.all?{|k|model.db_schema[k][:allow_null] == true} # type_info[:required] ?
@@ -247,7 +251,7 @@ module Engine2
                 l_keys = assoc[:left_keys].map{|k| j_table.q(k)}
                 r_keys = assoc[:right_keys].map{|k| j_table.q(k)}
                 r_keys_vals = Hash[r_keys.zip(q_pk)]
-                l_keys_vals = parent_keys.all?(&:empty?) ? false : Hash[l_keys.zip(parent_keys)]
+                l_keys_vals = parent_keys.all?{|k|k.to_s.empty?} ? false : Hash[l_keys.zip(parent_keys)]
 
                 if handler.params[:negate]
                     query.exclude(model.db[j_table].select(nil).where(r_keys_vals & l_keys_vals).exists)

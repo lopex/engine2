@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
     spec.require_paths = ["lib"]
 
     spec.add_dependency "sequel", '~> 5'
+    spec.add_dependency "hashids", '~> 1'
     if defined? JRUBY_VERSION
         spec.add_dependency 'jdbc-sqlite3', '~> 3.0'
     else

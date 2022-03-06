@@ -169,11 +169,11 @@ module Engine2
         end
 
         def split_keys id
-            Sequel::split_keys(id)
+            IdEncoder::split_keys(id)
         end
 
         def join_keys id
-            Sequel::join_keys(id)
+            IdEncoder::join_keys(id)
         end
     end
 
@@ -434,7 +434,9 @@ module Engine2
         end
 
         def find_record handler, id
-            get_query.load assets[:model].primary_keys_hash_qualified(split_keys(id))
+            entry = get_query.load assets[:model].primary_keys_hash_qualified(split_keys(id))
+            IdEncoder::instance.encode_entry(entry, assets[:model])
+            entry
         end
 
         def select *args, use_pk: true, &blk
@@ -862,7 +864,15 @@ module Engine2
         def invoke handler
             json = handler.post_to_json
             record = allocate_record(handler, json[:record])
-            validate_and_approve(handler, record, json[:parent_id]) ? static.record(handler, record) : {record!: record.to_hash, errors!: record.errors}
+            model = assets[:model]
+            IdEncoder::instance.decode_entry(record, model)
+            if validate_and_approve(handler, record, json[:parent_id])
+                IdEncoder::instance.encode_entry(record, model)
+                static.record(handler, record)
+            else
+                IdEncoder::instance.encode_entry(record, model)
+                {record!: record.to_hash, errors!: record.errors}
+            end
         end
 
         def validate name, &blk

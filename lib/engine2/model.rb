@@ -356,7 +356,7 @@ module Engine2
                 files = record[field]
                 added = files.count{|f|f[:new]}
                 removed = files.count{|f|f[:deleted]}
-                referenced = E2Files.db[:files].where(model: record.model.name, field: field.to_s, owner: Sequel::join_keys(record.primary_key_values)).count
+                referenced = E2Files.db[:files].where(model: record.model.name, field: field.to_s, owner: IdEncoder::join_keys(record.primary_key_values)).count
                 info[:required][:message] if (record.new? ? added : referenced - removed + added) == 0
             end
         }
@@ -418,7 +418,7 @@ module Engine2
         file_store: lambda{|m, v, info|
             value = m.values[v]
             files = E2Files.db[:files]
-            owner = Sequel::join_keys(m.primary_key_values)
+            owner = IdEncoder::join_keys(m.primary_key_values)
             upload = info[:store][:upload]
             files_dir = info[:store][:files]
             value.each do |entry|
@@ -462,7 +462,7 @@ module Engine2
         file_store: lambda{|m, v, info|
             files = E2Files.db[:files]
             files_dir = info[:store][:files]
-            owner = Sequel::join_keys(m.primary_key_values)
+            owner = IdEncoder::join_keys(m.primary_key_values)
             files.select(:id, :name).where(owner: owner, model: m.model.name, field: v.to_s).all.each do |entry|
                 File.delete("#{files_dir}/#{entry[:name]}_#{entry[:id]}")
             end

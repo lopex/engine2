@@ -272,7 +272,8 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
 
     parsers:
         integer: (value, info) ->
-            parseInt(value)
+            val = parseInt(value)
+            if val.toString() == value then val else value
 
     parse_entry: (value, info) ->
         parser = @parsers[info.type]
