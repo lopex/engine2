@@ -740,17 +740,17 @@ module Engine2
         end
 
         def encode_entry entry, model
-            model.primary_keys.each do |k|
-                value = entry[k]
-                entry[k] = encode!(value) if value && model.type_info[k][:type] == :integer
+            model.primary_keys.each do |key|
+                value = entry[key]
+                entry[key] = encode!(value) if value && is_integer?(model, key)
             end
             encode_associations(entry, model)
         end
 
         def decode_entry entry, model
-            model.primary_keys.each do |k|
-                value = entry[k]
-                entry[k] = decode!(value) if value && model.type_info[k][:type] == :integer
+            model.primary_keys.each do |key|
+                value = entry[key]
+                entry[key] = decode!(value) if value && is_integer?(model, key)
             end
             decode_associations(entry, model)
         end
@@ -765,7 +765,7 @@ module Engine2
             model.many_to_one_associations.each do |name, assoc|
                 assoc[:keys].each do |key|
                     value = entry[key]
-                    entry[key] = encode!(value) if value # entry.key?(key)
+                    entry[key] = encode!(value) if value # && is_integer?(model, key)
                 end
             end
         end
@@ -775,9 +775,15 @@ module Engine2
             model.many_to_one_associations.each do |name, assoc|
                 assoc[:keys].each do |key|
                     value = entry[key]
-                    entry[key] = decode!(value) if value # entry.key?(key)
+                    entry[key] = decode!(value) if value # && is_integer?(model, key)
                 end
             end
+        end
+
+        private
+
+        def is_integer? model, key
+            model.type_info[key][:type] == :integer
         end
     end
 
