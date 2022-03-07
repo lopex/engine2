@@ -765,7 +765,7 @@ module Engine2
             model.many_to_one_associations.each do |name, assoc|
                 assoc[:keys].each do |key|
                     value = entry[key]
-                    entry[key] = encode!(value) if value # && is_integer?(model, key)
+                    entry[key] = encode!(value) if value && is_integer?(model, key)
                 end
             end
         end
@@ -775,7 +775,7 @@ module Engine2
             model.many_to_one_associations.each do |name, assoc|
                 assoc[:keys].each do |key|
                     value = entry[key]
-                    entry[key] = decode!(value) if value # && is_integer?(model, key)
+                    entry[key] = decode!(value) if value && is_integer?(model, key)
                 end
             end
         end
@@ -783,7 +783,7 @@ module Engine2
         private
 
         def is_integer? model, key
-            model.type_info[key][:type] == :integer
+            model.type_info[key][:otype] == :integer
         end
     end
 
