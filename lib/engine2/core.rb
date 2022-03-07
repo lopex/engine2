@@ -788,6 +788,8 @@ module Engine2
     end
 
     class HashIdEncoder < AIdEncoder
+        attr_accessor :hashids
+
         def initialize *args
             super
             @hashids = Hashids.new *args
