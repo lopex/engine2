@@ -846,7 +846,7 @@ angular.module('Engine2')
         initialize: ->
             super()
             @query.parent_id = E2.id_for(@parent().record, @parent().meta)
-            @changes = (link: [], unlink: [], create: [], modify: [], delete: [])
+            @changes = @parent().record[@scope().$parent.f] ? (link: [], unlink: [], create: [], modify: [], delete: [])
             @invoke()
 
         invoke: ->
