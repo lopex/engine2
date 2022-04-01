@@ -3,7 +3,7 @@ angular.module('Engine2')
 .provider '$e2Modal', ->
     $get: ($rootScope, $modal, $timeout, $window, $injector) ->
         class MManager
-            @Z_INDEX: 1050
+            @Z_INDEX: 1041
             @index: 0
             constructor: () ->
             backdrop_z_index: (num, index) -> angular.element(document.querySelectorAll('.modal-backdrop')).eq(num).css('z-index', index)
