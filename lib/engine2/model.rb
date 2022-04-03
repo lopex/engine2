@@ -326,7 +326,8 @@ module Engine2
             LOCS[:invalid_currency_value] unless value.to_s =~ /^\d+(?:\.\d{,2})?$/
         },
         unique: lambda{|record, field, info|
-            with = info[:validations][:unique][:with]
+            uniq = info[:validations][:unique]
+            with = uniq[:with]
             with_errors = with.map{|w|record.errors[w]}
             if with_errors.compact.empty?
                 all_fields = [field] + with
@@ -334,7 +335,7 @@ module Engine2
                 query = query.exclude(record.model.primary_keys_hash(record.primary_key_values)) unless record.new?
                 unless query.empty?
                     msg = LOCS[:required_unique_value]
-                    with.each{|w| record.errors.add(w, msg)}
+                    with.each{|w| record.errors.add(w, msg)} if uniq[:error_with]
                     msg
                 end
             else

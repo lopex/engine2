@@ -209,11 +209,11 @@ module Engine2
         #     end
         # end
 
-        def unique field, *with
+        def unique field, *with, error_with: true
             depends_on(field, *with)
             modify_field field do |info|
                 info[:transaction] = true
-                info[:validations][:unique] = {with: with}
+                info[:validations][:unique] = {with: with, error_with: error_with}
             end
         end
 
