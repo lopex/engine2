@@ -84,6 +84,8 @@ module Engine2
                         boolean_field name
                     when :float
                         float_field name
+                    when :json
+                        string_field name, 100000
                     when nil
                         # ignore nil type
                     else
