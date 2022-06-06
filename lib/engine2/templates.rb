@@ -175,8 +175,8 @@ module Engine2
 
     class SearchTemplates
         class << self
-            def input_text
-                {template: "search_fields/input_text"}
+            def input_text length = 25
+                {template: "search_fields/input_text", length: length}
             end
 
             def date_range options = {}
