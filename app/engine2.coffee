@@ -459,7 +459,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
         elem.on "mousedown", hook
 
 .directive 'e2ButtonSet', ($parse, $compile, E2Snippets) ->
-    button_set_tmpl = _.template("<div class='btn btn-default' {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}} {{loc}}</div>")
+    button_set_tmpl = _.template("<a class='btn btn-default' {{href}} {{clazz}} {{click}} {{show}} {{hide}} {{title}}> {{icon}} {{loc}}</a>")
     button_set_arr_tmpl = _.template("<div class='btn btn-default' e2-dropdown='{{dropdown}}' data-animation='{{animation}}'>{{icon}}<span class='caret'></span></div>")
     scope: true # because $index
     link: (scope, elem, attrs) ->
@@ -480,6 +480,7 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
                 else if m.divider
                 else
                     out += button_set_tmpl
+                        href: m.href && "href=\"#{m.href}\"" || ''
                         clazz: E2Snippets.make_ng_class(m)
                         click: m.click && "ng-click=\"#{m.click}\"" || ''
                         show: m.show && "ng-show=\"#{m.show}\"" || ''
