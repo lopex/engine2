@@ -448,7 +448,7 @@ module E2Model
                     f_info = mdl.type_info[name]
                     raise Engine2::E2Error.new("Column #{name} not found for table #{table}") unless f_info
                     if f_info[:dummy]
-                        nil
+                        f_info[:json_op] ? f_info[:json_op].as(name) : nil
                     else
                         qname = mdl_table_name.q(name)
                         if table == model_table_name

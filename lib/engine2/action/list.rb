@@ -8,6 +8,7 @@ module Engine2
 
         (DefaultFilters ||= {}).merge!(
             string: lambda{|query, name, value, type_info, hash|
+                name = type_info[:json_op] if type_info[:json_op]
                 case type_info[:type]
                 when :list_select
                     raise E2Error.new("Filter unimplemented for string multi list_select, field: '#{name.to_sym}'") if type_info[:multiselect] # todo
@@ -195,7 +196,9 @@ module Engine2
             query = if order_blk = (@orders && @orders[order]) || (dynamic? && (static.orders && static.orders[order]))
                 order_blk.(handler, query)
             else
-                order = model.table_name.q(order) if model.type_info[order]
+                if info = model.type_info[order]
+                    order = info[:json_op] || model.table_name.q(order)
+                end
                 query.order(order)
             end
 

@@ -64,6 +64,12 @@ module Engine2
             end
         end
 
+        def json_op field, op
+            modify_field field do |info|
+                info[:json_op] = op
+            end
+        end
+
         def blob_field field, length
             define_field field, :blob do |info|
                 info[:length] = length
