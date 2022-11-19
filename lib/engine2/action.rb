@@ -1375,6 +1375,7 @@ module Engine2
         blob_store: lambda{|action, info| Templates.blob},
         foreign_blob_store: lambda{|action, info| Templates.blob},
         string: lambda{|action, info| Templates.input_text(info[:length])},
+        json: lambda{|action, info| Templates.text_area(10, 10)},
         text: lambda{|action, info| Templates.text},
         integer: lambda{|action, info| Templates.integer},
         float: lambda{|action, info| Templates.integer},

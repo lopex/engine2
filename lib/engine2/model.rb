@@ -87,7 +87,12 @@ module Engine2
                     when :json
                         string_field name, 100000
                     when nil
-                        # ignore nil type
+                        case db_info[:db_type]
+                        when "json", "jsonb"
+                            json_field name
+                        else
+                            # ignore nil type
+                        end
                     else
                         p db_info
                         raise E2Error.new("Unknown column type: #{db_info[:type].inspect} for #{name}")
@@ -326,6 +331,15 @@ module Engine2
         currency: lambda{|record, field, info|
             value = record.values[field]
             LOCS[:invalid_currency_value] unless value.to_s =~ /^\d+(?:\.\d{,2})?$/
+        },
+        json: lambda{|record, field, info|
+            value = record.values[field]
+            begin
+                JSON.parse(value)
+                nil
+            rescue
+                "#{LOCS[:invalid_json]}: #{$!.message}"
+            end
         },
         unique: lambda{|record, field, info|
             uniq = info[:validations][:unique]

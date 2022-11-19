@@ -91,6 +91,7 @@
 :required_unique_value:         Wymagana unikatowa wartość
 :invalid_email_format:          Niepoprawny format email
 :invalid_format:                Niepoprawny format
+:invalid_json:                  Niepoprawny json
 
 :access_forbidden:              Dostęp zabroniony
 :access_unauthorized:           Dostęp nieautoryzowany

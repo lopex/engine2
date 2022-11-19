@@ -57,6 +57,13 @@ module Engine2
             end
         end
 
+        def json_field field
+            define_field field, :json do |info|
+                info[:length] = 0
+                info[:validations][:json] = true
+            end
+        end
+
         def blob_field field, length
             define_field field, :blob do |info|
                 info[:length] = length

@@ -91,6 +91,7 @@
 :required_unique_value:         Require unique value
 :invalid_email_format:          Incorrect email format
 :invalid_format:                Incorrect format
+:invalid_json:                  Invalid json
 
 :currency_symbol:               $
 
