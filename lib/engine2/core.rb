@@ -241,6 +241,10 @@ module E2Model
                 dummies = {}
                 model.dummies.each do |d|
                     dummies[d] = values.delete(d)
+                    info = model.type_info[d]
+                    if info[:json_op] && val = dummies[d]
+                        values[info[:field]] = info[:field].pg_jsonb.set("{#{info[:path].join(',')}}", val.to_json, true)
+                    end
                 end
                 @dummy_fields = dummies
             end

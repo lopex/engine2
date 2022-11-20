@@ -70,6 +70,14 @@ module Engine2
             end
         end
 
+        def json_path field, sfield, *path
+            modify_field field do |info|
+                info[:field] = sfield
+                info[:path] = path
+                info[:json_op] = path.reduce(sfield.pg_jsonb){|a, v|a[v.to_s]}
+            end
+        end
+
         def blob_field field, length
             define_field field, :blob do |info|
                 info[:length] = length
