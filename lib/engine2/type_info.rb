@@ -78,7 +78,7 @@ module Engine2
                 info[:last] = last
                 op = first.reduce(sfield.pg_jsonb){|a, v|a[v.to_s]}
                 info[:json_op] = op[last.to_s]
-                info[:json_op_text] = op.get_text(last.to_s)
+                info[:json_op_text] = op.get_text(last.to_s) # use #>> ?
             end
         end
 
