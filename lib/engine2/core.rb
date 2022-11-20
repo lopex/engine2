@@ -239,13 +239,20 @@ module E2Model
 
             unless model.dummies.empty?
                 dummies = {}
+                json_fields = {}
                 model.dummies.each do |d|
                     dummies[d] = values.delete(d)
                     info = model.type_info[d]
-                    if info[:json_op] && val = dummies[d]
-                        values[info[:field]] = info[:field].pg_jsonb.set("{#{info[:path].join(',')}}", val.to_json, true)
+                    if info[:json_op] && val = dummies[d] # values[info[:field]] = info[:field].pg_jsonb.set("{#{info[:path].join(',')}}", val.to_json, true)
+                        json = json_fields[info[:field]] ||= {}
+                        *path, last = info[:path]
+                        path.reduce(h = {}){|h, v|h[v] = {}}[last] = val
+                        json.rmerge! h
                     end
+
                 end
+
+                json_fields.each{|f, j| values[f] = f.pg_jsonb.concat(j.to_json)}
                 @dummy_fields = dummies
             end
 
