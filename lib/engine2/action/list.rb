@@ -8,7 +8,7 @@ module Engine2
 
         (DefaultFilters ||= {}).merge!(
             string: lambda{|query, name, value, type_info, hash|
-                name = type_info[:json_op] if type_info[:json_op]
+                name = type_info[:json_op_text] if type_info[:json_op_text]
                 case type_info[:type]
                 when :list_select
                     raise E2Error.new("Filter unimplemented for string multi list_select, field: '#{name.to_sym}'") if type_info[:multiselect] # todo

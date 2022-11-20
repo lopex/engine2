@@ -245,8 +245,7 @@ module E2Model
                     info = model.type_info[d]
                     if info[:json_op] && val = dummies[d] # values[info[:field]] = info[:field].pg_jsonb.set("{#{info[:path].join(',')}}", val.to_json, true)
                         json = json_fields[info[:field]] ||= {}
-                        *path, last = info[:path]
-                        path.reduce(h = {}){|h, v|h[v] = {}}[last] = val
+                        info[:path].reduce(h = {}){|h, v|h[v] = {}}[info[:last]] = val
                         json.rmerge! h
                     end
 
