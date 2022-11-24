@@ -117,8 +117,6 @@ module Engine2
             halt_server_error Rack::Utils.escape_html(error.inspect) + "<hr>" + error.backtrace.take(30).map{|b| Rack::Utils.escape_html(b)}.join("<br>"), LOCS[:error]
         end
 
-        ENGINE2_ROUTES_BLOCK.(self) if Object.const_defined? 'ENGINE2_ROUTES_BLOCK'
-
         get "#{VIEWS_PATH}/*" do |name|
             pass unless request.env[ENGINE2_REQUEST_HEADER]
             no_cache_headers
