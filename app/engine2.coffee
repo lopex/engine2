@@ -59,6 +59,9 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             loaderToggle('hidden')
 
     request: (request) ->
+        request.headers.ENGINE2_REQUEST_HEADER = "engine2"
+        # request.url = "/views/#{request.url}" unless request.url.startsWith('api/')
+
         if timeout
             clearTimeout timeout
             timeout = null

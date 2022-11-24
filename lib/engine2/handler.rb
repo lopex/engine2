@@ -5,6 +5,7 @@ module Engine2
     class Handler < Sinatra::Base
         reset!
         API ||= "/api"
+        ENGINE2_REQUEST_HEADER ||= "HTTP_ENGINE2_REQUEST_HEADER"
 
         def halt_json code, cause, message
             halt code, {'Content-Type' => 'application/json'}, {message: message, cause: cause}.to_json
@@ -114,14 +115,16 @@ module Engine2
         ENGINE2_ROUTES_BLOCK.(self) if Object.const_defined? 'ENGINE2_ROUTES_BLOCK'
 
         get '/*' do |name|
-            headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
             if name.empty?
                 if settings.development?
                     load('engine2.rb') if Engine2::SETTINGS[:reloading]
                     Engine2::reload
                 end
                 name = 'index'
+            else
+                pass unless request.env[ENGINE2_REQUEST_HEADER]
             end
+            headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
             slim name.to_sym
         end
 
