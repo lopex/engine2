@@ -4,7 +4,8 @@
 module Engine2
     class Handler < Sinatra::Base
         reset!
-        API ||= "/api"
+        API_PATH ||= "/api"
+        VIEWS_PATH ||= "/views"
         ENGINE2_REQUEST_HEADER ||= "HTTP_ENGINE2_REQUEST_HEADER"
 
         def no_cache_headers
@@ -109,7 +110,7 @@ module Engine2
         end
 
         [:get, :post, :delete].each do |verb|
-            send(verb, "#{API}/*"){|path| serve_api_resource(verb, path)}
+            send(verb, "#{API_PATH}/*"){|path| serve_api_resource(verb, path)}
         end
 
         def serve_api_error error
@@ -118,7 +119,7 @@ module Engine2
 
         ENGINE2_ROUTES_BLOCK.(self) if Object.const_defined? 'ENGINE2_ROUTES_BLOCK'
 
-        get '/views/*' do |name|
+        get "#{VIEWS_PATH}/*" do |name|
             pass unless request.env[ENGINE2_REQUEST_HEADER]
             no_cache_headers
             slim name.to_sym
