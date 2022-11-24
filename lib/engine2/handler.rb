@@ -7,6 +7,10 @@ module Engine2
         API ||= "/api"
         ENGINE2_REQUEST_HEADER ||= "HTTP_ENGINE2_REQUEST_HEADER"
 
+        def no_cache_headers
+            headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
+        end
+
         def halt_json code, cause, message
             halt code, {'Content-Type' => 'application/json'}, {message: message, cause: cause}.to_json
         end
@@ -114,18 +118,19 @@ module Engine2
 
         ENGINE2_ROUTES_BLOCK.(self) if Object.const_defined? 'ENGINE2_ROUTES_BLOCK'
 
-        get '/*' do |name|
-            if name.empty?
-                if settings.development?
-                    load('engine2.rb') if Engine2::SETTINGS[:reloading]
-                    Engine2::reload
-                end
-                name = 'index'
-            else
-                pass unless request.env[ENGINE2_REQUEST_HEADER]
-            end
-            headers 'Cache-Control' => 'no-cache, no-store, must-revalidate', 'Pragma' => 'no-cache', 'Expires' => '0'
+        get '/views/*' do |name|
+            pass unless request.env[ENGINE2_REQUEST_HEADER]
+            no_cache_headers
             slim name.to_sym
+        end
+
+        get '/' do
+            if settings.development?
+                load('engine2.rb') if Engine2::SETTINGS[:reloading]
+                Engine2::reload
+            end
+            no_cache_headers
+            slim :index
         end
 
         set :slim, pretty: !production?, sort_attrs: false

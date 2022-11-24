@@ -18,7 +18,9 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
     $httpProvider.interceptors.push 'e2HttpInterceptor'
     $provide.decorator '$httpBackend', ($delegate) ->
         (method, url, post, callback, headers, timeout, withCredentials, responseType) ->
+            url = "/views/#{url}" unless url.startsWith('api/')
             url = url.replace(/;/g, '%3B') unless method == 'POST'
+            headers.ENGINE2_REQUEST_HEADER = "engine2"
             $delegate(method, url, post, callback, headers, timeout, withCredentials, responseType)
     # $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
     # $httpProvider.defaults.cache = false;
@@ -59,9 +61,6 @@ angular.module('Engine2', ['ngSanitize', 'ngAnimate', 'ngCookies', 'mgcrea.ngStr
             loaderToggle('hidden')
 
     request: (request) ->
-        request.headers.ENGINE2_REQUEST_HEADER = "engine2"
-        # request.url = "/views/#{request.url}" unless request.url.startsWith('api/')
-
         if timeout
             clearTimeout timeout
             timeout = null
