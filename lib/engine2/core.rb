@@ -251,7 +251,7 @@ module E2Model
 
                 end
 
-                json_fields.each{|f, j| values[f] = f.pg_jsonb.concat(j.to_json)}
+                json_fields.each{|f, j| values[f] = f.concat(j.to_json)}
                 @dummy_fields = dummies
             end
 

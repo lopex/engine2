@@ -85,11 +85,11 @@ module Engine2
                     when :float
                         float_field name
                     when :json, :jsonb
-                        json_field name
+                        json_field name, db_info[:db_type]
                     when nil
                         case db_info[:db_type]
                         when "json", "jsonb"
-                            json_field name
+                            json_field name, db_info[:db_type]
                         else
                             # ignore nil type
                         end

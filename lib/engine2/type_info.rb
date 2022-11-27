@@ -57,8 +57,9 @@ module Engine2
             end
         end
 
-        def json_field field
+        def json_field field, json_type
             define_field field, :json do |info|
+                info[:json_type] = json_type
                 info[:length] = 0
                 info[:validations][:json] = true
             end
@@ -72,11 +73,16 @@ module Engine2
 
         def json_path field, sfield, *path
             modify_field field do |info|
-                info[:field] = sfield
-                *first, last = path
-                info[:path] = first
+                json_field_info = @model.type_info[sfield]
+                raise E2Error.new("No json field '#{sfield}' defined for model '#{@model}'") unless json_field_info
+                raise E2Error.new("Field '#{sfield}' defined for model '#{@model}' must be a json field") unless json_field_info[:type] == :json
+                info[:json_type] = json_field_info[:json_type]
+
+                info[:field] = sfield.send(:"pg_#{info[:json_type]}")
+                *init, last = path
+                info[:path] = init
                 info[:last] = last
-                op = first.reduce(sfield.pg_jsonb){|a, v|a[v.to_s]}
+                op = init.reduce(info[:field]){|a, v|a[v.to_s]}
                 info[:json_op] = op[last.to_s]
                 # info[:json_op_text] = op.get_text(last.to_s) # use #>> ?
             end
