@@ -82,8 +82,8 @@ module Engine2
                 *init, last = path
                 info[:path] = init
                 info[:last] = last
-                op = init.reduce(info[:field]){|a, v|a[v.to_s]}
-                info[:json_op] = op[last.to_s]
+                info[:json_op] = init.reduce(info[:field]){|a, v|a[v.to_s]}[last.to_s]
+                info[:qualified_json_op] = init.reduce(@model.table_name.q(sfield).send(:"pg_#{info[:json_type]}")){|a, v|a[v.to_s]}[last.to_s]
                 # info[:json_op_text] = op.get_text(last.to_s) # use #>> ?
             end
         end
