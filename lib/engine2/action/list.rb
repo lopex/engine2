@@ -126,9 +126,9 @@ module Engine2
             page = params[:page].to_i
             handler.permit page >= 0 && page < 1000000
 
-            query = query.limit(per_page, page)
-
-            entries = page_frame(handler, query.load_all)
+            entries = query.limit(per_page, page).load_all
+            # TODO auto decode_star_to_many_field
+            entries = page_frame(handler, entries)
             IdEncoder::instance.encode_list(entries, model)
             res = {entries: entries}
             res[:count] = count if count
@@ -207,6 +207,25 @@ module Engine2
 
         def list_context query, handler
             query
+        end
+
+        def decode_star_to_many_field entries, field_name, model, assoc_name, assoc_fields, field_separator, record_separator
+            key = model.primary_keys.first
+            qkey = model.table_name.q(key)
+
+            assoc = model.one_to_many_associations[assoc_name] || model.many_to_many_associations[assoc_name]
+            assoc_model = assoc.associated_class
+
+            query = model.naked.where(qkey => entries.map{|r|r[key]})
+                .association_join(assoc_name)
+                .select(qkey, *assoc_fields.map{|f|assoc_model.table_name.q(f)})
+
+            hash = query.to_hash_groups(key)
+
+            entries.each do |rec|
+               rec[field_name] = hash[rec[key]].to_a.map{|r| assoc_fields.map{|f|r[f]}.join(field_separator) }.join(record_separator)
+            end
+            entries
         end
     end
 
