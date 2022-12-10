@@ -118,7 +118,7 @@ module Engine2
         end
 
         get "#{VIEWS_PATH}/*" do |name|
-            pass unless request.env[ENGINE2_REQUEST_HEADER]
+            # pass unless request.env[ENGINE2_REQUEST_HEADER]
             no_cache_headers
             slim name.to_sym
         end
