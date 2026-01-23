@@ -103,7 +103,7 @@ module Engine2
 
             if response.is_a?(Hash)
                 content_type :json
-                response.to_json
+                JSON.generate(response)
             else
                 response
             end
