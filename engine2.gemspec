@@ -16,12 +16,17 @@ Gem::Specification.new do |spec|
     spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR) rescue []
     spec.require_paths = ["lib"]
 
+    if RUBY_VERSION.start_with?('4')
+        spec.add_dependency "bigdecimal"
+        spec.add_dependency "base64"
+    end
+
     spec.add_dependency "sequel", '~> 5'
     spec.add_dependency "hashids", '~> 1'
     if defined? JRUBY_VERSION
         spec.add_dependency 'jdbc-sqlite3', '~> 3.0'
     else
-        spec.add_dependency 'sqlite3', '~> 1.3'
+        spec.add_dependency 'sqlite3' # , '~> 1.3'
     end
     spec.add_dependency "sinatra", '~> 3.0'
     spec.add_dependency 'slim', '~> 4.0'
