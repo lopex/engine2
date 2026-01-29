@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
     else
         spec.add_dependency 'sqlite3' # , '~> 1.3'
     end
-    spec.add_dependency "sinatra", '~> 3.0'
-    spec.add_dependency 'slim', '~> 4.0'
+    spec.add_dependency "sinatra", '~> 4.0'
+    spec.add_dependency 'slim', '~> 5.0'
     spec.add_dependency 'faye-websocket', '~> 0.10'
 
     spec.add_development_dependency "bundler", "~> 2.00"
